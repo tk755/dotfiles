@@ -2,10 +2,10 @@
 apt-get update -y
 
 echo 'Installing commands'
-apt-get install `tr '\r\n' ' ' < commands.txt` -y
+apt-get install `tr '\r\n' ' ' < commands` -y
 
 echo 'Installing applications'
-apt-get install `tr '\r\n' ' ' < applications.txt` -y
+apt-get install `tr '\r\n' ' ' < applications` -y
 
 # https://linuxize.com/post/how-to-install-google-chrome-web-browser-on-debian-10/
 echo 'Installing Google Chrome...'
