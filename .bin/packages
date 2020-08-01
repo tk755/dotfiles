@@ -4,8 +4,10 @@ curl
 htop
 neofetch
 tree
+python3-pip
 
 terminator
 awesome
 
 powerline
+fonts-powerline
