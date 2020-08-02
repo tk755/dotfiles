@@ -3,7 +3,7 @@ I use the [bare git repository](https://www.atlassian.com/git/tutorials/dotfiles
 
 ## Creating a Bare Repository
 
-1. Create a bare git repository in `$HOME/.dotfiles` to track the dotfiles you want to save.
+1. Create a bare git repository called `$HOME/.dotfiles` to track the dotfiles you want to save.
 ```bash
 git init --bare $HOME/.dotfiles
 ```
@@ -28,12 +28,12 @@ dotfiles push
 
 ## Cloning this Repository
 
-1. Clone this repository into a bare repository in `$HOME/.dotfiles`.
+1. Clone this repository into a bare repository called `$HOME/.dotfiles`.
 ```bash
 git clone --bare git@github.com:TusharK54/Dotfiles.git $HOME/.dotfiles
 ```
 
-2. Define an alias called `dotfiles` to interact with this repository. This alias is already defined in the `.bash_aliases` file of the bare repository, so there is no need to copy it over.
+2. Define an alias called `dotfiles` to interact with this repository. This alias is already defined in the `.bash_aliases` file of the cloned repository, so there is no need to copy it over.
 ```bash
 alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 ```
