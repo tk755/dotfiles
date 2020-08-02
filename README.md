@@ -8,17 +8,18 @@ I use the [bare git repository](https://www.atlassian.com/git/tutorials/dotfiles
 git init --bare $HOME/.dotfiles
 ```
 
-2. Define an alias called `dotfiles` to interact with this repository.
+2. Define an alias called `dotfiles` to interact with this repository and add it to `$HOME/.bash_aliases` so it is available in any terminal session.
 ```bash
 alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-dotfiles config --local status.showUntrackedFiles no
-```
-- You can add this alias to `$HOME/.bash_aliases` so it is available in any terminal session.
-```bash
 echo "alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'" >> $HOME/.bash_aliases
 ```
 
-3. Now you can track your dotfiles in the `$HOME/.dotfiles` repository using the `dotfiles` alias, which is just a glorified `git` command.
+3. Configure the bare repository to not show untracked files.
+```bash
+dotfiles config --local status.showUntrackedFiles no
+```
+
+4. Now you can track your dotfiles in the `$HOME/.dotfiles` repository using the `dotfiles` alias, which is just a glorified `git` command.
 ```bash
 dotfiles add $HOME/.bashrc
 dotfiles commit -m 'Add .bashrc'
@@ -32,20 +33,23 @@ dotfiles push
 git clone --bare git@github.com:TusharK54/Dotfiles.git $HOME/.dotfiles
 ```
 
-2. Define an alias called `dotfiles` to interact with this repository. 
+2. Define an alias called `dotfiles` to interact with this repository. This alias is already defined in the `.bash_aliases` file of the bare repository, so there is no need to copy it over.
 ```bash
 alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-dotfiles config --local status.showUntrackedFiles no
 ```
-- This alias is already defined in the `.bash_aliases` file of the bare repository, so there is no need to copy it over.
 
-3. Checkout the dotfiles from the bare repository to your `$HOME` directory.
+3. Configure the bare repository to not show untracked files and to set the upstream repository.
+```bash
+dotfiles config --local status.showUntrackedFiles no
+dotfiles push --set-upstream origin master
+```
+
+4. Checkout the dotfiles from the bare repository to your `$HOME` directory. This will fail if you have dotfiles in your `$HOME` directory which will get overwritten by the dotfiles in the bare repository. You will need to delete or move those dotfiles and try again.
 ```bash
 dotfiles checkout
 ```
-- This will fail if you have dotfiles in your `$HOME` directory which will get overwritten by the dotfiles in the bare repository. You will need to delete or move those dotfiles and try again.
 
-4. Now you can track your dotfiles in the `$HOME/.dotfiles` repository using the `dotfiles` alias, which is just a glorified `git` command.
+5. Now you can track your dotfiles in the `$HOME/.dotfiles` repository using the `dotfiles` alias, which is just a glorified `git` command.
 ```bash
 dotfiles add $HOME/.bashrc
 dotfiles commit -m 'Add .bashrc'
