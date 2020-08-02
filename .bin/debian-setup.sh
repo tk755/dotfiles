@@ -8,7 +8,7 @@ if [ $USER != 'root' ]; then
 fi
 
 # Uninstall Mozilla Firefox
-apt-get purge firefox firefox-esr
+apt-get purge firefox firefox-esr -y
 
 if [ -d /home/$USER/.mozilla ]; then
     rm -rf /home/$USER/.mozilla
