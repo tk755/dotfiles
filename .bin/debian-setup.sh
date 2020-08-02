@@ -57,7 +57,7 @@ add-apt-repository "deb [arch=amd64] http://download.virtualbox.org/virtualbox/d
 apt-get update -y && apt-get install virtualbox-6.0 -y
 
 # Powerline
-wget https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf
-wget https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf
-mv PowerlineSymbols.otf /usr/share/fonts/X11/misc/
-fc-cache -vf /usr/share/fonts/X11/misc/
+#wget https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf
+#wget https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf
+#mv PowerlineSymbols.otf /usr/share/fonts/X11/misc/
+#fc-cache -vf /usr/share/fonts/X11/misc/
