@@ -7,11 +7,6 @@ case $- in
       *) return;;
 esac
 
-# alias definitions
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
-fi
-
 # history settings
 HISTSIZE=10000
 HISTFILESIZE=50000
@@ -32,21 +27,18 @@ if ! shopt -oq posix; then
     fi
 fi
 
-# set variable identifying the chroot you work in (used in the prompt)
-if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
+# alias definitions
+if [ -f $HOME/.bash/aliases ]; then
+    source $HOME/.bash/aliases
+elif [ -f $HOME/.bash_aliases ]; then
+    source $HOME/.bash_aliases
 fi
 
 # set prompt
-PS1='${debian_chroot:+($debian_chroot)}\[\e[01;35m\][\t] \[\e[01;32m\]\u@\h\[\e[00m\]:\[\e[01;34m\]\w\[\e[00m\]\$ '
-
-# set powerline prompt
-#enable_powerline=yes
-if [ -f `which powerline-daemon` ] && [ -n "$enable_powerline" ]; then
-    powerline-daemon -q
-    POWERLINE_BASH_CONTINUATION=1
-    POWERLINE_BASH_SELECT=1
-    . /usr/share/powerline/bindings/bash/powerline.sh
+if [ -f $HOME/.bash/prompt ]; then
+    source $HOME/.bash/prompt
+else
+    PS1='\[\e[01;35m\][\t] \[\e[01;32m\]\u@\h\[\e[00m\]:\[\e[01;34m\]\w\[\e[00m\]\$ '
 fi
 
 # custom splash screen

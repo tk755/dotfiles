@@ -1,0 +1,6 @@
+BASH Prompt:
+
+Make prompt two lines tall, one for header and one for command
+
+Header:
+colored exit code | history number | execution time | user@host | pwd | git info | --fill-- | time (?)
