@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ~/.bashrc is executed by bash for non-login shells
+# Executed by bash for non-login shells
 
 # return if not running interactively
 case $- in
@@ -24,21 +24,21 @@ if ! shopt -oq posix; then
         . /usr/share/bash-completion/bash_completion
     elif [ -f /etc/bash_completion ]; then
         . /etc/bash_completion
-    fi
+    fi\[\e[01;35m\][\t] 
 fi
 
-# alias definitions
+# source bash aliases
 if [ -f $HOME/.bash/aliases ]; then
     source $HOME/.bash/aliases
 elif [ -f $HOME/.bash_aliases ]; then
     source $HOME/.bash_aliases
 fi
 
-# set prompt
+# source bash prompt
 if [ -f $HOME/.bash/prompt ]; then
     source $HOME/.bash/prompt
 else
-    PS1='\[\e[01;35m\][\t] \[\e[01;32m\]\u@\h\[\e[00m\]:\[\e[01;34m\]\w\[\e[00m\]\$ '
+    PS1='\[\e[01;32m\]\u@\h\[\e[00m\]:\[\e[01;34m\]\w\[\e[00m\]\$ '
 fi
 
 # custom splash screen

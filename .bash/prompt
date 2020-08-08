@@ -1,137 +1,76 @@
 #!/usr/bin/env bash
-# defines bash prompt
-# credit: https://github.com/budlabs/youtube/blob/master/prompt
+# Defines bash prompt
 
+# returns system date in nanoseconds
+function timestamp {
+    date +%s%N
+}
+
+# sets $time_start if not set
 function timer_start {
-    
+    time_start=${time_start:-$(timestamp)}
 }
 
-prompt_generator() {
+# returns formatted prompt timer segment
+function timer_stop {
+    # delta microseconds
+    local delta_us=$(( ($(timestamp) - $time_start) / (1000) ))
 
-  local ps # pathstring
-  local ms # timestring (milliseconds or seconds)
-  local tc # timecolor
+    # extract time units
+    local h=$(( (delta_us / (1000 * 1000 * 60 * 60))        ))
+    local m=$(( (delta_us / (1000 * 1000 * 60)     ) % 60   ))
+    local s=$(( (delta_us / (1000 * 1000)          ) % 60   ))
+    local ms=$(( delta_us /  1000                    % 1000 ))
+    local us=$(( delta_us                            % 1000))
 
-  ms=$(( ($(prompt_timestamp) - ${_t_prompt:-}) / 1000000 ))
+    local tc    # timer color
+    local ts    # timer string
 
-  # different foreground color for the time
-  # depending on the execution time.
-  case $((
-    ms < 100  ? 1 :
-    ms < 1000 ? 2 : 3)) in
-      (1)   tc="${C_GREEN}"   ;;
-      (2)   tc="${C_YELLOW}"  ;;
-      # when more then 1000 ms have elapsed,
-      # display seconds, (ms/1000), instead.
-      (3|*) tc="${C_RED}" ms=$((ms/1000)) ;;
-  esac
+    if (( h > 0 )); then
+        tc=${RED}
+        ts="${h}:$(printf '%02d' ${m}) h"
+    elif (( m > 0 )); then
+        tc=${YELLOW}
+        ts="${m}:$(printf '%02d' ${s}) m"
+    elif (( s > 0 )); then
+        tc=${BLUE}
+        ts="${s}.$(printf '%01d' $(( ${ms} / 100 ))) s"
+    elif (( ms >= 100 )); then
+        tc=${CYAN}
+        ts="${ms} ms"
+    elif (( ms > 0 )); then
+        tc=${GREEN}
+        ts="${ms}.$(printf '%01d' $(( ${us} / 100 ))) ms"
+    else
+        tc=${MAGENTA}
+        ts="${us} µs"
+    fi
 
-  # format time, 3 characters pad with zero
-  # (ms = 42 -> 042)
-  ms="$(printf '%03d' $ms)"
-
-  # if the current directory has changed since the
-  # last prompt, generate a new ps.
-  if [[ $_last_promptdir = "$PWD" ]]; then
-    ps="$_last_pathstring"
-  else
-    # set IFS to forward slash to conveniently
-    # loop path, make it local so we don't replace 
-    # the shells main IFS
-    local IFS='/'
-    
-    # replace homde dir with literal ~ in PWD loop
-    # the path and use the first alpha/numeric
-    # character OR the first character of each
-    # directory.
-    for d in ${PWD/~/'~'}; do
-      [[ $d =~ [[:alnum:]] ]]         \
-        && ps+="${BASH_REMATCH[0]}/"  \
-        || ps+="${d:0:1}/"   
-    done
-
-    # remove trailing / if we are not in root dir
-    [[ ${ps} = / ]] || {
-      ps="${ps%/}"
-
-      # expand the last directory
-      # [[ $ps != '~' ]] && ps="${ps%/*}/$d"
-    }
-
-    unset d
-
-    # these variables are global
-    _last_promptdir="$PWD"
-    _last_pathstring="$ps"
-  fi
-  
-  # if PWD is ~/.config/temp and the last commands
-  # execution time was 69ms, the prompt would look
-  # something like this: 
-  # 069 ~/c/t >
-  PS1="${tc}${ms}${C_DEFAULT} ${ps} ${C_CYAN}\$${C_DEFAULT} " 
-
-  unset _t_prompt
+    echo "${tc}${ts}${DEFAULT}"
 }
 
-prompt_timestamp() { date +%s%N ;}
+# sets $PS1 and unsets $time_start
+function set_prompt {
+    local timer=$(timer_stop)
+    local exit_code=$?
 
-# DEBUG trap will get executed before a command
-trap ': "${_t_prompt:=$(prompt_timestamp)}"' DEBUG
+    PS1="\u@\h \w ${timer}\n$ "
 
-# the PROMPT_COMMAND (prompt_generator) is
-# executed before a new prompt is to be printed.
-# By comparing the last timestamp set with the
-# DEBUG trap we get a good approximation of the
-# execution time of the last command.
-PROMPT_COMMAND=prompt_generator
+    # must be the last command executed
+    unset time_start
+}
 
-# ----
+# DEBUG trap is executed just before a command
+trap timer_start DEBUG
 
-# It's "better" to declare the color variables
-# outside of the function, it will make the prompt
-# snappier and the timing more accurate
+# PROMPT_COMMAND is executed just before Bash prints the primary prompt
+PROMPT_COMMAND=set_prompt
 
-# tput is slower then hardcoding the colorvalues,
-# but much easier to maintain:
-
-# C_RED="\[$(tput setaf 1)\]"
-# C_GREEN="\[$(tput setaf 2)\]"
-# C_YELLOW="\[$(tput setaf 3)\]"
-# C_BLUE="\[$(tput setaf 4)\]"
-# C_MAGENTA="\[$(tput setaf 5)\]"
-# C_CYAN="\[$(tput setaf 6)\]"
-# C_DEFAULT="\[$(tput sgr0)\]"
-
-# fastest, but a bit inconvenient:
-
-# C_DEFAULT="\[\033[m\]"
-# C_RED="\[\033[31m\]"
-# C_GREEN="\[\033[32m\]"
-# C_YELLOW="\[\033[33m\]"
-# C_BLUE="\[\033[34m\]"
-# C_MAGENTA="\[\033[35m\]"
-# C_CYAN="\[\033[36m\]"
-
-# this is the best way to set the color variables,
-# since it sets the variables only when they are
-# undefined:
-
-: "${C_RED:=\[$(tput setaf 1)\]}" 
-: "${C_GREEN:=\[$(tput setaf 2)\]}" 
-: "${C_YELLOW:=\[$(tput setaf 3)\]}" 
-: "${C_BLUE:=\[$(tput setaf 4)\]}" 
-: "${C_MAGENTA:=\[$(tput setaf 5)\]}" 
-: "${C_CYAN:=\[$(tput setaf 6)\]}" 
-: "${C_DEFAULT:=\[$(tput sgr0)\]}"
-
-# code below is actually slower then
-# hardcoded direct declarations
-
-# : "${C_DEFAULT:=\[\033[m\]}"
-# : "${C_RED:=\[\033[31m\]}"
-# : "${C_GREEN:=\[\033[32m\]}"
-# : "${C_YELLOW:=\[\033[33m\]}"
-# : "${C_BLUE:=\[\033[34m\]}"
-# : "${C_MAGENTA:=\[\033[35m\]}"
-# : "${C_CYAN:=\[\033[36m\]}"
+# color definitions
+: "${RED:=\[$(tput setaf 1)\]}" 
+: "${GREEN:=\[$(tput setaf 2)\]}" 
+: "${YELLOW:=\[$(tput setaf 3)\]}" 
+: "${BLUE:=\[$(tput setaf 4)\]}" 
+: "${MAGENTA:=\[$(tput setaf 5)\]}" 
+: "${CYAN:=\[$(tput setaf 6)\]}" 
+: "${DEFAULT:=\[$(tput sgr0)\]}"
