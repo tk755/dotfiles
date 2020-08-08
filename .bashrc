@@ -24,17 +24,17 @@ if ! shopt -oq posix; then
         . /usr/share/bash-completion/bash_completion
     elif [ -f /etc/bash_completion ]; then
         . /etc/bash_completion
-    fi\[\e[01;35m\][\t] 
+    fi
 fi
 
-# source bash aliases
+# source alias definitions
 if [ -f $HOME/.bash/aliases ]; then
     source $HOME/.bash/aliases
 elif [ -f $HOME/.bash_aliases ]; then
     source $HOME/.bash_aliases
 fi
 
-# source bash prompt
+# source set prompt
 if [ -f $HOME/.bash/prompt ]; then
     source $HOME/.bash/prompt
 else
