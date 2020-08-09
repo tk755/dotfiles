@@ -6,58 +6,74 @@ function timestamp {
     date +%s%N
 }
 
-# sets $time_start if not set
+# sets $cmd_timer if not set
 function timer_start {
-    time_start=${time_start:-$(timestamp)}
+    cmd_timer=${cmd_timer:-$(timestamp)}
 }
 
 # returns formatted prompt timer segment
 function timer_stop {
     # delta microseconds
-    local delta_us=$(( ($(timestamp) - $time_start) / (1000) ))
+    local delta_us=$(( ($(timestamp) - $cmd_timer) / (1000) ))
 
-    # extract time units
+    # extract time for each unit
     local h=$(( (delta_us / (1000 * 1000 * 60 * 60))        ))
     local m=$(( (delta_us / (1000 * 1000 * 60)     ) % 60   ))
     local s=$(( (delta_us / (1000 * 1000)          ) % 60   ))
     local ms=$(( delta_us /  1000                    % 1000 ))
-    local us=$(( delta_us                            % 1000))
+    local us=$(( delta_us                            % 1000 ))
 
     local tc    # timer color
     local ts    # timer string
 
     if (( h > 0 )); then
         tc=${RED}
-        ts="${h}:$(printf '%02d' ${m}) h"
+        ts="${h}h $(printf '%02d' ${m})m"
     elif (( m > 0 )); then
         tc=${YELLOW}
-        ts="${m}:$(printf '%02d' ${s}) m"
+        ts="${m}m $(printf '%02d' ${s})s"
     elif (( s > 0 )); then
         tc=${BLUE}
-        ts="${s}.$(printf '%01d' $(( ${ms} / 100 ))) s"
+        ts="${s}.$(printf '%01d' $(( ${ms} / 100 )))s"
     elif (( ms >= 100 )); then
         tc=${CYAN}
-        ts="${ms} ms"
+        ts="${ms}ms"
     elif (( ms > 0 )); then
         tc=${GREEN}
-        ts="${ms}.$(printf '%01d' $(( ${us} / 100 ))) ms"
+        ts="${ms}.$(printf '%01d' $(( ${us} / 100 )))ms"
     else
         tc=${MAGENTA}
-        ts="${us} µs"
+        ts="${us}µs"
     fi
 
     echo "${tc}${ts}${DEFAULT}"
 }
 
-# sets $PS1 and unsets $time_start
+# sets $PS1 and unsets $cmd_timer
 function set_prompt {
+    # build header segments
+    local exit_code="$?" # this needs to be first
     local timer=$(timer_stop)
-    local exit_code=$?
 
-    PS1="\u@\h \w ${timer}\n$ "
+    if [[ $exit_code == 0 ]]; then
+        exit_code="${GREEN}${exit_code}${DEFAULT}"
+    else
+        exit_code="${RED}${exit_code}${DEFAULT}"
+    fi
+
+    # assemble left and right headers
+    local left_header="\u@\h : \w"
+    local right_header="${exit_code} | ${timer}"
+
+    # filler space between left and right headers
+
+    # assemble header with filler space between left and right headers
+    # https://superuser.com/a/517110
+    local color_compensate=30
+    PS1=$(printf "%*s\r%s\n\$ " "$(( $(tput cols) + color_compensate ))" "${right_header}" "${left_header}")
 
     # must be the last command executed
-    unset time_start
+    unset cmd_timer
 }
 
 # DEBUG trap is executed just before a command
@@ -67,10 +83,10 @@ trap timer_start DEBUG
 PROMPT_COMMAND=set_prompt
 
 # color definitions
-: "${RED:=\[$(tput setaf 1)\]}" 
-: "${GREEN:=\[$(tput setaf 2)\]}" 
-: "${YELLOW:=\[$(tput setaf 3)\]}" 
-: "${BLUE:=\[$(tput setaf 4)\]}" 
-: "${MAGENTA:=\[$(tput setaf 5)\]}" 
-: "${CYAN:=\[$(tput setaf 6)\]}" 
-: "${DEFAULT:=\[$(tput sgr0)\]}"
+: "${C_RED:=\[$(tput setaf 1)\]}" 
+: "${C_GREEN:=\[$(tput setaf 2)\]}" 
+: "${C_YELLOW:=\[$(tput setaf 3)\]}" 
+: "${C_BLUE:=\[$(tput setaf 4)\]}" 
+: "${C_MAGENTA:=\[$(tput setaf 5)\]}" 
+: "${C_CYAN:=\[$(tput setaf 6)\]}" 
+: "${C_DEFAULT:=\[$(tput sgr0)\]}"
