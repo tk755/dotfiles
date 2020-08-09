@@ -7,25 +7,9 @@ case $- in
       *) return;;
 esac
 
-# history settings
-HISTSIZE=10000
-HISTFILESIZE=50000
-# prevent duplicate lines or lines starting with a space in history
-HISTCONTROL=ignoreboth
-
-# append to the history file, don't overwrite it
-shopt -s histappend
-# check the window size after each command and update LINES and COLUMNS
-shopt -s checkwinsize
-
-# enable programmable completion features
-if ! shopt -oq posix; then
-    if [ -f /usr/share/bash-completion/bash_completion ]; then
-        . /usr/share/bash-completion/bash_completion
-    elif [ -f /etc/bash_completion ]; then
-        . /etc/bash_completion
-    fi
-fi
+# prevent history from persisting across sessions
+unset HISTFILE
+HISTSIZE=1000000
 
 # source alias definitions
 if [ -f $HOME/.bash/aliases ]; then
