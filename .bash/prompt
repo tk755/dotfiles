@@ -11,8 +11,12 @@ function timer_start {
     cmd_timer=${cmd_timer:-$(timestamp)}
 }
 
-# returns formatted prompt timer segment
-function timer_stop {
+# DEBUG trap is executed just before a command
+# i.e. start the timer before executing a command
+trap timer_start DEBUG
+
+# returns formatted timer prompt segment
+function timer_segment {
     # delta microseconds
     local delta_us=$(( ($(timestamp) - $cmd_timer) / (1000) ))
 
@@ -23,70 +27,94 @@ function timer_stop {
     local ms=$(( delta_us /  1000                    % 1000 ))
     local us=$(( delta_us                            % 1000 ))
 
-    local tc    # timer color
-    local ts    # timer string
+    # create formatted timer segment
+    local ts # timer string
 
     if (( h > 0 )); then
-        tc=${RED}
         ts="${h}h $(printf '%02d' ${m})m"
     elif (( m > 0 )); then
-        tc=${YELLOW}
         ts="${m}m $(printf '%02d' ${s})s"
     elif (( s > 0 )); then
-        tc=${BLUE}
         ts="${s}.$(printf '%01d' $(( ${ms} / 100 )))s"
     elif (( ms >= 100 )); then
-        tc=${CYAN}
         ts="${ms}ms"
     elif (( ms > 0 )); then
-        tc=${GREEN}
         ts="${ms}.$(printf '%01d' $(( ${us} / 100 )))ms"
     else
-        tc=${MAGENTA}
         ts="${us}µs"
     fi
 
-    echo "${tc}${ts}${DEFAULT}"
+    echo "${C_DARK_GRAY}${ts}${C_DEFAULT}"
 }
 
-# sets $PS1 and unsets $cmd_timer
-function set_prompt {
-    # build header segments
-    local exit_code="$?" # this needs to be first
-    local timer=$(timer_stop)
+# returns formatted exit code prompt segment
+function exit_segment {
+    local exit_code="$?"
+
+    # create formatted exit code segment
+    local ec # exit code color
+    local es # exit code string
 
     if [[ $exit_code == 0 ]]; then
-        exit_code="${GREEN}${exit_code}${DEFAULT}"
+        ec=${C_GREEN}
+        es='\342\234\224' # check mark
     else
-        exit_code="${RED}${exit_code}${DEFAULT}"
+        ec=${C_RED}
+        es='\342\234\230' # x cross
     fi
 
-    # assemble left and right headers
-    local left_header="\u@\h : \w"
-    local right_header="${exit_code} | ${timer}"
-
-    # filler space between left and right headers
-
-    # assemble header with filler space between left and right headers
-    # https://superuser.com/a/517110
-    local color_compensate=30
-    PS1=$(printf "%*s\r%s\n\$ " "$(( $(tput cols) + color_compensate ))" "${right_header}" "${left_header}")
-
-    # must be the last command executed
-    unset cmd_timer
+    echo ${ec}${es}${C_DEFAULT}
 }
 
-# DEBUG trap is executed just before a command
-trap timer_start DEBUG
+# sets $PS1 and resets the timer
+function set_prompt {
+    # build header segments
+    local exit=$(exit_segment) # this must be first
+    local timer=$(timer_segment)
+    local prompt="${C_LIGHT_MAGENTA}$ ${C_DEFAULT}"
+
+    local top_connector="${C_DARK_GRAY} \342\224\216 ${C_DEFAULT}"
+    local bottom_connector="${C_DARK_GRAY} \342\224\226 ${C_DEFAULT}"
+
+    # assemble left and right parts of the header
+    local left="${top_connector}${C_DARK_GRAY}\!${C_LIGHT_GREEN} \u@\h ${C_DEFAULT}:${C_LIGHT_BLUE} \w ${C_DEFAULT}"
+    local right="${timer} ${exit} "
+
+    # assemble header with filler space between left and right parts
+    # https://superuser.com/a/517110
+    local right_offset=51 # this is to compensate for escape sequences
+    PS1=$(printf "%*s\r%s\n${bottom_connector}${prompt}" "$(( $(tput cols) + right_offset ))" "${right}" "${left}")
+
+    # reset the timer
+    unset cmd_timer # this must be last
+}
 
 # PROMPT_COMMAND is executed just before Bash prints the primary prompt
 PROMPT_COMMAND=set_prompt
 
-# color definitions
-: "${C_RED:=\[$(tput setaf 1)\]}" 
-: "${C_GREEN:=\[$(tput setaf 2)\]}" 
-: "${C_YELLOW:=\[$(tput setaf 3)\]}" 
-: "${C_BLUE:=\[$(tput setaf 4)\]}" 
-: "${C_MAGENTA:=\[$(tput setaf 5)\]}" 
-: "${C_CYAN:=\[$(tput setaf 6)\]}" 
-: "${C_DEFAULT:=\[$(tput sgr0)\]}"
+# ansi color definitions
+C_DEFAULT="\[\e[39m\]"
+
+C_BLACK="\[\e[30m\]"
+C_WHITE="\[\e[97m\]"
+
+C_LIGHT_GRAY="\[\e[37m\]"
+C_DARK_GRAY="\[\e[90m\]"
+
+C_RED="\[\e[31m\]"
+C_LIGHT_RED="\[\e[91m\]"
+
+C_YELLOW="\[\e[33m\]"
+C_LIGHT_YELLOW="\[\e[93m\]"
+
+C_GREEN="\[\e[32m\]"
+C_LIGHT_GREEN="\[\e[92m\]"
+
+C_CYAN="\[\e[36m\]"
+C_LIGHT_CYAN="\[\e[96m\]"
+
+C_BLUE="\[\e[34m\]"
+C_LIGHT_BLUE="\[\e[94m\]"
+
+C_MAGENTA="\[\e[35m\]"
+C_LIGHT_MAGENTA="\[\e[95m\]"
