@@ -66,6 +66,11 @@ function exit_segment {
     echo ${ec}${es}${ANSI_DEFAULT}
 }
 
+# returns padded command history number
+function history_segment {
+    echo '$(printf "%03d" "\!")'
+}
+
 # returns git branch
 function git_segment {
     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
@@ -97,12 +102,13 @@ function set_prompt {
     local timer=$(timer_segment)
     local git=$(git_segment)
     local env=$(env_segment)
+    local history=$(history_segment)
     local symbol=$(prompt_symbol)
 
     # assemble left and right parts of the header and the prompt
     local left right prompt
-    left+="${ANSI_BLUE}\!"                          # history
-    left+="${ANSI_DEFAULT} ${ANSI_BOLD}"
+    left+="${ANSI_BLUE}${history}"                  # history number
+    left+="${ANSI_WHITE}${ANSI_BOLD} is "
     left+="${ANSI_MAGENTA}\u"                       # user
     left+="${ANSI_WHITE} at "
     left+="${ANSI_LIGHT_GREEN}\h"                   # hostname
@@ -114,7 +120,7 @@ function set_prompt {
     fi
     if [[ -n ${env} ]]; then
         left+="${ANSI_WHITE} as "
-        left+="${ANSI_YELLOW}${env}"          # chroot/venv
+        left+="${ANSI_YELLOW}${env}"                # chroot/venv
     fi
     left+="${ANSI_RESET}"
 
