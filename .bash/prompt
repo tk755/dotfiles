@@ -57,10 +57,10 @@ function exit_segment {
 
     if [[ $exit_code == 0 ]]; then
         ec=${ANSI_GREEN}
-        es='\342\234\224' # check mark
+        es='\342\234\223' # check mark
     else
         ec=${ANSI_RED}
-        es='\342\234\230' # x cross
+        es='\342\234\227' # x cross
     fi
 
     echo ${ec}${es}${ANSI_DEFAULT}
@@ -88,27 +88,26 @@ function set_prompt {
 
     # assemble left and right parts of the header and the prompt
     local left right prompt
-    left+="${ANSI_DARK_GRAY} \342\224\216 "   # top connector
-    left+="${ANSI_LIGHT_CYAN}\!"              # history
+    left+="${ANSI_LIGHT_CYAN}\!"                        # history
     left+="${ANSI_DEFAULT} ${ANSI_BOLD}"
-    left+="${ANSI_LIGHT_YELLOW}\u"            # user
+    left+="${ANSI_MAGENTA}\u"                           # user
     left+="${ANSI_WHITE} at "
-    left+="${ANSI_LIGHT_GREEN}\h"             # hostname
+    left+="${ANSI_LIGHT_GREEN}\h"                       # hostname
     left+="${ANSI_WHITE} in "
-    left+="${ANSI_LIGHT_BLUE}\w"              # working directory
+    left+="${ANSI_BLUE}\w"                              # working directory
     if [[ -n ${git} ]]; then
         left+="${ANSI_WHITE} on "
-        left+="${ANSI_LIGHT_RED}${git}"       # git branch
+        left+="${ANSI_LIGHT_RED}${git}"                 # git branch
     fi
     left+="${ANSI_RESET}"
 
-    right+="${ANSI_LIGHT_MAGENTA}${timer}"    # command execution time
+    right+="${ANSI_LIGHT_CYAN}${timer}"                 # command execution time
     right+="${ANSI_DEFAULT}"
-    right+=" ${exit} "                        # exit code
+    right+=" ${exit} "                                  # exit code
 
-    prompt+="${ANSI_DARK_GRAY} \342\224\226 " # bottom connector
-    prompt+="${ANSI_WHITE}${prompt_sym} "     # prompt symbol
-    prompt+="${ANSI_DEFAULT}"
+    #prompt+="${ANSI_WHITE}\342\256\241 "               # arrow prompt symbol
+    prompt+="${ANSI_WHITE}${ANSI_BOLD}${prompt_sym} "   # default prompt symbol
+    prompt+="${ANSI_DEFAULT}${ANSI_RESET}"
 
     # assemble header with filler space between left and right parts and prompt
     # https://superuser.com/a/517110
