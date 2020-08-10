@@ -24,7 +24,7 @@ fi
 if [ -f $HOME/.bash/prompt ]; then
     source $HOME/.bash/prompt
 else
-    PS1='\[\e[01;32m\]\u@\h\[\e[00m\]:\[\e[01;34m\]\w\[\e[00m\]\$ '
+    PS1='\[\e[31m\]$(printf "%03d" "\!")\[\e[00m\]|\[\e[01;32m\]\u@\h\[\e[00m\]:\[\e[01;34m\]\w\[\e[00m\]\$ '
 fi
 
 # print splash text
