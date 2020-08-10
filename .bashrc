@@ -26,10 +26,7 @@ else
 fi
 
 # custom splash screen
-echo \
-"  ______   __  __     
- /\__  _\ /\ \/ /     
- \/_/\ \/ \ \  _'-.   
-    \ \_\  \ \_\ \_\  
-     \/_/   \/_/\/_/
-"
+if [ -f $HOME/.bash/splash ]; then
+    cat $HOME/.bash/splash
+    printf "\n\n"
+fi
