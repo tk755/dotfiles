@@ -8,7 +8,9 @@ case $- in
 esac
 
 # prevent persistent history
-unset HISTFILE
+if [ -f $HOME/.bash_history ]; then
+    rm $HOME/.bash_history
+fi
 HISTSIZE=1000000
 
 # source alias definitions
