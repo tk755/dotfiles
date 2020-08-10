@@ -88,11 +88,16 @@ function env_segment {
 }
 
 function prompt_symbol {
+    local prompt
+
     if [[ $USER != 'root' ]]; then
-        echo '$'
+        prompt="\342\256\241" # arrow prompt
+        #prompt="$"
     else
-        echo '#'
+        prompt="#"
     fi
+
+    echo ${prompt}
 }
 
 # sets $PS1 and resets the timer
@@ -128,8 +133,7 @@ function set_prompt {
     right+="${ANSI_DEFAULT}"
     right+=" ${exit} "                              # exit code
 
-    #prompt+="${ANSI_WHITE}\342\256\241 "           # arrow prompt symbol
-    prompt+="${ANSI_WHITE}${ANSI_BOLD}${symbol} "   # default prompt symbol
+    prompt+="${ANSI_WHITE}${ANSI_BOLD}${symbol} "   # prompt symbol
     prompt+="${ANSI_DEFAULT}${ANSI_RESET}"
 
     # assemble header with filler space between left and right parts and prompt
