@@ -44,7 +44,7 @@ function timer_segment {
         ts="${us}µs"
     fi
 
-    echo "${C_DARK_GRAY}${ts}${C_DEFAULT}"
+    echo "${ts}"
 }
 
 # returns formatted exit code prompt segment
@@ -56,14 +56,26 @@ function exit_segment {
     local es # exit code string
 
     if [[ $exit_code == 0 ]]; then
-        ec=${C_GREEN}
+        ec=${ANSI_GREEN}
         es='\342\234\224' # check mark
     else
-        ec=${C_RED}
+        ec=${ANSI_RED}
         es='\342\234\230' # x cross
     fi
 
-    echo ${ec}${es}${C_DEFAULT}
+    echo ${ec}${es}${ANSI_DEFAULT}
+}
+
+function git_segment {
+    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
+}
+
+function prompt_symbol {
+    if [ $USER != 'root' ]; then
+        echo '$'
+    else
+        echo '#'
+    fi
 }
 
 # sets $PS1 and resets the timer
@@ -71,19 +83,37 @@ function set_prompt {
     # build header segments
     local exit=$(exit_segment) # this must be first
     local timer=$(timer_segment)
-    local prompt="${C_LIGHT_MAGENTA}$ ${C_DEFAULT}"
+    local git=$(git_segment)
+    local prompt_sym=$(prompt_symbol)
 
-    local top_connector="${C_DARK_GRAY} \342\224\216 ${C_DEFAULT}"
-    local bottom_connector="${C_DARK_GRAY} \342\224\226 ${C_DEFAULT}"
+    # assemble left and right parts of the header and the prompt
+    local left right prompt
+    left+="${ANSI_DARK_GRAY} \342\224\216 "   # top connector
+    left+="${ANSI_LIGHT_CYAN}\!"              # history
+    left+="${ANSI_DEFAULT} ${ANSI_BOLD}"
+    left+="${ANSI_LIGHT_YELLOW}\u"            # user
+    left+="${ANSI_WHITE} at "
+    left+="${ANSI_LIGHT_GREEN}\h"             # hostname
+    left+="${ANSI_WHITE} in "
+    left+="${ANSI_LIGHT_BLUE}\w"              # working directory
+    if [[ -n ${git} ]]; then
+        left+="${ANSI_WHITE} on "
+        left+="${ANSI_LIGHT_RED}${git}"       # git branch
+    fi
+    left+="${ANSI_RESET}"
 
-    # assemble left and right parts of the header
-    local left="${top_connector}${C_DARK_GRAY}\!${C_LIGHT_GREEN} \u@\h ${C_DEFAULT}:${C_LIGHT_BLUE} \w ${C_DEFAULT}"
-    local right="${timer} ${exit} "
+    right+="${ANSI_LIGHT_MAGENTA}${timer}"    # command execution time
+    right+="${ANSI_DEFAULT}"
+    right+=" ${exit} "                        # exit code
 
-    # assemble header with filler space between left and right parts
+    prompt+="${ANSI_DARK_GRAY} \342\224\226 " # bottom connector
+    prompt+="${ANSI_WHITE}${prompt_sym} "     # prompt symbol
+    prompt+="${ANSI_DEFAULT}"
+
+    # assemble header with filler space between left and right parts and prompt
     # https://superuser.com/a/517110
     local right_offset=51 # this is to compensate for escape sequences
-    PS1=$(printf "%*s\r%s\n${bottom_connector}${prompt}" "$(( $(tput cols) + right_offset ))" "${right}" "${left}")
+    PS1=$(printf "%*s\r%s\n${prompt}" "$(( $(tput cols) + right_offset ))" "${right}" "${left}")
 
     # reset the timer
     unset cmd_timer # this must be last
@@ -92,29 +122,40 @@ function set_prompt {
 # PROMPT_COMMAND is executed just before Bash prints the primary prompt
 PROMPT_COMMAND=set_prompt
 
-# ansi color definitions
-C_DEFAULT="\[\e[39m\]"
 
-C_BLACK="\[\e[30m\]"
-C_WHITE="\[\e[97m\]"
+# ANSI formatting control sequences
+ANSI_RESET="\[\e[0m\]"
 
-C_LIGHT_GRAY="\[\e[37m\]"
-C_DARK_GRAY="\[\e[90m\]"
+ANSI_BOLD="\[\e[1m\]"
+ANSI_DIM="\[\e[2m\]"
+ANSI_UNDERLINED="\[\e[4m\]"
+ANSI_BLINK="\[\e[5m\]"
+ANSI_INVERT="\[\e[7m\]"
+ANSI_HIDDEN="\[\e[8m\]"
 
-C_RED="\[\e[31m\]"
-C_LIGHT_RED="\[\e[91m\]"
+# ANSI 8/16 colors control sequences
+ANSI_DEFAULT="\[\e[39m\]"
 
-C_YELLOW="\[\e[33m\]"
-C_LIGHT_YELLOW="\[\e[93m\]"
+ANSI_BLACK="\[\e[30m\]"
+ANSI_WHITE="\[\e[97m\]"
 
-C_GREEN="\[\e[32m\]"
-C_LIGHT_GREEN="\[\e[92m\]"
+ANSI_LIGHT_GRAY="\[\e[37m\]"
+ANSI_DARK_GRAY="\[\e[90m\]"
 
-C_CYAN="\[\e[36m\]"
-C_LIGHT_CYAN="\[\e[96m\]"
+ANSI_RED="\[\e[31m\]"
+ANSI_LIGHT_RED="\[\e[91m\]"
 
-C_BLUE="\[\e[34m\]"
-C_LIGHT_BLUE="\[\e[94m\]"
+ANSI_YELLOW="\[\e[33m\]"
+ANSI_LIGHT_YELLOW="\[\e[93m\]"
 
-C_MAGENTA="\[\e[35m\]"
-C_LIGHT_MAGENTA="\[\e[95m\]"
+ANSI_GREEN="\[\e[32m\]"
+ANSI_LIGHT_GREEN="\[\e[92m\]"
+
+ANSI_CYAN="\[\e[36m\]"
+ANSI_LIGHT_CYAN="\[\e[96m\]"
+
+ANSI_BLUE="\[\e[34m\]"
+ANSI_LIGHT_BLUE="\[\e[94m\]"
+
+ANSI_MAGENTA="\[\e[35m\]"
+ANSI_LIGHT_MAGENTA="\[\e[95m\]"

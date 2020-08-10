@@ -3,7 +3,7 @@ BASH Prompt:
 Make prompt two lines tall, one for header and one for command
 
 Headers:
-- git info
+- git status
 - date/time (?)
 x execution time
 x user@host
@@ -11,3 +11,4 @@ x working dir
 x history number
 x colored exit code
 x exit code symbol
+x git branch

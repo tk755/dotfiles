@@ -7,7 +7,7 @@ case $- in
       *) return;;
 esac
 
-# prevent history from persisting across sessions
+# prevent persistent history
 unset HISTFILE
 HISTSIZE=1000000
 
