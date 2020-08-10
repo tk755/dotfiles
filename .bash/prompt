@@ -15,7 +15,7 @@ function timer_start {
 # i.e. start the timer before executing a command
 trap timer_start DEBUG
 
-# returns formatted timer prompt segment
+# returns formatted timer
 function timer_segment {
     # delta microseconds
     local delta_us=$(( ($(timestamp) - $cmd_timer) / (1000) ))
@@ -47,7 +47,7 @@ function timer_segment {
     echo "${ts}"
 }
 
-# returns formatted exit code prompt segment
+# returns exit code icon
 function exit_segment {
     local exit_code="$?"
 
@@ -66,12 +66,24 @@ function exit_segment {
     echo ${ec}${es}${ANSI_DEFAULT}
 }
 
+# returns git branch
 function git_segment {
     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
 }
 
+# returns python venv environment
+function env_segment {
+    local env
+
+    if [[ -n $VIRTUAL_ENV ]]; then
+        env=$(basename $VIRTUAL_ENV)
+    fi
+
+    echo ${env}
+}
+
 function prompt_symbol {
-    if [ $USER != 'root' ]; then
+    if [[ $USER != 'root' ]]; then
         echo '$'
     else
         echo '#'
@@ -84,29 +96,34 @@ function set_prompt {
     local exit=$(exit_segment) # this must be first
     local timer=$(timer_segment)
     local git=$(git_segment)
-    local prompt_sym=$(prompt_symbol)
+    local env=$(env_segment)
+    local symbol=$(prompt_symbol)
 
     # assemble left and right parts of the header and the prompt
     local left right prompt
-    left+="${ANSI_BLUE}\!"                            # history
+    left+="${ANSI_BLUE}\!"                          # history
     left+="${ANSI_DEFAULT} ${ANSI_BOLD}"
-    left+="${ANSI_MAGENTA}\u"                         # user
+    left+="${ANSI_MAGENTA}\u"                       # user
     left+="${ANSI_WHITE} at "
-    left+="${ANSI_LIGHT_GREEN}\h"                     # hostname
+    left+="${ANSI_LIGHT_GREEN}\h"                   # hostname
     left+="${ANSI_WHITE} in "
-    left+="${ANSI_RED}\w"                             # working directory
+    left+="${ANSI_RED}\w"                           # working directory
     if [[ -n ${git} ]]; then
         left+="${ANSI_WHITE} on "
-        left+="${ANSI_LIGHT_CYAN}${git}"              # git branch
+        left+="${ANSI_LIGHT_CYAN}${git}"            # git branch
+    fi
+    if [[ -n ${env} ]]; then
+        left+="${ANSI_WHITE} as "
+        left+="${ANSI_YELLOW}${env}"          # chroot/venv
     fi
     left+="${ANSI_RESET}"
 
-    right+="${ANSI_LIGHT_GRAY}${timer}"               # command execution time
+    right+="${ANSI_LIGHT_GRAY}${timer}"             # command execution time
     right+="${ANSI_DEFAULT}"
-    right+=" ${exit} "                                # exit code
+    right+=" ${exit} "                              # exit code
 
-    #prompt+="${ANSI_WHITE}\342\256\241 "             # arrow prompt symbol
-    prompt+="${ANSI_WHITE}${ANSI_BOLD}${prompt_sym} " # default prompt symbol
+    #prompt+="${ANSI_WHITE}\342\256\241 "           # arrow prompt symbol
+    prompt+="${ANSI_WHITE}${ANSI_BOLD}${symbol} "   # default prompt symbol
     prompt+="${ANSI_DEFAULT}${ANSI_RESET}"
 
     # assemble header with filler space between left and right parts and prompt
