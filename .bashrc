@@ -9,8 +9,10 @@ esac
 
 
 HISTSIZE=1000000
-# ignore duplicate lines and lines starting with a space in history
+# exclude duplicate lines and lines starting with a space in history
 HISTCONTROL=ignoreboth
+# exclude simple commands in history
+HISTIGNORE='history:clear:pwd:ls'
 # prevent persistent history
 unset HISTFILE
 
