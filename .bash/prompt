@@ -118,10 +118,10 @@ function set_prompt {
     left+="${ANSI_WHITE} at "
     left+="${ANSI_LIGHT_GREEN}\h"                   # hostname
     left+="${ANSI_WHITE} in "
-    left+="${ANSI_RED}\w"                           # working directory
+    left+="${ANSI_LIGHT_CYAN}\w"                           # working directory
     if [[ -n ${git} ]]; then
         left+="${ANSI_WHITE} on "
-        left+="${ANSI_LIGHT_CYAN}${git}"            # git branch
+        left+="${ANSI_RED}${git}"            # git branch
     fi
     if [[ -n ${env} ]]; then
         left+="${ANSI_WHITE} as "
