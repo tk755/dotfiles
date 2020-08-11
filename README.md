@@ -19,12 +19,7 @@ echo "alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'" >> $HOM
 dotfiles config --local status.showUntrackedFiles no
 ```
 
-4. Now you can track your dotfiles in the `$HOME/.dotfiles` repository using the `dotfiles` alias, which is just a glorified `git` command.
-```bash
-dotfiles add $HOME/.bashrc
-dotfiles commit -m 'Add .bashrc'
-dotfiles push
-```
+4. [Track your dotfiles!](#tracking-dotfiles)
 
 ## Cloning this Repository
 
@@ -49,9 +44,14 @@ dotfiles push --set-upstream origin master
 dotfiles checkout
 ```
 
-5. Now you can track your dotfiles in the `$HOME/.dotfiles` repository using the `dotfiles` alias, which is just a glorified `git` command.
+5. [Track your dotfiles!](#tracking-dotfiles)
+
+## <a name="tracking-dotfiles">Tracking Dotfiles</a>
+
+If you followed the steps above, you will have created a bare repository in the `$HOME/.dotfiles` directory which track your selected dotfiles. You can update this repository using the `dotfiles` alias, which is just a glorified `git` command.
 ```bash
+dotfiles status
 dotfiles add $HOME/.bashrc
 dotfiles commit -m 'Add .bashrc'
-dotfiles push
 ```
+By default, the `dotfiles` alias does not show files that are untracked. This is to prevent your entire home directory from being added to the repository. You must explicitly add new files you want to track with `dotfiles add`, even if those files are in a directory that is already being tracked.
