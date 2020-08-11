@@ -131,7 +131,7 @@ function set_prompt {
 
     right+="${ANSI_LIGHT_GRAY}${timer}"             # command execution time
     right+="${ANSI_DEFAULT}"
-    right+=" ${exit} "                              # exit code
+    right+=" ${exit}"                               # exit code
 
     prompt+="${ANSI_WHITE}${ANSI_BOLD}${symbol} "   # prompt symbol
     prompt+="${ANSI_DEFAULT}${ANSI_RESET}"

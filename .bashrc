@@ -7,9 +7,12 @@ case $- in
       *) return;;
 esac
 
+
+HISTSIZE=1000000
+# ignore duplicate lines and lines starting with a space in history
+HISTCONTROL=ignoreboth
 # prevent persistent history
 unset HISTFILE
-HISTSIZE=1000000
 
 # source alias definitions
 if [[ -f $HOME/.bash/aliases ]]; then
