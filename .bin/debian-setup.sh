@@ -29,6 +29,12 @@ wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 apt-get install ./google-chrome-stable_current_amd64.deb -y
 rm -f google-chrome-stable_current_amd64.deb
 
+# Install Sublime Text
+# https://www.sublimetext.com/docs/3/linux_repositories.html
+wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
+echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
+apt-get update -y && apt-get install sublime-text -y
+
 # Install Visual Studio Code
 # https://linuxize.com/post/how-to-install-visual-studio-code-on-ubuntu-18-04/
 wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | apt-key add -
@@ -55,9 +61,3 @@ wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | apt-key a
 wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | apt-key add -
 add-apt-repository "deb [arch=amd64] http://download.virtualbox.org/virtualbox/debian $(lsb_release -cs) contrib"
 apt-get update -y && apt-get install virtualbox-6.0 -y
-
-# Powerline
-#wget https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf
-#wget https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf
-#mv PowerlineSymbols.otf /usr/share/fonts/X11/misc/
-#fc-cache -vf /usr/share/fonts/X11/misc/
