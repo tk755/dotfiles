@@ -35,6 +35,11 @@ else
     PS1='\[\e[31m\]$(printf "%03d" "\!")\[\e[00m\]|\[\e[01;32m\]\u@\h\[\e[00m\]:\[\e[01;34m\]\w\[\e[00m\]\$ '
 fi
 
+# source local configuration
+if [[ -f $HOME/.bash/local ]]; then
+    source $HOME/.bash/local
+fi
+
 # print splash text
 if [[ -f $HOME/.bash/splash ]]; then
     cat $HOME/.bash/splash
