@@ -17,6 +17,7 @@
 		{
 			"binary_file_patterns":
 			[
+				"*.sublime-package"
 			],
 			"file_exclude_patterns":
 			[
@@ -30,6 +31,7 @@
 		{
 			"binary_file_patterns":
 			[
+				"*.sublime-package"
 			],
 			"file_exclude_patterns":
 			[
