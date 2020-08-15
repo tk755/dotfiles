@@ -7,6 +7,7 @@
   // "font_size": 10,
   // "font_face": "Inconsolata",
 
+  "use_tab_stops": true,
   "line_numbers": true,
   "gutter": true,
 }
