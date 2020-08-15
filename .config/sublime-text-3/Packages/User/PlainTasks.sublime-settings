@@ -1,0 +1,12 @@
+{
+  "open_tasks_bullet": "□",
+  "date_format": "(%a %m.%d.%y %l:%M%P)",
+  "stats_format": "Tasks: $n/$a",
+
+  "color_scheme": "Packages/PlainTasks/tasks.hidden-tmTheme",
+  // "font_size": 10,
+  // "font_face": "Inconsolata",
+
+  "line_numbers": true,
+  "gutter": true,
+}
