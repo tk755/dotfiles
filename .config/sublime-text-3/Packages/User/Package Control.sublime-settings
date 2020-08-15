@@ -6,6 +6,7 @@
 	"installed_packages":
 	[
 		"Extract Sublime Package",
+		"iOpener",
 		"Package Control",
 		"ProjectManager"
 	]
