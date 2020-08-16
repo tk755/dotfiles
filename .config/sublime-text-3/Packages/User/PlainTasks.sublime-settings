@@ -1,13 +1,15 @@
 {
-  "open_tasks_bullet": "□",
-  "date_format": "(%a %m.%d.%y %l:%M%P)",
-  "stats_format": "Tasks: $n/$a",
+    "open_tasks_bullet": "□",
+    "date_format": "(%a %m.%d.%y %l:%M%P)",
+    "stats_format": "Tasks: $n/$a",
 
-  "color_scheme": "Packages/PlainTasks/tasks.hidden-tmTheme",
-  // "font_size": 10,
-  // "font_face": "Inconsolata",
+    "color_scheme": "Packages/Theme - Monokai Pro/Monokai Pro (Filter Octagon).sublime-color-scheme",
 
-  "use_tab_stops": true,
-  "line_numbers": true,
-  "gutter": true,
+    "font_size": 9,
+    // "font_face": "Inconsolata",
+
+    "draw_indent_guides": true,
+    "use_tab_stops": true,
+    "line_numbers": true,
+    "gutter": true,
 }
