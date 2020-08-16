@@ -6,12 +6,14 @@
 	"installed_packages":
 	[
 		"A File Icon",
+		"Dracula Color Scheme",
 		"Extract Sublime Package",
 		"iOpener",
 		"Package Control",
 		"PlainTasks",
 		"ProjectManager",
 		"SnippetMaker",
+		"Theme - Cobalt2",
 		"Theme - Monokai Pro"
 	]
 }
