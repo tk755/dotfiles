@@ -17,27 +17,27 @@ HISTIGNORE='history:clear:pwd:ls'
 unset HISTFILE
 
 # source alias definitions
-if [[ -f $HOME/.bash/aliases ]]; then
-    source $HOME/.bash/aliases
+if [[ -f $HOME/.bash/aliases.sh ]]; then
+    source $HOME/.bash/aliases.sh
 elif [[ -f $HOME/.bash_aliases ]]; then
     source $HOME/.bash_aliases
 fi
 
 # source path
-if [[ -f $HOME/.bash/path ]]; then
-    source $HOME/.bash/path
+if [[ -f $HOME/.bash/path.sh ]]; then
+    source $HOME/.bash/path.sh
 fi
 
 # source prompt
-if [[ -f $HOME/.bash/prompt ]]; then
-    source $HOME/.bash/prompt
+if [[ -f $HOME/.bash/prompt.sh ]]; then
+    source $HOME/.bash/prompt.sh
 else
     PS1='\[\e[31m\]$(printf "%03d" "\!")\[\e[00m\]|\[\e[01;32m\]\u@\h\[\e[00m\]:\[\e[01;34m\]\w\[\e[00m\]\$ '
 fi
 
 # source local configuration
-if [[ -f $HOME/.bash/local ]]; then
-    source $HOME/.bash/local
+if [[ -f $HOME/.bash/local.sh ]]; then
+    source $HOME/.bash/local.sh
 fi
 
 # print splash text

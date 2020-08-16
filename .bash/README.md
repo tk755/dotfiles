@@ -1,13 +1,13 @@
 # `.bash`
 This directory contains various Bash scripts and resources that are sourced from my `~/.bashrc` script.
 
-## `.bash/aliases`
+## `.bash/aliases.sh`
 This script defines Bash aliases and serves the same purpose as a `~/.bash_aliases` script.
 
-## `.bash/path`
+## `.bash/path.sh`
 This script modifies the `$PATH` environment variable to include additional executable program directories.
 
-## `.bash/prompt`
+## `.bash/prompt.sh`
 This script contains my Bash prompt customization code.
 
 ![broken image](screenshots/dracula.png)
