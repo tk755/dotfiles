@@ -5,10 +5,13 @@
 	],
 	"installed_packages":
 	[
+		"A File Icon",
 		"Extract Sublime Package",
 		"iOpener",
 		"Package Control",
 		"PlainTasks",
-		"ProjectManager"
+		"ProjectManager",
+		"SnippetMaker",
+		"Theme - Monokai Pro"
 	]
 }
