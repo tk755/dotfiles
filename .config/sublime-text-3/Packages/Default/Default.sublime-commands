@@ -60,7 +60,7 @@
 
     // { "caption": "Project: Save As", "command": "save_project_and_workspace_as" },
     { "caption": "Project: Close", "command": "close_workspace" },
-    // { "caption": "Project: Add Folder", "command": "prompt_add_folder" },
+    { "caption": "Project: Add Folder", "command": "prompt_add_folder" },
     // { "caption": "Project: Refresh Folders", "command": "refresh_folder_list" },
     { "caption": "Project: Edit Project",  "command": "open_file", "args": {"file": "${project}"} },
 
