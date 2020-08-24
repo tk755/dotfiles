@@ -10,7 +10,7 @@
 	"draw_minimap_border": true,
 	"ensure_newline_at_eof_on_save": true,
 	"fade_fold_buttons": false,
-	"font_size": 10,
+	"font_size": 9,
 	"highlight_line": true,
 	"highlight_modified_tabs": true,
 	"ignored_packages":
@@ -22,6 +22,7 @@
 		"draw_normal",
 		"draw_active"
 	],
+	"margin": 0,
 	"monokai_pro_file_icons": true,
 	"monokai_pro_highlight_open_folders": true,
 	"monokai_pro_sidebar_font_size": 12,
@@ -35,5 +36,6 @@
 	"theme": "Monokai Pro (Filter Octagon).sublime-theme",
 	"translate_tabs_to_spaces": true,
 	"trim_trailing_white_space_on_save": true,
+	"use_tab_stops": true,
 	"wide_caret": false
 }

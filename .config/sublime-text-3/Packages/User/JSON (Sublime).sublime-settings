@@ -1,4 +1,5 @@
 // These settings override both User and Default settings for the JSON (Sublime) syntax
 {
     "color_scheme": "Packages/Theme - Cobalt2/cobalt2.tmTheme",
+    "always_show_minimap_viewport": false,
 }
