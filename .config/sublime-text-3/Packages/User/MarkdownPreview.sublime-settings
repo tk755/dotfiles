@@ -1,0 +1,5 @@
+{
+    "parser": "github",
+    "build_action": "build",
+    "show_panel_on_build": false,
+}
