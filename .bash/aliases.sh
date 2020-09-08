@@ -8,3 +8,5 @@ alias sl='ls'
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 alias tree='tree --dirsfirst -C'
+
+alias subl='subl -n'
