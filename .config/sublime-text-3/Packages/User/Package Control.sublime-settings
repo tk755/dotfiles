@@ -6,10 +6,12 @@
 	"installed_packages":
 	[
 		"A File Icon",
+		"Better OCaml",
 		"Dracula Color Scheme",
 		"Extract Sublime Package",
 		"iOpener",
 		"MarkdownPreview",
+		"Merlin",
 		"Package Control",
 		"PlainTasks",
 		"ProjectManager",
