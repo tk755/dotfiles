@@ -82,10 +82,10 @@ mode "resize" {
         # l (up)    increases window height
 
         # using jkl;
-        bindsym $olkb16 resize shrink width 10 px or 10 ppt
-        bindsym $olkb17 resize shrink height 10 px or 10 ppt
-        bindsym $olkb18 resize grow height 10 px or 10 ppt
-        bindsym $olkb19 resize grow width 10 px or 10 ppt
+        bindsym $olkb16 resize shrink width 5 px or 5 ppt
+        bindsym $olkb17 resize shrink height 5 px or 5 ppt
+        bindsym $olkb18 resize grow height 5 px or 5 ppt
+        bindsym $olkb19 resize grow width 5 px or 5 ppt
 
         # exit resize mode
         bindsym BackSpace mode "default"
