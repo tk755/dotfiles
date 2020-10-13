@@ -20,144 +20,61 @@ font pango:monospace 8
 # X core fonts rendering does not support right-to-left and this being a bitmap
 # font, it doesn’t scale on retina/hidpi displays.
 
-### KNOB
-# brightness
-bindsym XF86MonBrightnessUp exec xbacklight -inc 5 # increase screen brightness
-bindsym XF86MonBrightnessDown exec xbacklight -dec 5 # decrease screen brightness
+#
+# Variables
+#
 
-### KILL FOCUSED WINDOW
-bindsym $mod+BackSpace kill
-bindsym $mod+Escape kill
+# super key
+set $super Mod4
 
-### LAUNCH APPLICATIONS
+# layer key
+set $fn Shift
 
-# launch dmenu
-bindsym $mod+z exec dmenu_run
+# olkb keys (row, column)
+set $olkb00 Q
+set $olkb01 W
+set $olkb02 E
+set $olkb03 R
+set $olkb04 T
+set $olkb05 Y
+set $olkb06 U
+set $olkb07 I
+set $olkb08 O
+set $olkb09 P
+set $olkb10 A
+set $olkb11 S
+set $olkb12 D
+set $olkb13 F
+set $olkb14 G
+set $olkb15 H
+set $olkb16 J
+set $olkb17 K
+set $olkb18 L
+set $olkb19 colon
+set $olkb20 Z
+set $olkb21 X
+set $olkb22 C
+set $olkb23 V
+set $olkb24 B
+set $olkb25 N
+set $olkb26 M
+set $olkb27 comma
+set $olkb28 period
+set $olkb29 slash
 
-# launch a terminal
-bindsym $mod+x exec i3-sensible-terminal
+# workspaces
+set $ws10 "[4] a"
+set $ws11 "[5] s"
+set $ws12 "[6] d"
+set $ws20 "[7] z"
+set $ws21 "[8] x"
+set $ws22 "[9] c"
+set $ws23 "[0] v"
 
-# launch a sublime window
-bindsym $mod+c exec subl -n
+#
+# Modes
+#
 
-# launch a chrome window
-bindsym $mod+v exec google-chrome-stable
-
-# launch a spotify window
-bindsym $mod+slash exec spotify
-
-### CHANGE CONTAINER FOCUS
-
-# using jkl;
-bindsym $mod+j focus left
-bindsym $mod+k focus down
-bindsym $mod+l focus up6
-bindsym $mod+semicolon focus right
-
-# using arrow keys
-bindsym $mod+Left focus left
-bindsym $mod+Down focus down
-bindsym $mod+Up focus up
-bindsym $mod+Right focus right
-
-# focus on parent container
-bindsym $mod+a focus parent
-
-# focus on child container
-#bindsym $mod+d focus child
-
-### MOVE FOCUSED CONTAINER
-
-# using jkl;
-bindsym $mod+Shift+j move left
-bindsym $mod+Shift+k move down
-bindsym $mod+Shift+l move up
-bindsym $mod+Shift+semicolon move right
-
-# using arrow keys
-bindsym $mod+Shift+Left move left
-bindsym $mod+Shift+Down move down
-bindsym $mod+Shift+Up move up
-bindsym $mod+Shift+Right move right
-
-### CHANGE CONTAINER LAYOUT
-
-# select container layout (stacked, tabbed, toggle split)
-#bindsym $mod+a layout stacking
-bindsym $mod+s layout tabbed
-bindsym $mod+d layout toggle split
-
-# fullscreen the focused container
-bindsym $mod+f fullscreen toggle
-
-# change splitting orientation
-bindsym $mod+g split v
-bindsym $mod+h split h
-
-### FLOATING WINDOWS
-
-# change focus between tiling / floating windows
-bindsym $mod+space focus mode_toggle
-
-# toggle tiling / floating
-bindsym $mod+Shift+space floating toggle
-
-# drag floating windows with Mouse+$mod
-floating_modifier $mod
-
-### WORKSPACES
-
-# define names for default workspaces
-set $ws1 "1"
-set $ws2 "2"
-set $ws3 "3"
-set $ws4 "4"
-set $ws5 "5"
-set $ws6 "6"
-set $ws7 "7"
-set $ws8 "8"
-set $ws9 "9"
-set $ws10 "10"
-
-# switch to workspace
-bindsym $mod+q workspace $ws1
-bindsym $mod+w workspace $ws2
-bindsym $mod+e workspace $ws3
-bindsym $mod+r workspace $ws4
-bindsym $mod+t workspace $ws5
-bindsym $mod+y workspace $ws6
-bindsym $mod+u workspace $ws7
-bindsym $mod+i workspace $ws8
-bindsym $mod+o workspace $ws9
-bindsym $mod+p workspace $ws10
-
-# move focused container to workspace
-bindsym $mod+Shift+q move container to workspace $ws1
-bindsym $mod+Shift+w move container to workspace $ws2
-bindsym $mod+Shift+e move container to workspace $ws3
-bindsym $mod+Shift+r move container to workspace $ws4
-bindsym $mod+Shift+t move container to workspace $ws5
-bindsym $mod+Shift+y move container to workspace $ws6
-bindsym $mod+Shift+u move container to workspace $ws7
-bindsym $mod+Shift+i move container to workspace $ws8
-bindsym $mod+Shift+o move container to workspace $ws9
-bindsym $mod+Shift+p move container to workspace $ws10
-
-### i3 CONFIGURATION
-
-# reload the configuration file
-bindsym $mod+Shift+z reload
-# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
-bindsym $mod+Shift+x restart
-# exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
-
-### RESIZE WINDOW
-
-# Set resize key to RETURN
-set $resize Return
-
-# resize window (you can also use the mouse for that)
 mode "resize" {
         # j (left)  decreses window width
         # ; (right) increases window width
@@ -165,37 +82,157 @@ mode "resize" {
         # l (up)    increases window height
 
         # using jkl;
-        bindsym j resize shrink width 10 px or 10 ppt
-        bindsym k resize shrink height 10 px or 10 ppt
-        bindsym l resize grow height 10 px or 10 ppt
-        bindsym semicolon resize grow width 10 px or 10 ppt
-
-        # using arrow keys
-        bindsym Left resize shrink width 10 px or 10 ppt
-        bindsym Down resize shrink height 10 px or 10 ppt
-        bindsym Up resize grow height 10 px or 10 ppt
-        bindsym Right resize grow width 10 px or 10 ppt
+        bindsym $olkb16 resize shrink width 10 px or 10 ppt
+        bindsym $olkb17 resize shrink height 10 px or 10 ppt
+        bindsym $olkb18 resize grow height 10 px or 10 ppt
+        bindsym $olkb19 resize grow width 10 px or 10 ppt
 
         # exit resize mode
+        bindsym BackSpace mode "default"
         bindsym Return mode "default"
         bindsym Escape mode "default"
-        bindsym $mod+$resize mode "default"
 }
 
-bindsym $mod+$resize mode "resize"
+#
+# Workspaces
+#
 
-### i3 BAR
+# switch to workspace
+bindsym $super+$olkb10 workspace $ws10
+bindsym $super+$olkb11 workspace $ws11
+bindsym $super+$olkb12 workspace $ws12
+bindsym $super+$olkb13 scratchpad show
+bindsym $super+$olkb20 workspace $ws20
+bindsym $super+$olkb21 workspace $ws21
+bindsym $super+$olkb22 workspace $ws22
+bindsym $super+$olkb23 workspace $ws23
 
-# Start i3bar to display a workspace bar (plus the system information i3status
-# finds out, if available)
+# move container to workspace
+bindsym $super+$fn+$olkb10 move container to workspace $ws10
+bindsym $super+$fn+$olkb11 move container to workspace $ws11
+bindsym $super+$fn+$olkb12 move container to workspace $ws12
+bindsym $super+$fn+$olkb13 move scratchpad
+bindsym $super+$fn+$olkb20 move container to workspace $ws20
+bindsym $super+$fn+$olkb21 move container to workspace $ws21
+bindsym $super+$fn+$olkb22 move container to workspace $ws22
+bindsym $super+$fn+$olkb23 move container to workspace $ws23
+
+# workspace back-and-forth
+workspace_auto_back_and_forth yes
+bindsym $super+Tab workspace back_and_forth
+
+# cycle between workspaces on the current display
+bindsym $super+$olkb24 workspace prev_on_output
+bindsym $super+$olkb25 workspace next_on_output
+
+#
+# Displays
+#
+
+# focus on another display
+bindsym $super+$olkb14 focus output left
+bindsym $super+$olkb15 focus output right
+
+# move container to another display
+bindsym $super+$fn+$olkb14 move container to output left; focus output left
+bindsym $super+$fn+$olkb15 move container to output right; focus output right
+
+# move workspace to another display
+bindsym $super+$fn+$olkb24 move workspace to output left
+bindsym $super+$fn+$olkb25 move workspace to output right
+
+
+#
+# Containers
+#
+
+# change container focus
+bindsym $super+$olkb16 focus left
+bindsym $super+$olkb17 focus down
+bindsym $super+$olkb18 focus up
+bindsym $super+$olkb19 focus right
+
+# move focused container
+bindsym $super+$fn+$olkb16 move left
+bindsym $super+$fn+$olkb17 move down
+bindsym $super+$fn+$olkb18 move up
+bindsym $super+$fn+$olkb19 move right
+
+# focus parent/child
+bindsym $super+Return focus parent
+bindsym $super+$fn+Return focus child
+
+# change container layout
+bindsym $super+$olkb27 layout toggle split
+bindsym $super+$fn+$olkb27 layout toggle tabbed stacking
+
+# change splitting orientation
+bindsym $super+$olkb28 split v
+bindsym $super+$olkb29 split h
+
+# fullscreen focused container
+bindsym $super+$olkb26 fullscreen toggle
+
+# resize focused container
+bindsym $super+$fn+$olkb26 mode "resize"
+
+# kill focused container
+bindsym $super+BackSpace kill
+
+#
+# Floating Containers
+#
+
+# drag floating windows with Mouse+$super
+floating_modifier $super
+
+# toggle focus between tiling and floating windows
+bindsym $super+space focus mode_toggle
+
+# toggle between tiling and floating mode
+bindsym $super+$fn+space floating toggle
+
+#
+# i3 Reload, Restart, and Exit
+#
+
+# reload configuration file
+bindsym $super+Escape reload
+
+# restart i3 inplace (preserves current layout)
+bindsym $super+$fn+Escape restart
+
+# exit i3 (logs out of X session)
+bindsym $super+$fn+BackSpace exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+
+#
+# Launch Programs
+#
+
+bindsym $super+$olkb00 exec dmenu_run
+bindsym $super+$olkb01 exec i3-sensible-terminal
+bindsym $super+$olkb02 exec subl -n
+bindsym $super+$olkb03 exec google-chrome
+bindsym $super+$olkb04 exec google-chrome --incognito
+bindsym $super+$olkb05 nop
+bindsym $super+$olkb06 nop
+bindsym $super+$olkb07 nop
+bindsym $super+$olkb08 nop
+bindsym $super+$olkb09 exec spotify
+
+#
+# Startup Programs and Scripts
+#
+
+exec_always --no-startup-id $HOME/.config/i3/restart.sh
+
+exec --no-startup-id $HOME/.config/i3/startup.sh
+
+#
+# i3 Bar
+#
+
+# Start i3bar to display a workspace bar and system information
 bar {
         status_command i3status
 }
-
-### STARTUP PROGRAMS
-
-# start bluetooth applet
-exec /usr/bin/blueman-apple
-
-# start dropbox at startup
-exec --no-startup-id dropbox start
