@@ -1,7 +1,7 @@
 # `~/bin`
 This repository is a persistent copy of my `~/bin` directory, which contains all of my setup, configuration, and utility scripts.
 
-### `git`
+### Using this Repository
 
 #### Clone
 Using SSH:
@@ -15,6 +15,3 @@ Revert all files that are being tracked to what is stored in the origin (i.e. Gi
 git fetch origin
 git reset --hard origin/master
 ```
-
-## `distro-setup/`
-This directory contains scripts that install all of my applications onto a fresh install of a new Linux distribution. More details at `distro-setup/README.md`.
