@@ -1,7 +1,7 @@
 # `distro-setup/` v.0.1
 This directory contains scripts for automating the process of setting up and installing applications onto a fresh installation of Linux. Currently, the only supported distribution is Debian 10.
 
-## Contributing to this Repository
+### Contributing to this Repository
 Applications should be added to this repository consistently as they are installed and configured on a local machine.
 
 TODO: add a note on how to do this once a better structure is developed
