@@ -63,13 +63,13 @@ set $olkb28 period
 set $olkb29 slash
 
 # workspaces
-set $ws10 "[4] a"
-set $ws11 "[5] s"
-set $ws12 "[6] d"
-set $ws20 "[7] z"
-set $ws21 "[8] x"
-set $ws22 "[9] c"
-set $ws23 "[0] v"
+set $ws10 "[4] Play"
+set $ws11 "[5] Messages"
+set $ws12 "[6] Browse"
+set $ws20 "[7] Research"
+set $ws21 "[8] Project I"
+set $ws22 "[9] Project II"
+set $ws23 "[0] Co-pilot"
 
 #
 # Modes
@@ -118,7 +118,7 @@ bindsym $super+$fn+$olkb22 move container to workspace $ws22
 bindsym $super+$fn+$olkb23 move container to workspace $ws23
 
 # workspace back-and-forth
-workspace_auto_back_and_forth yes
+workspace_auto_back_and_forth false
 bindsym $super+Tab workspace back_and_forth
 
 # cycle between workspaces on the current display
@@ -226,7 +226,15 @@ bindsym $super+$olkb09 exec spotify
 
 exec_always --no-startup-id $HOME/.config/i3/restart.sh
 
+# exec_always --no-startup-id $HOME/.config/polybar/launch.sh
+
 exec --no-startup-id $HOME/.config/i3/startup.sh
+
+#
+# Workspace configurations
+#
+
+for_window [class="Spotify"] move to workspace $ws10
 
 #
 # i3 Bar
@@ -234,5 +242,5 @@ exec --no-startup-id $HOME/.config/i3/startup.sh
 
 # Start i3bar to display a workspace bar and system information
 bar {
-        status_command i3status
+       status_command i3status
 }
