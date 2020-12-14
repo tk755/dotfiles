@@ -206,6 +206,29 @@ bindsym $super+$fn+Escape restart
 bindsym $super+$fn+BackSpace exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
 #
+# Brighness, Audio, Media controls
+#
+
+# xbacklight brightness REQUIRES: sudo apt install xbacklight
+bindsym XF86MonBrightnessUp exec xbacklight -inc 20
+bindsym XF86MonBrightnessDown exec xbacklight -dec 20
+
+# amixer audio
+### NOTE: by default, pulseaudio has a delay on the volume settings
+### To disable it, edit the file /etc/pulse/daemon.conf by
+### adding/replacing the setting `enable-deferred-volume = no` (w/o a semicolon)
+### for more info see `man pulse-daemon.conf`
+bindsym XF86AudioMute exec amixer sset 'Master' toggle
+bindsym XF86AudioLowerVolume exec amixer sset 'Master' 5%-
+bindsym XF86AudioRaiseVolume exec amixer sset 'Master' 5%+
+
+# playerctl player REQUIRES: sudo apt install playerctl
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86AudioPause exec playerctl play-pause
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPrev exec playerctl previous
+
+#
 # Launch Programs
 #
 
