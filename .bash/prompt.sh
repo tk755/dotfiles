@@ -103,20 +103,22 @@ function prompt_symbol {
 # sets $PS1 and resets the timer
 function set_prompt {
     # build header segments
-    local exit=$(exit_segment) # this must be first
-    local timer=$(timer_segment)
-    local git=$(git_segment)
-    local env=$(env_segment)
-    local history=$(history_segment)
-    local symbol=$(prompt_symbol)
+    # `exit` MUST COME FIRST to display correct exit code
+    local exit=$(exit_segment)              # exit code icon
+    local timer=$(timer_segment)            # command execution timer
+    local git=$(git_segment)                # git branch
+    local env=$(env_segment)                # chroot/venv
+    local history=$(history_segment)        # history number
+    local symbol=$(prompt_symbol)           # $
 
     # assemble left and right parts of the header and the prompt
     local left right prompt
-    left+="${ANSI_BLUE}${history}"                  # history number
-    left+="${ANSI_WHITE}${ANSI_BOLD} is "
-    left+="${ANSI_MAGENTA}\u"                       # user
-    left+="${ANSI_WHITE} at "
-    left+="${ANSI_LIGHT_GREEN}\h"                   # hostname
+    # left+="${ANSI_BLUE}${history}"                  # history number
+    left+="${ANSI_BLUE}\A"                  # timestamp (hh:mm 24h)
+    left+="${ANSI_WHITE}${ANSI_BOLD} as "
+    left+="${ANSI_BOLD}${ANSI_MAGENTA}\u"   # user
+    left+="${ANSI_BOLD}${ANSI_WHITE} at "
+    left+="${ANSI_LIGHT_GREEN}\h"           # hostname
     left+="${ANSI_WHITE} in "
     left+="${ANSI_LIGHT_CYAN}\w"                    # working directory
     if [[ -n ${git} ]]; then
