@@ -1,8 +1,5 @@
 # i3 config file (v4)
 
-# Set mod key to SUPER
-set $mod Mod4
-
 ### FONT
 
 # Font for window titles. Will also be used by the bar unless a different font
@@ -24,11 +21,11 @@ font pango:monospace 8
 # Variables
 #
 
-# super key
-set $super Mod4
+# mod key
+set $mod Mod4
 
 # layer key
-set $fn Shift
+set $shift Shift
 
 # olkb keys (row, column)
 set $olkb00 Q
@@ -63,24 +60,232 @@ set $olkb28 period
 set $olkb29 slash
 
 # workspaces
-set $ws10 "[4] Play"
-set $ws11 "[5] Messages"
-set $ws12 "[6] Browse"
-set $ws20 "[7] Research"
-set $ws21 "[8] Project I"
-set $ws22 "[9] Project II"
-set $ws23 "[0] Co-pilot"
+# set $ws10 "4"
+# set $ws11 "5"
+# set $ws12 "6"
+# set $ws20 "7"
+# set $ws21 "8"
+# set $ws22 "9"
+# set $ws23 "0"
+
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8"
+set $ws9 "9"
+
+#
+# Workspaces
+#
+
+# switch to workspace
+bindsym $mod+$olkb00 workspace $ws1
+bindsym $mod+$olkb01 workspace $ws2
+bindsym $mod+$olkb02 workspace $ws3
+bindsym $mod+$olkb10 workspace $ws4
+bindsym $mod+$olkb11 workspace $ws5
+bindsym $mod+$olkb12 workspace $ws6
+bindsym $mod+$olkb20 workspace $ws7
+bindsym $mod+$olkb21 workspace $ws8
+bindsym $mod+$olkb22 workspace $ws9
+
+# move container to workspace
+bindsym $mod+$shift+$olkb00 move container to workspace $ws1
+bindsym $mod+$shift+$olkb01 move container to workspace $ws2
+bindsym $mod+$shift+$olkb02 move container to workspace $ws3
+bindsym $mod+$shift+$olkb10 move container to workspace $ws4
+bindsym $mod+$shift+$olkb11 move container to workspace $ws5
+bindsym $mod+$shift+$olkb12 move container to workspace $ws6
+bindsym $mod+$shift+$olkb20 move container to workspace $ws7
+bindsym $mod+$shift+$olkb21 move container to workspace $ws8
+bindsym $mod+$shift+$olkb22 move container to workspace $ws9
+
+# workspace back-and-forth
+workspace_auto_back_and_forth false
+bindsym $mod+Tab workspace back_and_forth
+
+# # switch to workspace
+# bindsym $mod+$olkb10 workspace $ws10
+# bindsym $mod+$olkb11 workspace $ws11
+# bindsym $mod+$olkb12 workspace $ws12
+# bindsym $mod+$olkb13 scratchpad show
+# bindsym $mod+$olkb20 workspace $ws20
+# bindsym $mod+$olkb21 workspace $ws21
+# bindsym $mod+$olkb22 workspace $ws22
+# bindsym $mod+$olkb23 workspace $ws23
+
+# # move container to workspace
+# bindsym $mod+$shift+$olkb10 move container to workspace $ws10
+# bindsym $mod+$shift+$olkb11 move container to workspace $ws11
+# bindsym $mod+$shift+$olkb12 move container to workspace $ws12
+# bindsym $mod+$shift+$olkb13 move scratchpad
+# bindsym $mod+$shift+$olkb20 move container to workspace $ws20
+# bindsym $mod+$shift+$olkb21 move container to workspace $ws21
+# bindsym $mod+$shift+$olkb22 move container to workspace $ws22
+# bindsym $mod+$shift+$olkb23 move container to workspace $ws23
+
+# # cycle between workspaces on the current display
+# bindsym $mod+$olkb24 workspace prev_on_output
+# bindsym $mod+$olkb25 workspace next_on_output
+
+# cycle between workspaces on the current display
+bindsym $mod+$olkb26 workspace prev_on_output
+bindsym $mod+$olkb27 workspace next_on_output
+
+#
+# Workspace configurations
+#
+
+# none yet
+
+#
+# Displays
+#
+
+# focus on another display
+bindsym $mod+$olkb28 focus output left
+bindsym $mod+$olkb29 focus output right
+
+# move workspace to another display
+bindsym $mod+$shift+$olkb26 move workspace to output left
+bindsym $mod+$shift+$olkb27 move workspace to output right
+
+# move container to another display
+bindsym $mod+$shift+$olkb28 move container to output left; focus output left
+bindsym $mod+$shift+$olkb29 move container to output right; focus output right
+
+# # focus on another display
+# bindsym $mod+$olkb14 focus output left
+# bindsym $mod+$olkb15 focus output right
+
+# # move container to another display
+# bindsym $mod+$shift+$olkb14 move container to output left; focus output left
+# bindsym $mod+$shift+$olkb15 move container to output right; focus output right
+
+# # move workspace to another display
+# bindsym $mod+$shift+$olkb24 move workspace to output left
+# bindsym $mod+$shift+$olkb25 move workspace to output right
+
+#
+# Containers
+#
+
+# change container focus
+bindsym $mod+$olkb16 focus left
+bindsym $mod+$olkb17 focus down
+bindsym $mod+$olkb18 focus up
+bindsym $mod+$olkb19 focus right
+
+# move focused container
+bindsym $mod+$shift+$olkb16 move left
+bindsym $mod+$shift+$olkb17 move down
+bindsym $mod+$shift+$olkb18 move up
+bindsym $mod+$shift+$olkb19 move right
+
+# # focus parent/child
+# bindsym $mod+Return focus parent
+# bindsym $mod+$shift+Return focus child
+
+# # change container layout
+# bindsym $mod+$olkb27 layout toggle split
+# bindsym $mod+$shift+$olkb27 layout toggle tabbed stacking
+
+# # change splitting orientation
+# bindsym $mod+$olkb28 split v
+# bindsym $mod+$olkb29 split h
+
+# # fullscreen focused container
+# bindsym $mod+$olkb26 fullscreen toggle
+
+# # resize focused container
+# bindsym $mod+$shift+$olkb26 mode "resize"
+
+# # kill focused container
+# bindsym $mod+BackSpace kill
+
+# resize container
+bindsym $mod+Return mode "resize"
+
+# fullscreen container
+bindsym $mod+$shift+Return fullscreen toggle
+
+# kill container
+bindsym $mod+Escape kill
+
+#
+# Floating containers
+#
+
+# drag floating windows with Mouse+$mod
+floating_modifier $mod
+
+# toggle focus between tiling and floating windows
+bindsym $mod+space focus mode_toggle
+
+# toggle between tiling and floating mode
+bindsym $mod+$shift+space floating toggle
+
+#
+# Launch programs
+#
+
+# bindsym $mod+Return exec dmenu_run
+
+bindsym $mod+$olkb03 split horizontal ; exec google-chrome
+bindsym $mod+$olkb04 split horizontal ; exec google-chrome --incognito
+bindsym $mod+$olkb13 split horizontal ; exec i3-sensible-terminal
+bindsym $mod+$olkb14 split horizontal ; nop 
+bindsym $mod+$olkb23 split horizontal ; exec code
+bindsym $mod+$olkb24 split horizontal ; nop 
+
+bindsym $mod+$shift+$olkb03 split vertical ; exec google-chrome
+bindsym $mod+$shift+$olkb04 split vertical ; exec google-chrome --incognito
+bindsym $mod+$shift+$olkb13 split vertical ; exec i3-sensible-terminal
+bindsym $mod+$shift+$olkb14 split vertical ; nop 
+bindsym $mod+$shift+$olkb23 split vertical ; exec code
+bindsym $mod+$shift+$olkb24 split vertical ; nop 
+
+# bindsym $mod+$olkb00 exec dmenu_run
+# bindsym $mod+$olkb01 exec i3-sensible-terminal
+# bindsym $mod+$olkb02 exec code
+# bindsym $mod+$olkb03 exec google-chrome
+# bindsym $mod+$olkb04 exec google-chrome --incognito
+# bindsym $mod+$olkb05 nop
+# bindsym $mod+$olkb06 nop
+# bindsym $mod+$olkb07 nop
+# bindsym $mod+$olkb08 nop
+# bindsym $mod+$olkb09 exec spotify
+
+#
+# Startup scripts
+#
+
+exec_always --no-startup-id $HOME/.config/i3/restart.sh
+
+exec --no-startup-id $HOME/.config/i3/startup.sh
+
+#
+# i3 reload, restart, and exit
+#
+
+# reload configuration file
+bindsym $mod+BackSpace reload
+
+# restart i3 inplace (preserves current layout)
+bindsym $mod+$shift+BackSpace restart
+
+# # exit i3 (logs out of X session)
+# bindsym $mod+$shift+BackSpace exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
 #
 # Modes
 #
 
 mode "resize" {
-        # j (left)  decreses window width
-        # ; (right) increases window width
-        # k (down)  decreses window height
-        # l (up)    increases window height
-
         # using jkl;
         bindsym $olkb16 resize shrink width 5 px or 5 ppt
         bindsym $olkb17 resize shrink height 5 px or 5 ppt
@@ -91,179 +296,31 @@ mode "resize" {
         bindsym BackSpace mode "default"
         bindsym Return mode "default"
         bindsym Escape mode "default"
+        bindsym $mod+Return mode "default"
 }
 
 #
-# Workspaces
+# Enable brighness, audio, and media controls
 #
 
-# switch to workspace
-bindsym $super+$olkb10 workspace $ws10
-bindsym $super+$olkb11 workspace $ws11
-bindsym $super+$olkb12 workspace $ws12
-bindsym $super+$olkb13 scratchpad show
-bindsym $super+$olkb20 workspace $ws20
-bindsym $super+$olkb21 workspace $ws21
-bindsym $super+$olkb22 workspace $ws22
-bindsym $super+$olkb23 workspace $ws23
-
-# move container to workspace
-bindsym $super+$fn+$olkb10 move container to workspace $ws10
-bindsym $super+$fn+$olkb11 move container to workspace $ws11
-bindsym $super+$fn+$olkb12 move container to workspace $ws12
-bindsym $super+$fn+$olkb13 move scratchpad
-bindsym $super+$fn+$olkb20 move container to workspace $ws20
-bindsym $super+$fn+$olkb21 move container to workspace $ws21
-bindsym $super+$fn+$olkb22 move container to workspace $ws22
-bindsym $super+$fn+$olkb23 move container to workspace $ws23
-
-# workspace back-and-forth
-workspace_auto_back_and_forth false
-bindsym $super+Tab workspace back_and_forth
-
-# cycle between workspaces on the current display
-bindsym $super+$olkb24 workspace prev_on_output
-bindsym $super+$olkb25 workspace next_on_output
-
-#
-# Displays
-#
-
-# focus on another display
-bindsym $super+$olkb14 focus output left
-bindsym $super+$olkb15 focus output right
-
-# move container to another display
-bindsym $super+$fn+$olkb14 move container to output left; focus output left
-bindsym $super+$fn+$olkb15 move container to output right; focus output right
-
-# move workspace to another display
-bindsym $super+$fn+$olkb24 move workspace to output left
-bindsym $super+$fn+$olkb25 move workspace to output right
-
-
-#
-# Containers
-#
-
-# change container focus
-bindsym $super+$olkb16 focus left
-bindsym $super+$olkb17 focus down
-bindsym $super+$olkb18 focus up
-bindsym $super+$olkb19 focus right
-
-# move focused container
-bindsym $super+$fn+$olkb16 move left
-bindsym $super+$fn+$olkb17 move down
-bindsym $super+$fn+$olkb18 move up
-bindsym $super+$fn+$olkb19 move right
-
-# focus parent/child
-bindsym $super+Return focus parent
-bindsym $super+$fn+Return focus child
-
-# change container layout
-bindsym $super+$olkb27 layout toggle split
-bindsym $super+$fn+$olkb27 layout toggle tabbed stacking
-
-# change splitting orientation
-bindsym $super+$olkb28 split v
-bindsym $super+$olkb29 split h
-
-# fullscreen focused container
-bindsym $super+$olkb26 fullscreen toggle
-
-# resize focused container
-bindsym $super+$fn+$olkb26 mode "resize"
-
-# kill focused container
-bindsym $super+BackSpace kill
-
-#
-# Floating Containers
-#
-
-# drag floating windows with Mouse+$super
-floating_modifier $super
-
-# toggle focus between tiling and floating windows
-bindsym $super+space focus mode_toggle
-
-# toggle between tiling and floating mode
-bindsym $super+$fn+space floating toggle
-
-#
-# i3 Reload, Restart, and Exit
-#
-
-# reload configuration file
-bindsym $super+Escape reload
-
-# restart i3 inplace (preserves current layout)
-bindsym $super+$fn+Escape restart
-
-# exit i3 (logs out of X session)
-bindsym $super+$fn+BackSpace exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
-
-#
-# Brighness, Audio, Media controls
-#
-
-# xbacklight brightness REQUIRES: sudo apt install xbacklight
+# xbacklight brightness 
+# REQUIRES: sudo apt install xbacklight
 bindsym XF86MonBrightnessUp exec xbacklight -inc 20
 bindsym XF86MonBrightnessDown exec xbacklight -dec 20
 
-# amixer audio
-### NOTE: by default, pulseaudio has a delay on the volume settings
-### To disable it, edit the file /etc/pulse/daemon.conf by
-### adding/replacing the setting `enable-deferred-volume = no` (w/o a semicolon)
-### for more info see `man pulse-daemon.conf`
-bindsym XF86AudioMute exec amixer sset 'Master' toggle
-bindsym XF86AudioLowerVolume exec amixer sset 'Master' 5%-
-bindsym XF86AudioRaiseVolume exec amixer sset 'Master' 5%+
-
-# playerctl player REQUIRES: sudo apt install playerctl
+# playerctl player 
+# REQUIRES: sudo apt install playerctl
 bindsym XF86AudioPlay exec playerctl play-pause
 bindsym XF86AudioPause exec playerctl play-pause
 bindsym XF86AudioNext exec playerctl next
 bindsym XF86AudioPrev exec playerctl previous
 
-#
-# Launch Programs
-#
-
-bindsym $super+$olkb00 exec dmenu_run
-bindsym $super+$olkb01 exec i3-sensible-terminal
-bindsym $super+$olkb02 exec subl -n
-bindsym $super+$olkb03 exec google-chrome
-bindsym $super+$olkb04 exec google-chrome --incognito
-bindsym $super+$olkb05 nop
-bindsym $super+$olkb06 nop
-bindsym $super+$olkb07 nop
-bindsym $super+$olkb08 nop
-bindsym $super+$olkb09 exec spotify
-
-#
-# Startup Programs and Scripts
-#
-
-exec_always --no-startup-id $HOME/.config/i3/restart.sh
-
-# exec_always --no-startup-id $HOME/.config/polybar/launch.sh
-
-exec --no-startup-id $HOME/.config/i3/startup.sh
-
-#
-# Workspace configurations
-#
-
-for_window [class="Spotify"] move to workspace $ws10
-
-#
-# i3 Bar
-#
-
-# Start i3bar to display a workspace bar and system information
-bar {
-       status_command i3status
-}
+# amixer audio
+# NOTE: 
+#   By default, pulseaudio has a delay on the volume settings
+#   To disable it, edit the file /etc/pulse/daemon.conf by
+#     adding/replacing the setting `enable-deferred-volume = no` (w/o a semicolon)
+#   For more info see `man pulse-daemon.conf`
+bindsym XF86AudioMute exec amixer sset 'Master' toggle
+bindsym XF86AudioLowerVolume exec amixer sset 'Master' 8%-
+bindsym XF86AudioRaiseVolume exec amixer sset 'Master' 8%+
