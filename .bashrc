@@ -12,9 +12,9 @@ HISTSIZE=1000000
 # exclude duplicate lines and lines starting with a space in history
 HISTCONTROL=ignoreboth
 # exclude simple commands in history
-HISTIGNORE='history:clear:pwd:ls'
+HISTIGNORE='history:clear'
 # prevent persistent history
-unset HISTFILE
+#unset HISTFILE
 
 # source alias definitions
 if [[ -f $HOME/.bash/aliases.sh ]]; then
@@ -23,12 +23,12 @@ elif [[ -f $HOME/.bash_aliases ]]; then
     source $HOME/.bash_aliases
 fi
 
-# source path
+# source path script
 if [[ -f $HOME/.bash/path.sh ]]; then
     source $HOME/.bash/path.sh
 fi
 
-# source prompt
+# source custom prompt
 if [[ -f $HOME/.bash/prompt.sh ]]; then
     source $HOME/.bash/prompt.sh
 else

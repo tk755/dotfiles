@@ -12,3 +12,13 @@ fi
 if [[ -d $HOME/.local/bin ]] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
+
+# include path to OCaml merlin if it exists
+if [[ -d $HOME/.opam/default/bin/ocamlmerlin ]] ; then
+    PATH="$HOME/.opam/default/bin/ocamlmerlin:$PATH"
+fi
+
+# include path to Go binaries if it exists
+if [[ -d /usr/local/go/bin ]] ; then
+    PATH="/usr/local/go/bin:$PATH"
+fi

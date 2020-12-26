@@ -60,14 +60,6 @@ set $olkb28 period
 set $olkb29 slash
 
 # workspaces
-# set $ws10 "4"
-# set $ws11 "5"
-# set $ws12 "6"
-# set $ws20 "7"
-# set $ws21 "8"
-# set $ws22 "9"
-# set $ws23 "0"
-
 set $ws1 "1"
 set $ws2 "2"
 set $ws3 "3"
@@ -108,30 +100,6 @@ bindsym $mod+$shift+$olkb22 move container to workspace $ws9
 workspace_auto_back_and_forth false
 bindsym $mod+Tab workspace back_and_forth
 
-# # switch to workspace
-# bindsym $mod+$olkb10 workspace $ws10
-# bindsym $mod+$olkb11 workspace $ws11
-# bindsym $mod+$olkb12 workspace $ws12
-# bindsym $mod+$olkb13 scratchpad show
-# bindsym $mod+$olkb20 workspace $ws20
-# bindsym $mod+$olkb21 workspace $ws21
-# bindsym $mod+$olkb22 workspace $ws22
-# bindsym $mod+$olkb23 workspace $ws23
-
-# # move container to workspace
-# bindsym $mod+$shift+$olkb10 move container to workspace $ws10
-# bindsym $mod+$shift+$olkb11 move container to workspace $ws11
-# bindsym $mod+$shift+$olkb12 move container to workspace $ws12
-# bindsym $mod+$shift+$olkb13 move scratchpad
-# bindsym $mod+$shift+$olkb20 move container to workspace $ws20
-# bindsym $mod+$shift+$olkb21 move container to workspace $ws21
-# bindsym $mod+$shift+$olkb22 move container to workspace $ws22
-# bindsym $mod+$shift+$olkb23 move container to workspace $ws23
-
-# # cycle between workspaces on the current display
-# bindsym $mod+$olkb24 workspace prev_on_output
-# bindsym $mod+$olkb25 workspace next_on_output
-
 # cycle between workspaces on the current display
 bindsym $mod+$olkb26 workspace prev_on_output
 bindsym $mod+$olkb27 workspace next_on_output
@@ -158,18 +126,6 @@ bindsym $mod+$shift+$olkb27 move workspace to output right
 bindsym $mod+$shift+$olkb28 move container to output left; focus output left
 bindsym $mod+$shift+$olkb29 move container to output right; focus output right
 
-# # focus on another display
-# bindsym $mod+$olkb14 focus output left
-# bindsym $mod+$olkb15 focus output right
-
-# # move container to another display
-# bindsym $mod+$shift+$olkb14 move container to output left; focus output left
-# bindsym $mod+$shift+$olkb15 move container to output right; focus output right
-
-# # move workspace to another display
-# bindsym $mod+$shift+$olkb24 move workspace to output left
-# bindsym $mod+$shift+$olkb25 move workspace to output right
-
 #
 # Containers
 #
@@ -186,6 +142,15 @@ bindsym $mod+$shift+$olkb17 move down
 bindsym $mod+$shift+$olkb18 move up
 bindsym $mod+$shift+$olkb19 move right
 
+# resize container
+bindsym $mod+Return mode "resize"
+
+# fullscreen container
+bindsym $mod+$shift+Return fullscreen toggle
+
+# kill container
+bindsym $mod+Escape kill
+
 # # focus parent/child
 # bindsym $mod+Return focus parent
 # bindsym $mod+$shift+Return focus child
@@ -197,24 +162,6 @@ bindsym $mod+$shift+$olkb19 move right
 # # change splitting orientation
 # bindsym $mod+$olkb28 split v
 # bindsym $mod+$olkb29 split h
-
-# # fullscreen focused container
-# bindsym $mod+$olkb26 fullscreen toggle
-
-# # resize focused container
-# bindsym $mod+$shift+$olkb26 mode "resize"
-
-# # kill focused container
-# bindsym $mod+BackSpace kill
-
-# resize container
-bindsym $mod+Return mode "resize"
-
-# fullscreen container
-bindsym $mod+$shift+Return fullscreen toggle
-
-# kill container
-bindsym $mod+Escape kill
 
 #
 # Floating containers
@@ -233,7 +180,7 @@ bindsym $mod+$shift+space floating toggle
 # Launch programs
 #
 
-# bindsym $mod+Return exec dmenu_run
+bindsym $mod+BackSpace exec dmenu_run
 
 bindsym $mod+$olkb03 split horizontal ; exec google-chrome
 bindsym $mod+$olkb04 split horizontal ; exec google-chrome --incognito
@@ -273,7 +220,7 @@ exec --no-startup-id $HOME/.config/i3/startup.sh
 #
 
 # reload configuration file
-bindsym $mod+BackSpace reload
+# bindsym $mod+BackSpace reload
 
 # restart i3 inplace (preserves current layout)
 bindsym $mod+$shift+BackSpace restart
