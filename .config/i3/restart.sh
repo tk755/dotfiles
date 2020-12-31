@@ -3,10 +3,10 @@
 BIN="$HOME/bin"
 
 # monitor configuration
-source "${BIN}/display-manager"
+source "${BIN}/dp-tk"
 
 # set background image
-source "${BIN}/background-manager"
+source "${BIN}/bg-tk"
 
 # launch polybar
 source "$HOME/.config/polybar/launch.sh"

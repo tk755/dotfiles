@@ -1,17 +1,16 @@
 # i3 config file (v4)
+                                 
+# font
+font pango:Fixedsys Excelsior 3.01-L2 10
 
-#
-# Font
-#
 
-# Font for window titles.
-# This font is widely installed, provides lots of unicode glyphs, right-to-left
-# text rendering and scalability on retina/hidpi displays (thanks to pango).
-font pango:DejaVu Sans Mono 
-
-#
-# Variables
-#
+# ██╗   ██╗ █████╗ ██████╗ ██╗ █████╗ ██████╗ ██╗     ███████╗███████╗
+# ██║   ██║██╔══██╗██╔══██╗██║██╔══██╗██╔══██╗██║     ██╔════╝██╔════╝
+# ██║   ██║███████║██████╔╝██║███████║██████╔╝██║     █████╗  ███████╗
+# ╚██╗ ██╔╝██╔══██║██╔══██╗██║██╔══██║██╔══██╗██║     ██╔══╝  ╚════██║
+#  ╚████╔╝ ██║  ██║██║  ██║██║██║  ██║██████╔╝███████╗███████╗███████║
+#   ╚═══╝  ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═╝╚═════╝ ╚══════╝╚══════╝╚══════╝
+                                                                    
 
 # mod key
 set $mod Mod4
@@ -62,9 +61,14 @@ set $ws7 "7"
 set $ws8 "8"
 set $ws9 "9"
 
-#
-# Workspaces
-#
+
+# ██╗    ██╗ ██████╗ ██████╗ ██╗  ██╗███████╗██████╗  █████╗  ██████╗███████╗███████╗
+# ██║    ██║██╔═══██╗██╔══██╗██║ ██╔╝██╔════╝██╔══██╗██╔══██╗██╔════╝██╔════╝██╔════╝
+# ██║ █╗ ██║██║   ██║██████╔╝█████╔╝ ███████╗██████╔╝███████║██║     █████╗  ███████╗
+# ██║███╗██║██║   ██║██╔══██╗██╔═██╗ ╚════██║██╔═══╝ ██╔══██║██║     ██╔══╝  ╚════██║
+# ╚███╔███╔╝╚██████╔╝██║  ██║██║  ██╗███████║██║     ██║  ██║╚██████╗███████╗███████║
+#  ╚══╝╚══╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝     ╚═╝  ╚═╝ ╚═════╝╚══════╝╚══════╝
+                                                                                   
 
 # switch to workspace
 bindsym $mod+$olkb00 workspace $ws1
@@ -96,31 +100,17 @@ bindsym $mod+Tab workspace back_and_forth
 bindsym $mod+$olkb26 workspace prev_on_output
 bindsym $mod+$olkb27 workspace next_on_output
 
-#
-# Workspace configurations
-#
-
+# workspace configurations
 # none yet
 
-#
-# Displays
-#
 
-# focus on another display
-bindsym $mod+$olkb28 focus output left
-bindsym $mod+$olkb29 focus output right
-
-# move workspace to another display
-bindsym $mod+$shift+$olkb26 move workspace to output left
-bindsym $mod+$shift+$olkb27 move workspace to output right
-
-# move container to another display
-bindsym $mod+$shift+$olkb28 move container to output left; focus output left
-bindsym $mod+$shift+$olkb29 move container to output right; focus output right
-
-#
-# Containers
-#
+#  ██████╗ ██████╗ ███╗   ██╗████████╗ █████╗ ██╗███╗   ██╗███████╗██████╗ ███████╗
+# ██╔════╝██╔═══██╗████╗  ██║╚══██╔══╝██╔══██╗██║████╗  ██║██╔════╝██╔══██╗██╔════╝
+# ██║     ██║   ██║██╔██╗ ██║   ██║   ███████║██║██╔██╗ ██║█████╗  ██████╔╝███████╗
+# ██║     ██║   ██║██║╚██╗██║   ██║   ██╔══██║██║██║╚██╗██║██╔══╝  ██╔══██╗╚════██║
+# ╚██████╗╚██████╔╝██║ ╚████║   ██║   ██║  ██║██║██║ ╚████║███████╗██║  ██║███████║
+#  ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝   ╚═╝   ╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝╚══════╝
+                                                                                 
 
 # change container focus
 bindsym $mod+$olkb16 focus left
@@ -135,13 +125,21 @@ bindsym $mod+$shift+$olkb18 move up
 bindsym $mod+$shift+$olkb19 move right
 
 # resize container
-bindsym $mod+Return mode "resize"
+bindsym $mod+$olkb06 resize shrink width 50 px or 5 ppt
+bindsym $mod+$olkb07 resize shrink height 50 px or 5 ppt
+bindsym $mod+$olkb08 resize grow height 50 px or 5 ppt
+bindsym $mod+$olkb09 resize grow width 50 px or 5 ppt
+
+bindsym $mod+$shift+$olkb06 resize shrink width 10 px or 1 ppt
+bindsym $mod+$shift+$olkb07 resize shrink height 10 px or 1 ppt
+bindsym $mod+$shift+$olkb08 resize grow height 10 px or 1 ppt
+bindsym $mod+$shift+$olkb09 resize grow width 10 px or 1 ppt
 
 # fullscreen container
-bindsym $mod+$shift+Return fullscreen toggle
+bindsym $mod+Return fullscreen toggle
 
 # kill container
-bindsym $mod+Escape kill
+bindsym $mod+apostrophe kill
 
 # # focus parent/child
 # bindsym $mod+Return focus parent
@@ -155,9 +153,7 @@ bindsym $mod+Escape kill
 # bindsym $mod+$olkb28 split v
 # bindsym $mod+$olkb29 split h
 
-#
-# Floating containers
-#
+# floating containers
 
 # drag floating windows with Mouse+$mod
 floating_modifier $mod
@@ -168,23 +164,49 @@ bindsym $mod+space focus mode_toggle
 # toggle between tiling and floating mode
 bindsym $mod+$shift+space floating toggle
 
-#
-# Launch programs
-#
 
-bindsym $mod+BackSpace exec dmenu_run
+# ██████╗ ██╗███████╗██████╗ ██╗      █████╗ ██╗   ██╗███████╗
+# ██╔══██╗██║██╔════╝██╔══██╗██║     ██╔══██╗╚██╗ ██╔╝██╔════╝
+# ██║  ██║██║███████╗██████╔╝██║     ███████║ ╚████╔╝ ███████╗
+# ██║  ██║██║╚════██║██╔═══╝ ██║     ██╔══██║  ╚██╔╝  ╚════██║
+# ██████╔╝██║███████║██║     ███████╗██║  ██║   ██║   ███████║
+# ╚═════╝ ╚═╝╚══════╝╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝
+                                                            
+
+# focus on another display
+bindsym $mod+$olkb28 focus output left
+bindsym $mod+$olkb29 focus output right
+
+# move workspace to another display
+bindsym $mod+$shift+$olkb26 move workspace to output left
+bindsym $mod+$shift+$olkb27 move workspace to output right
+
+# move container to another display
+bindsym $mod+$shift+$olkb28 move container to output left; focus output left
+bindsym $mod+$shift+$olkb29 move container to output right; focus output right
+
+
+# ██████╗ ██████╗  ██████╗  ██████╗ ██████╗  █████╗ ███╗   ███╗███████╗
+# ██╔══██╗██╔══██╗██╔═══██╗██╔════╝ ██╔══██╗██╔══██╗████╗ ████║██╔════╝
+# ██████╔╝██████╔╝██║   ██║██║  ███╗██████╔╝███████║██╔████╔██║███████╗
+# ██╔═══╝ ██╔══██╗██║   ██║██║   ██║██╔══██╗██╔══██║██║╚██╔╝██║╚════██║
+# ██║     ██║  ██║╚██████╔╝╚██████╔╝██║  ██║██║  ██║██║ ╚═╝ ██║███████║
+# ╚═╝     ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝
+                                                                     
+
+bindsym $mod+Escape exec dmenu_run
 
 bindsym $mod+$olkb03 split horizontal ; exec google-chrome
 bindsym $mod+$olkb04 split horizontal ; exec google-chrome --incognito
 bindsym $mod+$olkb13 split horizontal ; exec i3-sensible-terminal
-bindsym $mod+$olkb14 split horizontal ; nop 
+bindsym $mod+$olkb14 split horizontal ; exec thunar
 bindsym $mod+$olkb23 split horizontal ; exec code
 bindsym $mod+$olkb24 split horizontal ; nop 
 
 bindsym $mod+$shift+$olkb03 split vertical ; exec google-chrome
 bindsym $mod+$shift+$olkb04 split vertical ; exec google-chrome --incognito
 bindsym $mod+$shift+$olkb13 split vertical ; exec i3-sensible-terminal
-bindsym $mod+$shift+$olkb14 split vertical ; nop 
+bindsym $mod+$shift+$olkb14 split vertical ; exec thunar 
 bindsym $mod+$shift+$olkb23 split vertical ; exec code
 bindsym $mod+$shift+$olkb24 split vertical ; nop 
 
@@ -199,48 +221,38 @@ bindsym $mod+$shift+$olkb24 split vertical ; nop
 # bindsym $mod+$olkb08 nop
 # bindsym $mod+$olkb09 exec spotify
 
-#
-# Startup scripts
-#
 
+# ██████╗ ███████╗██╗      ██████╗  █████╗ ██████╗ 
+# ██╔══██╗██╔════╝██║     ██╔═══██╗██╔══██╗██╔══██╗
+# ██████╔╝█████╗  ██║     ██║   ██║███████║██║  ██║
+# ██╔══██╗██╔══╝  ██║     ██║   ██║██╔══██║██║  ██║
+# ██║  ██║███████╗███████╗╚██████╔╝██║  ██║██████╔╝
+# ╚═╝  ╚═╝╚══════╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚═════╝ 
+                                                 
+
+# scripts executed on i3 restart
 exec_always --no-startup-id $HOME/.config/i3/restart.sh
 
+# scripts executed on i3 startup
 exec --no-startup-id $HOME/.config/i3/startup.sh
-
-#
-# i3 reload, restart, and exit
-#
 
 # reload configuration file
 # bindsym $mod+BackSpace reload
 
 # restart i3 inplace (preserves current layout)
-bindsym $mod+$shift+BackSpace restart
+bindsym $mod+BackSpace restart
 
 # # exit i3 (logs out of X session)
 # bindsym $mod+$shift+BackSpace exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
-#
-# Modes
-#
 
-mode "resize" {
-        # using jkl;
-        bindsym $olkb16 resize shrink width 5 px or 5 ppt
-        bindsym $olkb17 resize shrink height 5 px or 5 ppt
-        bindsym $olkb18 resize grow height 5 px or 5 ppt
-        bindsym $olkb19 resize grow width 5 px or 5 ppt
-
-        # exit resize mode
-        bindsym BackSpace mode "default"
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
-        bindsym $mod+Return mode "default"
-}
-
-#
-# Enable brighness, audio, and media controls
-#
+# ███████╗██████╗ ███████╗ ██████╗██╗ █████╗ ██╗         ██╗  ██╗███████╗██╗   ██╗███████╗
+# ██╔════╝██╔══██╗██╔════╝██╔════╝██║██╔══██╗██║         ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝
+# ███████╗██████╔╝█████╗  ██║     ██║███████║██║         █████╔╝ █████╗   ╚████╔╝ ███████╗
+# ╚════██║██╔═══╝ ██╔══╝  ██║     ██║██╔══██║██║         ██╔═██╗ ██╔══╝    ╚██╔╝  ╚════██║
+# ███████║██║     ███████╗╚██████╗██║██║  ██║███████╗    ██║  ██╗███████╗   ██║   ███████║
+# ╚══════╝╚═╝     ╚══════╝ ╚═════╝╚═╝╚═╝  ╚═╝╚══════╝    ╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝
+                                                                                        
 
 # xbacklight brightness 
 # REQUIRES: sudo apt install xbacklight
