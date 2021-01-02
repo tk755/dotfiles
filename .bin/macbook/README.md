@@ -1,0 +1,1 @@
+This directory contains scripts for my Apple MacBookPro Early-2015 13-inch. Run `sudo setup.sh` to automatically copy the scripts to their designated locations.
