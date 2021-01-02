@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # todo: ask for confirmation
 # list oldest and newest file during confirmation
 rm -rf ~/Downloads/*
