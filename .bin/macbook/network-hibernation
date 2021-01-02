@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
+# source: https://wiki.debian.org/InstallingDebianOn/Apple/MacBookPro/Early-2015-13-inch
 
-# /usr/lib/systemd/system-sleep/network_hack_hibernation
+# /usr/lib/systemd/system-sleep/network-hibernation
 #
-# Restores network controller functionality after wakeup from
-# hibernation
+# Restores network controller functionality after wakeup from  hibernation
 #
 # Tested on MacBookPro12,1
 # BCM43602 WiFi network controller

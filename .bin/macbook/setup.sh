@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
-cp network_hack_hibernation /usr/lib/systemd/system-sleep/network_hack_hibernation
+cp network-hibernation /usr/lib/systemd/system-sleep/network-hibernation
+cp lid-wakeup-disable /usr/lib/systemd/system-sleep/lid-wakeup-disable
