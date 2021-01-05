@@ -38,12 +38,12 @@ To create a directory from a symbolic link:
 'dst-path' = 'src-path'
 ```
 
-To set an XDG directory:
+To create an XDG directory:
 ```
 XDG-DIR: 'path'
 ```
 
-To set an XDG directory from a symbolic link:
+To create an XDG directory from a symbolic link:
 ```
 XDG-DIR: 'dst-path' = 'src-path'
 ```
