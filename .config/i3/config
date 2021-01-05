@@ -139,7 +139,7 @@ bindsym $mod+$shift+$olkb09 resize grow width 10 px or 1 ppt
 bindsym $mod+Return fullscreen toggle
 
 # kill container
-bindsym $mod+apostrophe kill
+bindsym $mod+Escape kill
 
 # # focus parent/child
 # bindsym $mod+Return focus parent
@@ -194,7 +194,7 @@ bindsym $mod+$shift+$olkb29 move container to output right; focus output right
 # ╚═╝     ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝
                                                                      
 
-bindsym $mod+Escape exec dmenu_run
+bindsym $mod+apostrophe exec dmenu_run
 
 bindsym $mod+$olkb03 split horizontal ; exec google-chrome
 bindsym $mod+$olkb04 split horizontal ; exec google-chrome --incognito
@@ -254,20 +254,25 @@ bindsym $mod+BackSpace restart
 # ╚══════╝╚═╝     ╚══════╝ ╚═════╝╚═╝╚═╝  ╚═╝╚══════╝    ╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝
                                                                                         
 
-# xbacklight brightness 
-# REQUIRES: sudo apt install xbacklight
-bindsym XF86MonBrightnessUp exec xbacklight -inc 20
-bindsym XF86MonBrightnessDown exec xbacklight -dec 20
+# screenshot
+# REQUIRES: sudo apt install maim
+bindsym Print exec maim -s | xclip -selection clipboard -t image/png             # selection to clipboard
+bindsym $shift+Print exec maim -i root | xclip -selection clipboard -t image/png # entire screen to clipboard
 
-# playerctl player 
+# brightness
+# REQUIRES: sudo apt install brightnessctl
+bindsym XF86MonBrightnessUp exec brightnessctl --exponent=2.5 set +10%
+bindsym XF86MonBrightnessDown exec brightnessctl --exponent=2.5 set 10%-
+
+# music player 
 # REQUIRES: sudo apt install playerctl
 bindsym XF86AudioPlay exec playerctl play-pause
 bindsym XF86AudioPause exec playerctl play-pause
 bindsym XF86AudioNext exec playerctl next
 bindsym XF86AudioPrev exec playerctl previous
 
-# amixer audio
-# NOTE: 
+# volume
+# NOTE:
 #   By default, pulseaudio has a delay on the volume settings
 #   To disable it, edit the file /etc/pulse/daemon.conf by
 #     adding/replacing the setting `enable-deferred-volume = no` (w/o a semicolon)
