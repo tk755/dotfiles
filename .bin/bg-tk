@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
-feh --bg-center ~/Dropbox/media/pictures/desktops/linux-gruvbox-dark-simple.png
+PIC_DIR=$(xdg-user-dir PICTURES)
+feh --bg-center $PIC_DIR/desktops/linux-gruvbox-dark-simple.png
