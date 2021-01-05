@@ -1,16 +1,32 @@
 # `setup-dirs`
 
-This program is used to create and rename the directories and symbolic links in my home directory. It also renames the variables in the XDG configuration file accordingly. The program does not delete non-empty directories, and will move the contents of a non-empty directory before deleting it if needed. A log of all file operations is printed to standard output.
+This program is used to create and rename the directories and symbolic links in my home directory. It also renames the variables in the XDG configuration file accordingly. The program does not delete non-empty directories, and will move the contents of a non-empty directory before deleting it if necessary. A log of all file operations is printed to standard output.
 
-Run the program with either of the following commands:
-```
+## `setup-dirs/main.py`
+
+This script is the entrypoint of the program. You can run it by either of the following commands:
+
+```bash
 ./main.py
 ```
-```
+
+```bash
 python3 main.py
 ```
 
-## `config` syntax
+## `setup-dirs/xdg.py`
+
+This script retrieves the path of a XDG directory from the `$HOME/.config/user-dirs.dirs` specification file. It can be imported as a Python module or used as a script:
+
+```
+./xdg.py XDG-DIR
+```
+
+## `setup-dirs/config`
+
+This file contains all of the information that the program uses to create directories and symbolic links.
+
+### Syntax
 
 To create a directory:
 ```
