@@ -1,0 +1,18 @@
+# rename an xdg directory:
+# 'xdg_dir_name': 'dir_path'
+
+# link a xdg directory to a dropbox directory:
+# 'xdg_dir_name': 'dir_path' = 'dropbox_path'
+
+# link a non-xdg directory to a dropbox directory:
+# 'dir_path' = 'dropbox_path'
+
+XDG_DOWNLOAD_DIR: ~/dwn
+XDG_DOCUMENTS_DIR: ~/docs = ~/Dropbox/tk/documents
+XDG_PICTURES_DIR: ~/pics = ~/Dropbox/tk/media/pictures
+XDG_VIDEOS_DIR: ~/vids = ~/Dropbox/tk/media/videos
+XDG_MUSIC_DIR: ~/music = ~/Dropbox/tk/media/music
+XDG_TEMPLATES_DIR: ~/templates
+
+~/code = ~/Dropbox/tk/code
+~/bin = ~/Dropbox/tk/code/bin
