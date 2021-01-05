@@ -24,7 +24,7 @@ This script retrieves the path of a XDG directory from the `$HOME/.config/user-d
 
 ## `setup-dirs/config`
 
-This file contains all of the information that the program uses to create directories and symbolic links.
+This is the configuration file that the program uses to create directories and symbolic links.
 
 ### Syntax
 
