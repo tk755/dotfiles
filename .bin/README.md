@@ -1,5 +1,5 @@
 # `~/bin`
-This repository is a persistent copy of my `~/bin` directory, which contains all of my setup, configuration, and utility scripts.
+This repository is a persistent copy of my `~/bin` directory, which contains all of my personal setup, configuration, and utility scripts.
 
 ### Using this Repository
 
