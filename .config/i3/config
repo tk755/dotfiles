@@ -61,6 +61,12 @@ set $ws7 "7"
 set $ws8 "8"
 set $ws9 "9"
 
+# colors 
+set_from_resource $fg foreground    #D8DEE9
+set_from_resource $bg background    #2E3440
+set_from_resource $fbg color5       #2E3440
+set_from_resource $ind color4       #2E3440
+
 
 # ██╗    ██╗ ██████╗ ██████╗ ██╗  ██╗███████╗██████╗  █████╗  ██████╗███████╗███████╗
 # ██║    ██║██╔═══██╗██╔══██╗██║ ██╔╝██╔════╝██╔══██╗██╔══██╗██╔════╝██╔════╝██╔════╝
@@ -119,10 +125,10 @@ bindsym $mod+$olkb18 focus up
 bindsym $mod+$olkb19 focus right
 
 # move focused container
-bindsym $mod+$shift+$olkb16 move left
-bindsym $mod+$shift+$olkb17 move down
-bindsym $mod+$shift+$olkb18 move up
-bindsym $mod+$shift+$olkb19 move right
+bindsym $mod+$shift+$olkb16 move left 50 px
+bindsym $mod+$shift+$olkb17 move down 50 px
+bindsym $mod+$shift+$olkb18 move up 50 px
+bindsym $mod+$shift+$olkb19 move right 50 px
 
 # resize container
 bindsym $mod+$olkb06 resize shrink width 50 px or 5 ppt
@@ -141,28 +147,36 @@ bindsym $mod+Return fullscreen toggle
 # kill container
 bindsym $mod+Escape kill
 
-# # focus parent/child
-# bindsym $mod+Return focus parent
-# bindsym $mod+$shift+Return focus child
+# focus parent/child
+bindsym $mod+$olkb03 focus child
+bindsym $mod+$shift+$olkb03 focus parent
 
-# # change container layout
-# bindsym $mod+$olkb27 layout toggle split
-# bindsym $mod+$shift+$olkb27 layout toggle tabbed stacking
-
-# # change splitting orientation
-# bindsym $mod+$olkb28 split v
-# bindsym $mod+$olkb29 split h
+# change splitting orientation
+bindsym $mod+$olkb13 split toggle
+bindsym $mod+$shift+$olkb13 layout toggle tabbed split
 
 # floating containers
+
+# focus and toggle
+bindsym $mod+$olkb23 focus mode_toggle
+bindsym $mod+$shift+$olkb23 floating toggle
 
 # drag floating windows with Mouse+$mod
 floating_modifier $mod
 
-# toggle focus between tiling and floating windows
-bindsym $mod+space focus mode_toggle
+# border and colors
 
-# toggle between tiling and floating mode
-bindsym $mod+$shift+space floating toggle
+default_border pixel 2
+default_floating_border pixel 3
+
+# class                 border  backgr. text indicator child_border
+client.focused          $fbg    $fbg    $fg     $ind    $fbg
+client.focused_inactive $bg     $bg     $fg     $bg     $bg
+client.unfocused        $bg     $bg     $fg     $bg     $bg
+client.urgent           $bg     $bg     $fg     $bg     $bg
+client.placeholder      $bg     $bg     $fg     $bg     $bg
+
+client.background       $bg
 
 
 # ██████╗ ██╗███████╗██████╗ ██╗      █████╗ ██╗   ██╗███████╗
@@ -192,34 +206,27 @@ bindsym $mod+$shift+$olkb29 move container to output right; focus output right
 # ██╔═══╝ ██╔══██╗██║   ██║██║   ██║██╔══██╗██╔══██║██║╚██╔╝██║╚════██║
 # ██║     ██║  ██║╚██████╔╝╚██████╔╝██║  ██║██║  ██║██║ ╚═╝ ██║███████║
 # ╚═╝     ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝
-                                                                     
 
-bindsym $mod+apostrophe exec dmenu_run
 
-bindsym $mod+$olkb03 split horizontal ; exec google-chrome
-bindsym $mod+$olkb04 split horizontal ; exec google-chrome --incognito
-bindsym $mod+$olkb13 split horizontal ; exec i3-sensible-terminal
-bindsym $mod+$olkb14 split horizontal ; exec thunar
-bindsym $mod+$olkb23 split horizontal ; exec code
-bindsym $mod+$olkb24 split horizontal ; nop 
+bindsym $mod+apostrophe exec dmenu_run -i -p "$" -fn "Input Mono" -nb "$bg" -nf "$fg" -sb "$ind" -sf "$bg"
 
-bindsym $mod+$shift+$olkb03 split vertical ; exec google-chrome
-bindsym $mod+$shift+$olkb04 split vertical ; exec google-chrome --incognito
-bindsym $mod+$shift+$olkb13 split vertical ; exec i3-sensible-terminal
-bindsym $mod+$shift+$olkb14 split vertical ; exec thunar 
-bindsym $mod+$shift+$olkb23 split vertical ; exec code
-bindsym $mod+$shift+$olkb24 split vertical ; nop 
+bindsym $mod+$olkb04 exec firefox
+bindsym $mod+$shift+$olkb04 exec firefox -private-window
 
-# bindsym $mod+$olkb00 exec dmenu_run
-# bindsym $mod+$olkb01 exec i3-sensible-terminal
-# bindsym $mod+$olkb02 exec code
-# bindsym $mod+$olkb03 exec google-chrome
-# bindsym $mod+$olkb04 exec google-chrome --incognito
-# bindsym $mod+$olkb05 nop
-# bindsym $mod+$olkb06 nop
-# bindsym $mod+$olkb07 nop
-# bindsym $mod+$olkb08 nop
-# bindsym $mod+$olkb09 exec spotify
+bindsym $mod+$olkb05 exec spotify
+bindsym $mod+$shift+$olkb05 nop
+
+bindsym $mod+$olkb14 exec code
+bindsym $mod+$shift+$olkb14 nop
+
+bindsym $mod+$olkb15 nop
+bindsym $mod+$shift+$olkb15 nop
+
+bindsym $mod+$olkb24 exec thunar
+bindsym $mod+$shift+$olkb24 nop
+
+bindsym $mod+$olkb25 exec i3-sensible-terminal
+bindsym $mod+$shift+$olkb25 nop 
 
 
 # ██████╗ ███████╗██╗      ██████╗  █████╗ ██████╗ 
