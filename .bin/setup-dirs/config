@@ -1,9 +1,9 @@
 XDG_DOWNLOAD_DIR: ~/dwn
-XDG_DOCUMENTS_DIR: ~/docs = ~/Dropbox/tk/documents
-XDG_PICTURES_DIR: ~/pics = ~/Dropbox/tk/media/pictures
-XDG_VIDEOS_DIR: ~/vids = ~/Dropbox/tk/media/videos
-XDG_MUSIC_DIR: ~/music = ~/Dropbox/tk/media/music
+XDG_DOCUMENTS_DIR: ~/docs = ~/Dropbox/documents
+XDG_PICTURES_DIR: ~/pics = ~/Dropbox/media/pictures
+XDG_VIDEOS_DIR: ~/vids = ~/Dropbox/media/videos
+XDG_MUSIC_DIR: ~/music = ~/Dropbox/media/music
 XDG_TEMPLATES_DIR: ~/templates
 
-~/code = ~/Dropbox/tk/code
-~/bin = ~/Dropbox/tk/code/bin
+~/code = ~/Dropbox/code
+~/bin = ~/Dropbox/code/bin

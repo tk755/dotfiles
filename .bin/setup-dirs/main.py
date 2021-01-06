@@ -28,8 +28,10 @@ with open(CONFIG_DIR, 'r') as f:
             except ValueError:
                 src_dir = None
 
-            # get directory path
+            # get path and remove existing link
             user_dir = os.path.expanduser(line.strip())
+            if os.path.islink(user_dir):
+                os.remove(user_dir)
 
             # add to dicts
             if xdg_dir is not None and xdg_dir in xdg.DIRS:
