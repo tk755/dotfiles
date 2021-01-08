@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# launch bluetooth adapter
+source /usr/bin/blueman-applet
+
+# launch dropbox
+dropbox start
+
+# launch xss-lock
+xss-lock -- $HOME/bin/lock
