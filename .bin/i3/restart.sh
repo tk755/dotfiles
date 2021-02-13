@@ -4,10 +4,10 @@
 python3 $HOME/bin/keyboard/auto.py
 
 # monitor configuration
-source $HOME/bin/dp-tk
+source $HOME/bin/kawasaki/display.sh
 
 # set background image
-source $HOME/bin/bg-tk
+source $HOME/bin/kawasaki/bg.sh
 
 # launch polybar
 source $HOME/.config/polybar/launch.sh
