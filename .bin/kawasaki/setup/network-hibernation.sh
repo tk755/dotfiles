@@ -12,7 +12,7 @@ if [ "$2" = "hibernate" ]; then
     case "$1" in
         pre)
             if lsmod | grep -q brcmfmac; then
-                rmmod brcmfmac
+                modprobe -r brcmfmac
             fi
             ;;
         post)
