@@ -238,16 +238,19 @@ bindsym $mod+$shift+$olkb25 nop
                                                  
 
 # scripts executed on i3 restart
-exec_always --no-startup-id $HOME/.config/i3/restart.sh
+exec_always --no-startup-id $HOME/bin/i3/restart.sh
 
 # scripts executed on i3 startup
-exec --no-startup-id $HOME/.config/i3/startup.sh
+exec --no-startup-id $HOME/bin/i3/startup.sh
 
 # reload configuration file
 # bindsym $mod+BackSpace reload
 
 # restart i3 inplace (preserves current layout)
 bindsym $mod+BackSpace restart
+
+# lock screen
+bindsym $mod+$shift+BackSpace exec $HOME/bin/lock
 
 # # exit i3 (logs out of X session)
 # bindsym $mod+$shift+BackSpace exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
@@ -263,7 +266,7 @@ bindsym $mod+BackSpace restart
 
 # screenshot
 # REQUIRES: sudo apt install maim
-bindsym Print exec maim -s | xclip -selection clipboard -t image/png             # selection to clipboard
+bindsym Print exec maim -s -u | xclip -selection clipboard -t image/png             # selection to clipboard
 bindsym $shift+Print exec maim -i root | xclip -selection clipboard -t image/png # entire screen to clipboard
 
 # brightness
@@ -287,3 +290,20 @@ bindsym XF86AudioPrev exec playerctl previous
 bindsym XF86AudioMute exec amixer sset 'Master' toggle
 bindsym XF86AudioLowerVolume exec amixer sset 'Master' 8%-
 bindsym XF86AudioRaiseVolume exec amixer sset 'Master' 8%+
+
+
+#  ██████╗  █████╗ ██████╗ ███████╗
+# ██╔════╝ ██╔══██╗██╔══██╗██╔════╝
+# ██║  ███╗███████║██████╔╝███████╗
+# ██║   ██║██╔══██║██╔═══╝ ╚════██║
+# ╚██████╔╝██║  ██║██║     ███████║
+#  ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚══════╝
+
+set $gap 10
+
+gaps inner $gap
+
+bindsym $mod+$shift+Return gaps inner all toggle $gap
+
+# necessary for i3-gaps to work properly
+for_window [class="^.*"] border pixel 3
