@@ -7,3 +7,4 @@ XDG_TEMPLATES_DIR: ~/templates
 
 ~/code = ~/Dropbox/code
 ~/bin = ~/Dropbox/code/bin
+~/cornell = ~/Dropbox/cornell
