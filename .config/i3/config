@@ -145,7 +145,7 @@ bindsym $mod+$shift+$olkb09 resize grow width 10 px or 1 ppt
 bindsym $mod+Return fullscreen toggle
 
 # kill container
-bindsym $mod+Escape kill
+bindsym $mod+apostrophe kill
 
 # focus parent/child
 bindsym $mod+$olkb03 focus child
@@ -208,7 +208,7 @@ bindsym $mod+$shift+$olkb29 move container to output right; focus output right
 # ╚═╝     ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝
 
 
-bindsym $mod+apostrophe exec dmenu_run -i -p "$" -fn "Input Mono" -nb "$bg" -nf "$fg" -sb "$ind" -sf "$bg"
+bindsym $mod+Escape exec dmenu_run -i -p "$" -fn "Input Mono" -nb "$bg" -nf "$fg" -sb "$ind" -sf "$bg"
 
 bindsym $mod+$olkb04 exec firefox
 bindsym $mod+$shift+$olkb04 exec firefox -private-window
@@ -217,15 +217,15 @@ bindsym $mod+$olkb05 exec spotify
 bindsym $mod+$shift+$olkb05 nop
 
 bindsym $mod+$olkb14 exec code
-bindsym $mod+$shift+$olkb14 nop
+bindsym $mod+$shift+$olkb14 exec code ~/cornell
 
-bindsym $mod+$olkb15 nop
+bindsym $mod+$olkb15 exec i3-sensible-terminal
 bindsym $mod+$shift+$olkb15 nop
 
 bindsym $mod+$olkb24 exec thunar
 bindsym $mod+$shift+$olkb24 nop
 
-bindsym $mod+$olkb25 exec i3-sensible-terminal
+bindsym $mod+$olkb25 nop
 bindsym $mod+$shift+$olkb25 nop 
 
 
@@ -267,7 +267,7 @@ bindsym $mod+$shift+BackSpace exec $HOME/bin/lock
 # screenshot
 # REQUIRES: sudo apt install maim
 bindsym Print exec maim -s -u | xclip -selection clipboard -t image/png             # selection to clipboard
-bindsym $shift+Print exec maim -i root | xclip -selection clipboard -t image/png # entire screen to clipboard
+bindsym $shift+Print exec maim -s -u ~/pics/screenshots/$(date +%m%d%y%k%M%S).png   # selection to ~/pics/screenshots
 
 # brightness
 # REQUIRES: sudo apt install brightnessctl
