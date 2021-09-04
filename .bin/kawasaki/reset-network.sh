@@ -6,4 +6,4 @@
 modprobe -r brcmfmac
 modprobe brcmfmac
 
-nmcli
+nmcli device status
