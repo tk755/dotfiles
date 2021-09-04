@@ -14,6 +14,6 @@ def olkb():
 
 if __name__ == '__main__':
     if olkb():
-        print('0')
+        print('olkb connected')
     else:
-        print('1')
+        print('olkb not connected')
