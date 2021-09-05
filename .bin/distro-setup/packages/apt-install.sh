@@ -48,6 +48,13 @@ fi
 #     apt-get update -y && apt-get install sublime-text -y
 # fi
 
+# Install Dropbox
+# https://linuxize.com/post/how-to-install-virtualbox-on-debian-10/
+if ask_install "Dropbox" ; then
+    wget -O /usr/bin/dropbox "https://www.dropbox.com/download?dl=packages/dropbox.py"
+    chmod 744 /usr/bin/dropbox
+fi
+
 # Install VirtualBox
 # https://linuxize.com/post/how-to-install-virtualbox-on-debian-10/
 if ask_install "VirtualBox" ; then
