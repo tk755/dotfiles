@@ -28,6 +28,8 @@ function test_install {
     fi
 }
 
+DEB_CODENAME=$(lsb_release --codename --short)
+
 # Install packages
 apt-get update -y || exit
 apt-get install `tr '\r\n' ' ' < packages/packages.txt` -y
@@ -74,14 +76,14 @@ test_install "virtualbox" "VirtualBox"
 }
 test_install "docker" "Docker"
 
-# Install Spotify
-# https://www.spotify.com/us/download/linux/
-{
-    curl -sS https://download.spotify.com/debian/pubkey.gpg | apt-key add -
-    echo "deb http://repository.spotify.com stable non-free" | tee /etc/apt/sources.list.d/spotify.list
-    apt-get update
-}
-test_install "spotify" "Spotify"
+# # Install Spotify
+# # https://www.spotify.com/us/download/linux/
+# {
+#     curl -sS https://download.spotify.com/debian/pubkey.gpg | apt-key add -
+#     echo "deb http://repository.spotify.com stable non-free" | tee /etc/apt/sources.list.d/spotify.list
+#     apt-get update
+# }
+# test_install "spotify" "Spotify"
 
 # Build i3 gaps from source
 # https://github.com/Airblader/i3/wiki/Building-from-source
@@ -105,7 +107,7 @@ test_install "i3" "i3 gaps"
 
 # Install polybar
 {
-    apt -t buster-backports install polybar -y
+    apt -t "$DEB_CODENAME"-backports install polybar -y
 }
 test_install "polybar" "polybar"
 
