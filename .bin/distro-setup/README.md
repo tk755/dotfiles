@@ -16,7 +16,22 @@ Then logout and login to gain sudo access.
 
 ### 2. Modify Debian package sources
 
-Edit the file `/etc/apt/sources.list/` as root to remove line that begins with `deb cdrom`. This will allow packages to be installed from online repositories instead of expecting a CD.
+Open the file `/etc/apt/sources.list/` in an editor as root. 
+
+Comment or delete any lines that begins with `deb cdrom`. This will allow packages to be installed from online repositories instead of expecting a CD.
+
+Some packages we will install (e.g. polybar) require backports, which are packages from testing and unstable that are recompiled to run without new libraries on a stable Debian distribution. To enable backports, append the following line to the bottom of the file:
+
+```
+deb http://deb.debian.org/debian/ bullseye-backports main non-free contrib
+deb-src http://deb.debian.org/debian/ bullseye-backports main non-free contrib
+```
+
+Finally update the apt cache with the following:
+
+```
+sudo apt update
+```
 
 ### 3. Clone scripts and dotfiles from GitHub
 
@@ -64,7 +79,7 @@ Start Dropbox and begin syncing your files with the following command:
 dropbox start
 ```
 
-You can watch the progress of your files downloading with the following command:
+You can monitor the progress of your file downloads with the following command:
 
 ```
 watch -n 1 dropbox status
@@ -77,6 +92,12 @@ After Dropbox is finished syncing, set up symbolic links and rename directories 
 ```
 ./setup-dirs/main.py
 ```
+
+### 7. Set up i3 gaps
+
+
+
+
 
 ### TODO
 
