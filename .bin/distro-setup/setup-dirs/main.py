@@ -4,8 +4,7 @@ import os
 import shutil
 import xdg
 
-# CONFIG_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config')
-CONFIG_DIR = 'config'
+CONFIG_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config')
 
 sym_dirs = {} # dir path : src dir path
 xdg_dirs = {} # dir path : XDG dir name
