@@ -1,10 +1,6 @@
-# `distro-setup/` v.1.0
+# New Distro Setup
 
-This directory contains my scripts for automating the process of setting up and installing applications onto a fresh installation of Linux.
-
-## Distro Setup Process
-
-This is my step-by-step guide on how I set up a new installation of Linux.
+This is my step-by-step guide on how I set up a fresh installation of Linux. This directory contains scripts that automate various parts of the process. Note that you will need Internet connection.
 
 ### 1. Enable sudo
 
@@ -56,16 +52,22 @@ sudo ./packages/apt-install.sh
 
 ### 5. Set up Dropbox
 
-Dropbox will have been installed in the previous step. To connect your account to it, run the following command and follow the prompts:
+Dropbox will have been installed in the previous step. Run the run the following command to connect your account to it:
+
+```
+~/.dropbox-dist/dropboxd
+```
+
+Start Dropbox and begin syncing your files with the following command:
 
 ```
 dropbox start
 ```
 
-Set Dropbox to automatically start at login with the following command:
+You can watch the progress of your files downloading with the following command:
 
 ```
-dropbox autostart
+watch -n 1 dropbox status
 ```
 
 ### 6. Set up home directory
