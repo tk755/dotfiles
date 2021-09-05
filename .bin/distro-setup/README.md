@@ -1,20 +1,39 @@
-# `distro-setup/` v.0.1
+# `distro-setup/` v.1.0
 
 This directory contains my scripts for automating the process of setting up and installing applications onto a fresh installation of Linux.
 
+## Distro Setup Process
 
+### Enabling sudo
 
-### Maintaining this Repository
-Applications should be added to this repository consistently as they are installed and configured on a local machine.
+First add your username to the sudo group with the following:
 
-TODO: add a note on how to do this once a better structure is developed
+```
+su -
+usermod -aG sudo <username>
+exit
+```
 
-## `setup*.sh`
+Then logout and login to gain sudo access.
 
-This is very much WIP.
+### Installing packages
 
-The driver program `setup.sh` should begin an interactive CLI that prompts the user for various information, like Linux distribution, machine purpose (i.e. personal, work, server, etc.), etc. and selects a set of applications to install which the user can then override. 
+Next install packages by running the appropriate script in `distro-setup/packages` that matches the correct package manager. 
 
-The driver program should provide enough arguments so that the entire input can be automated and stored in a curried script.
+For example, install packages on a system with the `apt` package manager with the following command:
 
-Then we will have executable scripts like `setup-debian.sh` which automate the entire setting up of Debian for instance.
+```
+sudo ./packages/apt-install.sh
+```
+
+### Setting Up Dropbox
+
+Dropbox will have been installed in the previous step. To 
+
+### Setting Up Home Directory
+
+Set up symbolic links and rename directories in the home directory by running the following script:
+
+```
+./setup-dirs/main.py
+```
