@@ -5,6 +5,4 @@ XDG_VIDEOS_DIR: ~/vids = ~/Dropbox/media/videos
 XDG_MUSIC_DIR: ~/music = ~/Dropbox/media/music
 XDG_TEMPLATES_DIR: ~/templates
 
-~/code = ~/Dropbox/code
-~/bin = ~/Dropbox/code/bin
 ~/cornell = ~/Dropbox/cornell
