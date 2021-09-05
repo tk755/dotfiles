@@ -1,6 +1,6 @@
 # New Distro Setup
 
-This is my step-by-step guide on how I set up a fresh installation of Linux. This directory contains scripts that automate various parts of the process. Note that you will need Internet connection.
+This is my step-by-step guide on how I set up a fresh installation of Linux. This directory contains scripts that automate various parts of the process. Note that you will need Internet connection to follow this guide.
 
 ### 1. Enable sudo
 
@@ -20,7 +20,7 @@ Open the file `/etc/apt/sources.list/` in an editor as root.
 
 Comment or delete any lines that begins with `deb cdrom`. This will allow packages to be installed from online repositories instead of expecting a CD.
 
-Some packages we will install (e.g. polybar) require backports, which are packages from testing and unstable that are recompiled to run without new libraries on a stable Debian distribution. To enable backports, append the following line to the bottom of the file:
+Some packages we will install (e.g. polybar) require [backports](https://wiki.debian.org/Backports), which are packages from testing and unstable that are recompiled to run without new libraries on a stable Debian distribution. To enable backports, append the following line to the bottom of the file:
 
 ```
 deb http://deb.debian.org/debian/ bullseye-backports main non-free contrib
@@ -67,7 +67,7 @@ sudo ./packages/apt-install.sh
 
 ### 5. Set up Dropbox
 
-Dropbox will have been installed in the previous step. Run the run the following command to connect your account to it:
+Dropbox should have been installed in the previous step. Run the run the following command to connect your account to it:
 
 ```
 ~/.dropbox-dist/dropboxd
