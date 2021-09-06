@@ -48,7 +48,7 @@ Install packages by running the appropriate script in `~/bin/distro-setup/packag
 sudo ~/bin/distro-setup/packages/apt-install.sh
 ```
 
-### 4. Set up Dropbox
+### 4. Set up Dropbox and File System
 
 Dropbox should have been installed in the previous step. Run the run the following command to connect your account to it:
 
@@ -68,15 +68,13 @@ You can monitor the progress of your file downloads with the following command:
 watch -n 1 sudo dropbox status
 ```
 
-### 5. Set up File System
-
 After Dropbox is finished syncing, automatically rename directories and set up symbolic links in the home directory by running the following script:
 
 ```
 ~/bin/distro-setup/setup-dirs/main.py
 ```
 
-### 6. Set up Git
+### 5. Set up Git
 
 Generate a new SSH key with the following:
 
@@ -95,7 +93,7 @@ xclip -sel clip < ~/.ssh/id_rsa.pub
 
 Create a new SSH key in [GitHub](https://github.com/settings/keys) and paste the contents of the clipboard into the *Key* field. 
 
-### 7. Look and Feel
+### 6. Look and Feel
 
 Clone and setup the dotfiles bare-respository from GitHub with the following:
 
@@ -120,7 +118,7 @@ lxappearance
 
 My default settings are **Adapta Nokto** for widget style, **Fixedsys Excelsior 3.01-L2** for default font, and **DamaDamas** for icon theme. They should all have been downloaded with the dotfiles repository.
 
-### 8. Reboot
+### 7. Reboot
 
 Finally reboot the computer. Select `i3` as the desktop environment and make sure that it works.
 
