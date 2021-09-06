@@ -59,13 +59,13 @@ Dropbox should have been installed in the previous step. Run the run the followi
 Start Dropbox and begin syncing your files with the following command:
 
 ```
-dropbox start
+sudo dropbox start
 ```
 
 You can monitor the progress of your file downloads with the following command:
 
 ```
-watch -n 1 dropbox status
+watch -n 1 sudo dropbox status
 ```
 
 ### 5. Set up File System
@@ -73,7 +73,7 @@ watch -n 1 dropbox status
 After Dropbox is finished syncing, automatically rename directories and set up symbolic links in the home directory by running the following script:
 
 ```
-./setup-dirs/main.py
+~/bin/distro-setup/setup-dirs/main.py
 ```
 
 ### 6. Set up Git
@@ -118,10 +118,16 @@ sudo apt-get install lxappearance -y
 lxappearance
 ```
 
-My default settings are **Adapta Nokto** for widget style, **Fixedsys Excelsior 3.01-L2** for default font, and **DamaDamas** for icon theme. They should all have been downloaded with the dotfiles repository in the previous step.
+My default settings are **Adapta Nokto** for widget style, **Fixedsys Excelsior 3.01-L2** for default font, and **DamaDamas** for icon theme. They should all have been downloaded with the dotfiles repository.
 
 ### 8. Reboot
 
 Finally reboot the computer. Select `i3` as the desktop environment and make sure that it works.
+
+Remove any trace of the desktop environment you download by running something like the following:
+
+```
+sudo apt-get purge xfce*
+```
 
 Welcome to your new machine.
