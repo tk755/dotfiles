@@ -2,7 +2,7 @@
 
 This is my step-by-step guide on how I set up a fresh installation of Linux. This directory contains scripts that automate various parts of the process. Note that you will need Internet connection to follow this guide.
 
-### 1. Enable sudo
+### 1. Enable Sudo
 
 Add your username to the sudo group with the following:
 
@@ -14,13 +14,13 @@ exit
 
 Then logout and login to gain sudo access.
 
-### 2. Modify Debian package sources
+### 2. Modify Debian Package Sources
 
 Open the file `/etc/apt/sources.list/` in an editor as root. 
 
-Comment or delete any lines that begins with `deb cdrom`. This will allow packages to be installed from online repositories instead of expecting a CD.
+Comment or delete any lines that begin with `deb cdrom`. This will allow packages to be installed from online repositories instead of expecting a CD.
 
-Some packages we will install (e.g. polybar) require [backports](https://wiki.debian.org/Backports), which are packages from testing and unstable that are recompiled to run without new libraries on a stable Debian distribution. To enable backports, append the following line to the bottom of the file:
+Some packages we will install (e.g. polybar) require [backports](https://wiki.debian.org/Backports). To enable backports, append the following line to the bottom of the file:
 
 ```
 deb http://deb.debian.org/debian/ bullseye-backports main non-free contrib
@@ -33,7 +33,7 @@ Finally update the apt cache with the following:
 sudo apt update
 ```
 
-### 3. Clone scripts and dotfiles from GitHub
+### 3. Clone Linux Repos from GitHub
 
 Clone this repository from GitHub with the following:
 
@@ -55,7 +55,7 @@ dotfiles push --set-upstream origin master
 dotfiles checkout
 ```
 
-### 4. Install packages
+### 4. Install Packages
 
 Install packages by running the appropriate script in `distro-setup/packages` that matches the correct package manager. 
 
@@ -85,9 +85,9 @@ You can monitor the progress of your file downloads with the following command:
 watch -n 1 dropbox status
 ```
 
-### 6. Set up home directory
+### 6. Set up File System
 
-After Dropbox is finished syncing, set up symbolic links and rename directories in the home directory by running the following script:
+After Dropbox is finished syncing, automatically rename directories and set up symbolic links in the home directory by running the following script:
 
 ```
 ./setup-dirs/main.py
@@ -95,17 +95,15 @@ After Dropbox is finished syncing, set up symbolic links and rename directories 
 
 ### 7. Look and Feel
 
-Quite possibly the most important step in setting up a new Linux installation is making it look nice. 
-
 Open LXAppearance by running the following command:
 
 ```
 lxappearance
 ```
 
-My default settings are **Adapta Nokto** for widget style, **Fixedsys Excelsior 3.01-L2** for default font, and **DamaDamas** for icon theme. They should all have be downloaded with the dotfiles repository.
+My default settings are **Adapta Nokto** for widget style, **Fixedsys Excelsior 3.01-L2** for default font, and **DamaDamas** for icon theme. They should all have been downloaded with the dotfiles repository.
 
-### 8.
+### 8. Reboot
 
 Finally reboot the computer. Select `i3` as the desktop environment and make sure that it works.
 
