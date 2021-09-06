@@ -30,39 +30,22 @@ deb-src http://deb.debian.org/debian/ bullseye-backports main non-free contrib
 Finally update the apt cache with the following:
 
 ```
-sudo apt update
-```
-
-### 3. Clone Linux Repos from GitHub
-
-Clone this repository from GitHub with the following:
-
-```
-sudo apt install git
-git clone https://github.com/TusharK54/scripts.git $HOME/bin
-```
-
-Clone and setup the dotfiles bare-respository from GitHub with the following:
-
-```
-git clone --bare https://github.com/TusharK54/dotfiles.git $HOME/.dotfiles
-
-alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-
-dotfiles config --local status.showUntrackedFiles no
-dotfiles push --set-upstream origin master
-
-dotfiles checkout
+sudo apt-get update
 ```
 
 ### 4. Install Packages
 
-Install packages by running the appropriate script in `distro-setup/packages` that matches the correct package manager. 
-
-For example, install packages on a system with the `apt` package manager with the following command:
+Clone this repository from GitHub into `~/bin` with the following:
 
 ```
-sudo ./packages/apt-install.sh
+sudo apt-get install git -y
+git clone https://github.com/TusharK54/scripts.git $HOME/bin
+```
+
+Install packages by running the appropriate script in `~/bin/distro-setup/packages` that matches the correct package manager. For example, install packages on a system with the `apt` package manager with the following command:
+
+```
+sudo ~/bin/distro-setup/packages/apt-install.sh
 ```
 
 ### 5. Set up Dropbox
@@ -93,17 +76,51 @@ After Dropbox is finished syncing, automatically rename directories and set up s
 ./setup-dirs/main.py
 ```
 
-### 7. Look and Feel
+### 7. Set up Git
+
+Generate a new SSH key with the following:
+
+```
+ssh-keygen -t rsa -b 4096 -C 'tushar.54k@gmail.com'
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_rsa
+```
+
+Copy the SSH public key to your clipboard with the following:
+
+```
+sudo apt-get install xclip -y
+xclip -sel clip < ~/.ssh/id_rsa.pub
+```
+
+Create a new SSH key in [GitHub](https://github.com/settings/keys) and paste the contents of the clipboard into the *Key* field. 
+
+### 8. Look and Feel
+
+Clone and setup the dotfiles bare-respository from GitHub with the following:
+
+```
+git clone --bare https://github.com/TusharK54/dotfiles.git $HOME/.dotfiles
+
+alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+
+dotfiles config --local status.showUntrackedFiles no
+dotfiles push --set-upstream origin master
+
+rm ~/.bashrc
+dotfiles checkout
+```
 
 Open LXAppearance by running the following command:
 
 ```
+sudo apt-get install lxappearance -y
 lxappearance
 ```
 
-My default settings are **Adapta Nokto** for widget style, **Fixedsys Excelsior 3.01-L2** for default font, and **DamaDamas** for icon theme. They should all have been downloaded with the dotfiles repository.
+My default settings are **Adapta Nokto** for widget style, **Fixedsys Excelsior 3.01-L2** for default font, and **DamaDamas** for icon theme. They should all have been downloaded with the dotfiles repository in the previous step.
 
-### 8. Reboot
+### 9. Reboot
 
 Finally reboot the computer. Select `i3` as the desktop environment and make sure that it works.
 
