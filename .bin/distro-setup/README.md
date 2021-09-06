@@ -93,13 +93,20 @@ After Dropbox is finished syncing, set up symbolic links and rename directories 
 ./setup-dirs/main.py
 ```
 
-### 7. Set up i3 gaps
+### 7. Look and Feel
 
+Quite possibly the most important step in setting up a new Linux installation is making it look nice. 
 
+Open LXAppearance by running the following command:
 
+```
+lxappearance
+```
 
+My default settings are **Adapta Nokto** for widget style, **Fixedsys Excelsior 3.01-L2** for default font, and **DamaDamas** for icon theme. They should all have be downloaded with the dotfiles repository.
 
-### TODO
+### 8.
 
-- git
-- i3 gaps
+Finally reboot the computer. Select `i3` as the desktop environment and make sure that it works.
+
+Welcome to your new machine.
