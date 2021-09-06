@@ -103,11 +103,15 @@ test_install "docker" "Docker"
     ninja
     ninja install
 
+    # install additional packages
+    apt-get install i3lock -y
+
     cd $CWD
 }
 test_install "i3" "i3 gaps"
 
 # Install polybar
+# https://github.com/polybar/polybar#installation
 {
     apt -t "$DEB_CODENAME"-backports install polybar -y
 }
