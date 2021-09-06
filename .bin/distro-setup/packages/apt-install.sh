@@ -29,6 +29,7 @@ function test_install {
 }
 
 DEB_CODENAME=$(lsb_release --codename --short)
+cd ~
 
 # Install packages
 apt-get update -y || exit
@@ -40,7 +41,7 @@ apt-get install wget apt-transport-https ca-certificates curl software-propertie
 # Install Dropbox
 # https://vitux.com/how-to-install-dropbox-on-debian-10/
 {
-    wget -O - "https://www.dropbox.com/download?plat=lnx.x86_64" | tar xzf –
+    wget -O - "https://www.dropbox.com/download?plat=lnx.x86_64" | tar xzf -
     wget -O /usr/bin/dropbox "https://www.dropbox.com/download?dl=packages/dropbox.py"
     chmod 744 /usr/bin/dropbox
 }
