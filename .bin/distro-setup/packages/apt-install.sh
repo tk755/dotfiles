@@ -100,6 +100,7 @@ test_install "docker" "Docker"
     mkdir -p build && cd build
     meson ..
     ninja
+    ninja install
 
     cd $CWD
 }
