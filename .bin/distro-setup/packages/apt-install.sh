@@ -47,14 +47,12 @@ cd ~
 
 # Install packages via apt
 echo -ne "Updating internal package database ... \e[1m\e[31m"
-apt-get -qq update -y || exit
-echo -e "\e[1m\e[32mDONE\e[0m"
+apt-get -qq update -y && echo -e "\e[1m\e[32mDONE\e[0m" || exit
 echo -ne "Installing packages via apt ... \e[1m\e[31m"
 # Install packages required to install applications below
 apt-get -qq install wget apt-transport-https ca-certificates curl software-properties-common gnupg-agent python3-pip -y || exit
 # Install packages from text file
-apt-get -qq install `tr '\r\n' ' ' < ${SCRIPT_DIR}/packages.txt` -y
-echo -e "\e[1m\e[32mDONE\e[0m"
+apt-get -qq install `tr '\r\n' ' ' < ${SCRIPT_DIR}/packages.txt` -y && echo -e "\e[1m\e[32mDONE\e[0m" || exit
 
 # Install Docker
 # https://docs.docker.com/engine/install/debian/
