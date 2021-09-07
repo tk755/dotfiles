@@ -2,7 +2,6 @@ brightnessctl
 curl
 git
 htop
-i3
 lxappearance
 neofetch
 python3-pip

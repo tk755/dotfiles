@@ -98,8 +98,8 @@ if requires_install "$cmd" "$pkg" ; then
     ninja
     ninja install
 
-    # install additional packages
-    apt-get install i3lock -y
+    # unsure why this is needed
+    apt-get install i3
 
     cd $CWD
 
