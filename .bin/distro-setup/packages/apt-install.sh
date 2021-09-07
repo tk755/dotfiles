@@ -29,11 +29,12 @@ function test_install {
 }
 
 DEB_CODENAME=$(lsb_release --codename --short)
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 cd ~
 
 # Install packages
 apt-get update -y || exit
-apt-get install `tr '\r\n' ' ' < packages/packages.txt` -y
+apt-get install `tr '\r\n' ' ' < ${SCRIPT_DIR}/packages.txt` -y
 
 # Install packages required to install applications below
 apt-get install wget apt-transport-https ca-certificates curl software-properties-common gnupg-agent python3-pip -y
