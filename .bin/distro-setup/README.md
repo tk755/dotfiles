@@ -50,22 +50,16 @@ sudo ~/bin/distro-setup/packages/apt-install.sh
 
 ### 4. Set up Dropbox and File System
 
-Dropbox should have been installed in the previous step. Run the run the following command to connect your account to it:
+Dropbox should have been installed in the previous step. Run the following command to install the Dropbox daemon, connect your account to it, and start syncing your files:
 
 ```
-~/.dropbox-dist/dropboxd
+dropbox start -i
 ```
 
-Start Dropbox and begin syncing your files with the following command:
+It may take some time for Dropbox to begin downloading your files. You can monitor the progress of your file downloads with the following command:
 
 ```
-sudo dropbox start
-```
-
-You can monitor the progress of your file downloads with the following command:
-
-```
-watch -n 1 sudo dropbox status
+watch -n 1 dropbox status
 ```
 
 After Dropbox is finished syncing, automatically rename directories and set up symbolic links in the home directory by running the following script:
@@ -79,7 +73,7 @@ After Dropbox is finished syncing, automatically rename directories and set up s
 Generate a new SSH key with the following:
 
 ```
-ssh-keygen -t rsa -b 4096 -C 'tushar.54k@gmail.com'
+ssh-keygen -t rsa -b 4096 -C '<email>'
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_rsa
 ```
