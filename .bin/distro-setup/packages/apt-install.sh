@@ -45,12 +45,16 @@ DEB_CODENAME=$(lsb_release --codename --short)
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 cd ~
 
-# Install packages
-apt-get update -y || exit
-apt-get install `tr '\r\n' ' ' < ${SCRIPT_DIR}/packages.txt` -y
-
+# Install packages via apt
+echo -ne "Updating internal package database ... \e[1m\e[31m"
+apt-get -qq update -y || exit
+echo -e "\e[1m\e[32mDONE\e[0m"
+echo -ne "Installing packages via apt ... \e[1m\e[31m"
 # Install packages required to install applications below
-apt-get install wget apt-transport-https ca-certificates curl software-properties-common gnupg-agent python3-pip -y
+apt-get -qq install wget apt-transport-https ca-certificates curl software-properties-common gnupg-agent python3-pip -y || exit
+# Install packages from text file
+apt-get -qq install `tr '\r\n' ' ' < ${SCRIPT_DIR}/packages.txt` -y
+echo -e "\e[1m\e[32mDONE\e[0m"
 
 # Install Docker
 # https://docs.docker.com/engine/install/debian/
@@ -139,7 +143,9 @@ if requires_install "$cmd" "$pkg" ; then
     test_install "$cmd" "$pkg"
 fi
 
-apt-get update && apt-get upgrade -y
+echo -ne "Upgrading packages ... \e[1m\e[31m"
+apt-get -qq update && apt-get -qq upgrade -y
+echo -e "\e[1m\e[32mDONE\e[0m"
 
 # Package installations below saved for posterity:
 
