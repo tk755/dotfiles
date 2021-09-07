@@ -46,13 +46,13 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 cd ~
 
 # Install packages via apt
-echo -ne "Updating internal package database ... \e[1m\e[31m"
-apt-get -qq update -y && echo -e "\e[1m\e[32mDONE\e[0m" || exit
-echo -ne "Installing packages via apt ... \e[1m\e[31m"
+echo "Updating internal package database ..."
+apt-get -qq update -y || exit
+echo "Installing packages via apt ..."
 # Install packages required to install applications below
 apt-get -qq install wget apt-transport-https ca-certificates curl software-properties-common gnupg-agent python3-pip -y || exit
 # Install packages from text file
-apt-get -qq install `tr '\r\n' ' ' < ${SCRIPT_DIR}/packages.txt` -y && echo -e "\e[1m\e[32mDONE\e[0m" || exit
+apt-get -qq install `tr '\r\n' ' ' < ${SCRIPT_DIR}/packages.txt` -y || exit
 
 # Install Docker
 # https://docs.docker.com/engine/install/debian/
@@ -62,7 +62,7 @@ if requires_install "$cmd" "$pkg" ; then
     apt-get remove docker docker-engine docker.io containerd runc
     curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
     add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
-    apt-get install docker-ce docker-ce-cli containerd.io -y
+    apt-get -qq update && apt-get install docker-ce docker-ce-cli containerd.io -y
     usermod -aG docker $USER
 
     test_install "$cmd" "$pkg"
@@ -124,7 +124,7 @@ if requires_install "$cmd" "$pkg" ; then
     wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | apt-key add -
     wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | apt-key add -
     add-apt-repository "deb [arch=amd64] http://download.virtualbox.org/virtualbox/debian $(lsb_release -cs) contrib"
-    apt-get install virtualbox-6.0 -y
+    apt-get -qq update && apt-get install virtualbox-6.0 -y
 
     test_install "$cmd" "$pkg"
 fi
@@ -136,7 +136,7 @@ pkg="Visual Studio Code"
 if requires_install "$cmd" "$pkg" ; then
     wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | apt-key add -
     add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
-    apt-get install code -y
+    apt-get -qq update && apt-get install code -y
 
     test_install "$cmd" "$pkg"
 fi
@@ -160,7 +160,7 @@ echo -e "\e[1m\e[32mDONE\e[0m"
 # {
 #     wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
 #     echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
-#     apt-get install sublime-text -y
+#     apt-get -qq update && apt-get install sublime-text -y
 # }
 
 # # Install Spotify
