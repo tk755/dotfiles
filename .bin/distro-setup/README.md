@@ -35,13 +35,32 @@ Finally update the apt cache with the following command:
 sudo apt-get update
 ```
 
-## 3. Install Packages
+## 3. Add GitHub SSH Key
+
+Generate a new SSH key with the following commands:
+
+```
+ssh-keygen -t rsa -b 4096 -C '<email>'
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_rsa
+```
+
+Copy the SSH public key to your clipboard with the following command:
+
+```
+sudo apt-get install xclip -y
+xclip -sel clip < ~/.ssh/id_rsa.pub
+```
+
+Create a new SSH key in [GitHub](https://github.com/settings/keys) and paste the contents of the clipboard into the *Key* field. This will allow you to push commits to GitHub without having to type in your password every time.
+
+## 4. Install Packages
 
 Clone this repository from GitHub into `~/bin` with the following commands:
 
 ```
 sudo apt-get install git -y
-git clone https://github.com/TusharK54/scripts.git $HOME/bin
+git clone git@github.com:TusharK54/scripts.git $HOME/bin
 ```
 
 ### Debian
@@ -52,7 +71,7 @@ Automatically install packages by running the following script:
 sudo ~/bin/distro-setup/packages/apt-install.sh
 ```
 
-## 4. Set up File System
+## 5. Set up File System
 
 Automatically create symbolic links and rename directories in the home directory by running the following script:
 
@@ -72,30 +91,12 @@ It may take some time for Dropbox to begin downloading your files. You can monit
 watch -n 1 "df / -h ; echo ; dropbox status"
 ```
 
-## 5. Add GitHub SSH Key
-
-Generate a new SSH key with the following commands:
-
-```
-ssh-keygen -t rsa -b 4096 -C '<email>'
-eval "$(ssh-agent -s)"
-ssh-add ~/.ssh/id_rsa
-```
-
-Copy the SSH public key to your clipboard with the following command:
-
-```
-xclip -sel clip < ~/.ssh/id_rsa.pub
-```
-
-Create a new SSH key in [GitHub](https://github.com/settings/keys) and paste the contents of the clipboard into the *Key* field. This will allow you to push commits to GitHub without having to type in your password every time.
-
 ## 6. Look and Feel
 
 Clone and setup the dotfiles bare-respository from GitHub with the following:
 
 ```
-git clone --bare https://github.com/TusharK54/dotfiles.git $HOME/.dotfiles
+git clone --bare git@github.com:TusharK54/dotfiles.git $HOME/.dotfiles
 
 alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
