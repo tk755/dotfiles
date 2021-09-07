@@ -59,7 +59,7 @@ dropbox start -i
 It may take some time for Dropbox to begin downloading your files. You can monitor the progress of your file downloads with the following command:
 
 ```
-watch -n 1 dropbox status
+watch -n 1 "df / -h ; echo ; dropbox status"
 ```
 
 After Dropbox is finished syncing, automatically rename directories and set up symbolic links in the home directory by running the following script:
@@ -68,7 +68,7 @@ After Dropbox is finished syncing, automatically rename directories and set up s
 ~/bin/distro-setup/setup-dirs/main.py
 ```
 
-### 5. Set up Git
+### 5. Add GitHub SSH Key
 
 Generate a new SSH key with the following:
 
@@ -81,11 +81,10 @@ ssh-add ~/.ssh/id_rsa
 Copy the SSH public key to your clipboard with the following:
 
 ```
-sudo apt-get install xclip -y
 xclip -sel clip < ~/.ssh/id_rsa.pub
 ```
 
-Create a new SSH key in [GitHub](https://github.com/settings/keys) and paste the contents of the clipboard into the *Key* field. 
+Create a new SSH key in [GitHub](https://github.com/settings/keys) and paste the contents of the clipboard into the *Key* field. This will allow you to push commits to GitHub without having to type in your password every time.
 
 ### 6. Look and Feel
 
