@@ -18,7 +18,7 @@ Then logout and login to gain sudo access.
 
 ### Debian
 
-Open the file `/etc/apt/sources.list/` in an editor as root. 
+Open the file `/etc/apt/sources.list` in an editor as root. 
 
 Comment or delete any lines that begin with `deb cdrom`. This will allow packages to be installed from online repositories instead of expecting a CD.
 
