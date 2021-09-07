@@ -60,7 +60,7 @@ if requires_install "$cmd" "$pkg" ; then
     apt-get remove docker docker-engine docker.io containerd runc
     curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
     add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
-    apt-get update -y && apt-get install docker-ce docker-ce-cli containerd.io -y
+    apt-get install docker-ce docker-ce-cli containerd.io -y
     usermod -aG docker $USER
 
     test_install "$cmd" "$pkg"
@@ -122,7 +122,7 @@ if requires_install "$cmd" "$pkg" ; then
     wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | apt-key add -
     wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | apt-key add -
     add-apt-repository "deb [arch=amd64] http://download.virtualbox.org/virtualbox/debian $(lsb_release -cs) contrib"
-    apt-get update -y && apt-get install virtualbox-6.0 -y
+    apt-get install virtualbox-6.0 -y
 
     test_install "$cmd" "$pkg"
 fi
@@ -134,10 +134,12 @@ pkg="Visual Studio Code"
 if requires_install "$cmd" "$pkg" ; then
     wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | apt-key add -
     add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
-    apt-get update -y && apt-get install code -y
+    apt-get install code -y
 
     test_install "$cmd" "$pkg"
 fi
+
+apt-get upgrade -y
 
 # Package installations below saved for posterity:
 
@@ -154,7 +156,7 @@ fi
 # {
 #     wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
 #     echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
-#     apt-get update -y && apt-get install sublime-text -y
+#     apt-get install sublime-text -y
 # }
 
 # # Install Spotify
@@ -162,6 +164,5 @@ fi
 # {
 #     curl -sS https://download.spotify.com/debian/pubkey.gpg | apt-key add -
 #     echo "deb http://repository.spotify.com stable non-free" | tee /etc/apt/sources.list.d/spotify.list
-#     apt-get update
 # }
 # test_install "spotify" "Spotify"
