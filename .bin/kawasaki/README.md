@@ -1,4 +1,4 @@
-# `bin/kawasaki/`
+# `kawasaki/`
 
 This directory contains various scripts specific to my machine called `kawasaki`.
 
