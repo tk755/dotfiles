@@ -7,5 +7,5 @@ if [ $USER != 'root' ]; then
 fi
 
 echo 'Copying scripts into filesystem:'
-cp -v scripts/network-hibernation.sh /usr/lib/systemd/system-sleep/network-hibernation
-cp -v scripts/lid-wakeup-disable.sh /usr/lib/systemd/system-sleep/lid-wakeup-disable
+cp -v setup/network-hibernation.sh /usr/lib/systemd/system-sleep/network-hibernation
+cp -v setup/lid-wakeup-disable.sh /usr/lib/systemd/system-sleep/lid-wakeup-disable

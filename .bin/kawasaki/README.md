@@ -4,8 +4,12 @@ This directory contains various scripts specific to my machine called `kawasaki`
 
 ### Setup
 
-`setup/` contains scripts that need to be added to the filesystem once, typically during the initial machine setup. Run `sudo ./scripts/copy.sh` to automatically copy these scripts to their designated locations.
+`kawasaki/setup/` contains scripts that need to be added to the filesystem once, typically during the initial machine setup. To automatically copy these scripts to their designated locations, run the following script:
+
+```
+sudo ./setup/copy.sh
+```
 
 ### Utility
 
-`reset-network.sh` is a script that reconnects the network module to the kernel. It is useful for reconnecting to Wifi.
+`kawasaki/reset-network.sh` is a script that reconnects the network module to the kernel. It is useful for reconnecting to Wifi.
