@@ -39,11 +39,10 @@ apt-get install `tr '\r\n' ' ' < packages/packages.txt` -y
 apt-get install wget apt-transport-https ca-certificates curl software-properties-common gnupg-agent python3-pip -y
 
 # Install Dropbox
-# https://vitux.com/how-to-install-dropbox-on-debian-10/
 {
-    wget -O - "https://www.dropbox.com/download?plat=lnx.x86_64" | tar xzf -
-    wget -O /usr/bin/dropbox "https://www.dropbox.com/download?dl=packages/dropbox.py"
-    chmod 744 /usr/bin/dropbox
+    wget -O dropbox.deb "https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_2020.03.04_amd64.deb"
+    apt-get install "./dropbox.deb" -y --allow-downgrades
+    rm dropbox.deb
 }
 test_install "dropbox" "Dropbox"
 
