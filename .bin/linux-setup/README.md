@@ -1,4 +1,4 @@
-# New Distro Setup
+# Linux Machine Setup Guide
 
 This is my step-by-step guide on how I set up a fresh installation of Linux. This directory contains scripts that automate various parts of the process. Note that you will need Internet connection to follow this guide.
 
@@ -68,7 +68,7 @@ git clone git@github.com:TusharK54/scripts.git $HOME/bin
 Automatically install packages by running the following script:
 
 ```
-sudo ~/bin/distro-setup/packages/apt-install.sh
+sudo ~/bin/linux-setup/packages/apt-install.sh
 ```
 
 ## 5. Set up File System
@@ -76,7 +76,7 @@ sudo ~/bin/distro-setup/packages/apt-install.sh
 Automatically create symbolic links and rename directories in the home directory by running the following script:
 
 ```
-~/bin/distro-setup/setup-dirs/main.py
+~/bin/linux-setup/setup-dirs/main.py
 ```
 
 Dropbox should have been installed in the previous step. Install the Dropbox daemon, connect your account, and start syncing your files with the following command:
