@@ -48,7 +48,13 @@ Install packages by running the appropriate script in `~/bin/distro-setup/packag
 sudo ~/bin/distro-setup/packages/apt-install.sh
 ```
 
-### 4. Set up Dropbox and File System
+### 4. Set up File System
+
+Automatically create symbolic links and rename directories in the home directory by running the following script:
+
+```
+~/bin/distro-setup/setup-dirs/main.py
+```
 
 Dropbox should have been installed in the previous step. Run the following command to install the Dropbox daemon, connect your account to it, and start syncing your files:
 
@@ -56,16 +62,10 @@ Dropbox should have been installed in the previous step. Run the following comma
 dropbox start -i
 ```
 
-It may take some time for Dropbox to begin downloading your files. You can monitor the progress of your file downloads with the following command:
+It may take some time for Dropbox to begin downloading your files. You can monitor the progress of this process with the following command:
 
 ```
 watch -n 1 "df / -h ; echo ; dropbox status"
-```
-
-After Dropbox is finished syncing, automatically rename directories and set up symbolic links in the home directory by running the following script:
-
-```
-~/bin/distro-setup/setup-dirs/main.py
 ```
 
 ### 5. Add GitHub SSH Key
@@ -105,7 +105,6 @@ dotfiles checkout
 Open LXAppearance by running the following command:
 
 ```
-sudo apt-get install lxappearance -y
 lxappearance
 ```
 
