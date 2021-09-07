@@ -46,9 +46,9 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 cd ~
 
 # Install packages via apt
-echo "Updating internal package database ..."
+echo -e "\e[1m\e[34mUpdating internal package database ...\e[0m"
 apt-get -qq update -y || exit
-echo "Installing packages via apt ..."
+echo -e "\e[1m\e[34mInstalling packages via apt ...\e[0m"
 # Install packages required to install applications below
 apt-get -qq install wget apt-transport-https ca-certificates curl software-properties-common gnupg-agent python3-pip -y || exit
 # Install packages from text file
@@ -99,7 +99,7 @@ if requires_install "$cmd" "$pkg" ; then
     ninja install
 
     # unsure why this is needed
-    apt-get install i3
+    apt-get install i3 -y
 
     cd $CWD
 
@@ -141,7 +141,7 @@ if requires_install "$cmd" "$pkg" ; then
     test_install "$cmd" "$pkg"
 fi
 
-echo -ne "Upgrading packages ... \e[1m\e[31m"
+echo -ne "\e[1m\e[34mUpgrading packages ...\e[0m "
 apt-get -qq update && apt-get -qq upgrade -y
 echo -e "\e[1m\e[32mDONE\e[0m"
 
