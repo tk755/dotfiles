@@ -113,7 +113,10 @@ Open LXAppearance with the following command:
 lxappearance
 ```
 
-My default settings are **Adapta Nokto** for widget style, **Fixedsys Excelsior 3.01-L2** for default font, and **DamaDamas** for icon theme. They should all have been downloaded with the dotfiles repository.
+Below are my default LXAppearance settings. They should all have been downloaded with the dotfiles repository.
+- Widget style - **Adapta Nokto** 
+- Default font - **Fixedsys Excelsior 3.01-L2** size **12**
+- Icon theme - **DamaDamas**
 
 ## 7. Reboot
 
