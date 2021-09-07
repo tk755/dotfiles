@@ -14,7 +14,9 @@ exit
 
 Then logout and login to gain sudo access.
 
-## 2. Modify Debian Package Sources
+## 2. Modify Package Sources
+
+### Debian
 
 Open the file `/etc/apt/sources.list/` in an editor as root. 
 
