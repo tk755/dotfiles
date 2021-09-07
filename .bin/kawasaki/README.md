@@ -1,7 +1,11 @@
-# `~/bin/kawasaki`
+# `bin/kawasaki/`
 
-This directory contains various scripts specific to my machine called `kawasaki` - which is an early 2015 13-inch Apple MacBookPro.
+This directory contains various scripts specific to my machine called `kawasaki`.
 
-## First time setup
+### Setup
 
-The directory `setup` contains scripts that need to be copied into the filesystem of the machine one time. Run `setup.sh` to automatically copy those scripts to their designated locations.
+`setup/` contains scripts that need to be added to the filesystem once, typically during the initial machine setup. Run `sudo ./scripts/copy.sh` to automatically copy these scripts to their designated locations.
+
+### Utility
+
+`reset-network.sh` is a script that reconnects the network module to the kernel. It is useful for reconnecting to Wifi.
