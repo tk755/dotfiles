@@ -52,42 +52,6 @@ apt-get install `tr '\r\n' ' ' < ${SCRIPT_DIR}/packages.txt` -y
 # Install packages required to install applications below
 apt-get install wget apt-transport-https ca-certificates curl software-properties-common gnupg-agent python3-pip -y
 
-# Install Dropbox
-cmd="dropbox"
-pkg="Dropbox"
-if requires_install "$cmd" "$pkg" ; then
-    wget -O dropbox.deb "https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_2020.03.04_amd64.deb"
-    apt-get install "./dropbox.deb" -y --allow-downgrades
-    rm dropbox.deb
-
-    test_install "$cmd" "$pkg"
-fi
-
-# Install Visual Studio Code
-# https://linuxize.com/post/how-to-install-visual-studio-code-on-ubuntu-18-04/
-cmd="code"
-pkg="Visual Studio Code"
-if requires_install "$cmd" "$pkg" ; then
-    wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | apt-key add -
-    add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
-    apt-get update -y && apt-get install code -y
-
-    test_install "$cmd" "$pkg"
-fi
-
-# Install VirtualBox
-# https://linuxize.com/post/how-to-install-virtualbox-on-debian-10/
-cmd="virtualbox"
-pkg="VirtualBox"
-if requires_install "$cmd" "$pkg" ; then
-    wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | apt-key add -
-    wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | apt-key add -
-    add-apt-repository "deb [arch=amd64] http://download.virtualbox.org/virtualbox/debian $(lsb_release -cs) contrib"
-    apt-get update -y && apt-get install virtualbox-6.0 -y
-
-    test_install "$cmd" "$pkg"
-fi
-
 # Install Docker
 # https://docs.docker.com/engine/install/debian/
 cmd="docker"
@@ -98,6 +62,17 @@ if requires_install "$cmd" "$pkg" ; then
     add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
     apt-get update -y && apt-get install docker-ce docker-ce-cli containerd.io -y
     usermod -aG docker $USER
+
+    test_install "$cmd" "$pkg"
+fi
+
+# Install Dropbox
+cmd="dropbox"
+pkg="Dropbox"
+if requires_install "$cmd" "$pkg" ; then
+    wget -O dropbox.deb "https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_2020.03.04_amd64.deb"
+    apt-get install "./dropbox.deb" -y --allow-downgrades
+    rm dropbox.deb
 
     test_install "$cmd" "$pkg"
 fi
@@ -135,6 +110,31 @@ cmd="polybar"
 pkg="polybar"
 if requires_install "$cmd" "$pkg" ; then
     apt -t "$DEB_CODENAME"-backports install polybar -y
+
+    test_install "$cmd" "$pkg"
+fi
+
+# Install VirtualBox
+# https://linuxize.com/post/how-to-install-virtualbox-on-debian-10/
+cmd="virtualbox"
+pkg="VirtualBox"
+if requires_install "$cmd" "$pkg" ; then
+    wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | apt-key add -
+    wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | apt-key add -
+    add-apt-repository "deb [arch=amd64] http://download.virtualbox.org/virtualbox/debian $(lsb_release -cs) contrib"
+    apt-get update -y && apt-get install virtualbox-6.0 -y
+
+    test_install "$cmd" "$pkg"
+fi
+
+# Install Visual Studio Code
+# https://linuxize.com/post/how-to-install-visual-studio-code-on-ubuntu-18-04/
+cmd="code"
+pkg="Visual Studio Code"
+if requires_install "$cmd" "$pkg" ; then
+    wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | apt-key add -
+    add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
+    apt-get update -y && apt-get install code -y
 
     test_install "$cmd" "$pkg"
 fi
