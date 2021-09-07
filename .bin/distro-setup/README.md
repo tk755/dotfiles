@@ -95,7 +95,7 @@ Create a new SSH key in [GitHub](https://github.com/settings/keys) and paste the
 Clone and setup the dotfiles bare-respository from GitHub with the following:
 
 ```
-git clone --bare https://github.com/TusharK54/dotfiles.git $HOME/.dotfiles
+git clone --bare git@github.com:TusharK54/dotfiles.git $HOME/.dotfiles
 
 alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
