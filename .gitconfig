@@ -1,3 +1,5 @@
 [user]
 	email = tushar.54k@gmail.com
 	name = Tushar Khan
+[pull]
+	rebase = false
