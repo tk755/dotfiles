@@ -139,7 +139,7 @@ if requires_install "$cmd" "$pkg" ; then
     test_install "$cmd" "$pkg"
 fi
 
-apt-get upgrade -y
+apt-get update && apt-get upgrade -y
 
 # Package installations below saved for posterity:
 
