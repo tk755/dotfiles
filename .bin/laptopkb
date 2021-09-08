@@ -13,10 +13,11 @@ def detect_olkb():
     return not int(stdout) == 0
 
 def laptopkb_id():
-    """Returns the xinput id of the laptop keyboard"""
+    """Returns the xinput id of the laptop keyboard."""
     proc = subprocess.Popen(['xinput', 'list'], text=True, stdout=subprocess.PIPE)
     stdout, stderr = proc.communicate()
 
+    # laptop kb identifiers
     identifiers = ['Apple Internal Keyboard', 'AT Translated Set']
     pattern = '.*(' + '|'.join(identifiers) + ').*id=([\d]*).*'
 
