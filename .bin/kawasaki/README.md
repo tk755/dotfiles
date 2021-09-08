@@ -7,7 +7,7 @@ This directory contains various scripts specific to my machine called `kawasaki`
 `kawasaki/setup/` contains scripts that need to be added to the filesystem once, typically during the initial machine setup. To automatically copy these scripts to their designated locations, run the following script:
 
 ```
-sudo ./setup/copy
+sudo kawasaki/setup/copy
 ```
 
 ### Utility
