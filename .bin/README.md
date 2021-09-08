@@ -2,19 +2,27 @@
 
 This repository is a persistent copy of my `~/bin/` directory, which contains all of my personal setup, configuration, and utility scripts.
 
-### Using this Repository
+## Using this Repository
 
-#### Clone
+### Clone
 
 Using SSH:
 ```
 git clone git@github.com:TusharK54/bin.git $HOME/bin
 ```
 
-#### Reset
+### Reset
 
 Revert all files that are being tracked to what is stored in the origin (i.e. GitHub). This is a locally destructive action.
 ```
 git fetch origin
 git reset --hard origin/master
 ```
+
+## Scripts
+
+`laptopkb` checks if an OLKB keyboard is connected. If so, the laptop keyboard is automatically disabled, otherwise it is enabled.
+
+`locksc` activates the lock screen.
+
+`setdisplay` sets the resolution of the main monitor and connected monitors based on the hostname of the machine.
