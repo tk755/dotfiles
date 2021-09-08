@@ -2,6 +2,9 @@
 
 import subprocess, re
 
+# laptop kb identifiers
+IDENTIFIERS = ['Apple Internal Keyboard', 'AT Translated Set']
+
 def detect_olkb():
     """Returns whether an OLKB keyboard is connected to the computer.
     Requires: xinput, grep, wc."""
@@ -17,23 +20,19 @@ def laptopkb_id():
     proc = subprocess.Popen(['xinput', 'list'], text=True, stdout=subprocess.PIPE)
     stdout, stderr = proc.communicate()
 
-    # laptop kb identifiers
-    identifiers = ['Apple Internal Keyboard', 'AT Translated Set']
-    pattern = '.*(' + '|'.join(identifiers) + ').*id=([\d]*).*'
-
+    pattern = '.*(' + '|'.join(IDENTIFIERS) + ').*id=([\d]*).*'
     match = re.search(pattern, stdout, re.IGNORECASE)
-    return match.group(2)
-
-def disable_laptopkb():
-    proc = subprocess.Popen(['xinput', 'float', laptopkb_id()])
-
-def enable_laptopkb():
-    proc = subprocess.Popen(['xinput', 'reattach', laptopkb_id(), '3'])
+    if match:
+        return match.group(2)
 
 if __name__ == '__main__':
-    if detect_olkb():
-        disable_laptopkb()
-        print('olkb detected - laptop keyboard DISABLED')
+    laptopkb_id = laptopkb_id()
+    if laptopkb_id is None:
+        print('ERROR: could not determine id of laptopkb; check identifiers list.')
+    elif detect_olkb():
+        proc = subprocess.Popen(['xinput', 'float', laptopkb_id])
+        print('laptop keyboard DISABLED')
     else:
-        enable_laptopkb()
-        print('olkb not detected - laptop keyboard ENABLED')
+        proc = subprocess.Popen(['xinput', 'reattach', laptopkb_id, '3'])
+        print('laptop keyboard ENABLED')
+        
