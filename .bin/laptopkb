@@ -2,7 +2,7 @@
 
 import subprocess
 
-def olkb():
+def detect_olkb():
     """Returns whether an OLKB keyboard is connected to the computer.
     Requires: xinput, grep, wc."""
     proc1 = subprocess.Popen(['xinput', 'list'], stdout=subprocess.PIPE)
@@ -12,8 +12,19 @@ def olkb():
 
     return not int(stdout) == 0
 
+def laptopkb_id():
+    return '17'
+
+def disable_laptopkb():
+    proc = subprocess.Popen(['xinput', 'float', laptopkb_id()])
+
+def enable_laptopkb():
+    proc = subprocess.Popen(['xinput', 'reattach', laptopkb_id(), '3'])
+
 if __name__ == '__main__':
-    if olkb():
-        print('olkb connected')
+    if detect_olkb():
+        disable_laptopkb()
+        print('Laptop keyboard disabled')
     else:
-        print('olkb not connected')
+        enable_laptopkb()
+        print('Laptop keyboard enabled')
