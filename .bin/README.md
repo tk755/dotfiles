@@ -8,7 +8,7 @@ This repository is a persistent copy of my `~/bin/` directory, which contains al
 
 Using SSH:
 ```
-git clone git@github.com:TusharK54/scripts.git $HOME/bin
+git clone git@github.com:TusharK54/bin.git $HOME/bin
 ```
 
 #### Reset
