@@ -60,7 +60,7 @@ Clone this repository from GitHub into `~/bin` with the following commands:
 
 ```
 sudo apt-get install git -y
-git clone git@github.com:TusharK54/scripts.git $HOME/bin
+git clone git@github.com:TusharK54/bin.git $HOME/bin
 ```
 
 ### Debian
