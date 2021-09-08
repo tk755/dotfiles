@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+case $HOSTNAME in
+  kawasaki)
+    # eDP1mode="2560x1600"
+    # eDP1mode="1920x1200"
+    eDP1mode="1680x1050" 
+    ;;
+  yamaha)
+    eDP1mode="1920x1080" 
+    ;;
+esac
+
+xrandr --output eDP-1 --mode $eDP1mode
+echo "Set eDP-1 resolution to $eDP1mode"
+
+xrandr --output HDMI-2 --mode 2560x1440 --right-of eDP-1
