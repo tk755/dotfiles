@@ -23,6 +23,4 @@ git reset --hard origin/master
 
 `laptopkb` checks if an OLKB keyboard is connected. If so, the laptop keyboard is automatically disabled, otherwise it is enabled.
 
-`locksc` activates the lock screen.
-
 `setdisplay` sets the resolution of the main monitor and connected monitors based on the hostname of the machine.

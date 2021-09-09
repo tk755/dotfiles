@@ -3,7 +3,9 @@ brightnessctl
 curl
 git
 htop
+imagemagick
 lxappearance
+maim
 neofetch
 network-manager
 python3-pip
@@ -15,3 +17,4 @@ vlc
 wget
 xclip
 xinput
+xss-lock

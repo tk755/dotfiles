@@ -7,4 +7,4 @@
 dropbox start
 
 # launch xss-lock
-xss-lock -- $HOME/bin/lock.sh
+xss-lock -- $HOME/bin/i3/lock.sh
