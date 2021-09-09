@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 # disable laptop keyboard
-$HOME/bin/keyboard/auto.py
+$HOME/bin/laptopkb
 
 # monitor configuration
-$HOME/bin/display.sh
+$HOME/bin/setdisplay
 
 # set background image
 PIC_DIR=$(xdg-user-dir PICTURES)
