@@ -1,0 +1,27 @@
+[global_config]
+  enabled_plugins = LaunchpadBugURLHandler, LaunchpadCodeURLHandler, APTURLHandler, TerminatorThemes
+[keybindings]
+  paste = <Primary>v
+[profiles]
+  [[default]]
+    cursor_color = "#aaaaaa"
+  [[Dracula]]
+    background_color = "#1e1f29"
+    background_type = transparent
+    cursor_color = "#aaaaaa"
+    font = Input Mono 10
+    foreground_color = "#f8f8f2"
+    scrollbar_position = hidden
+    scrollback_lines = 1000
+    palette = "#44475a:#ff5555:#50fa7b:#f1fa8c:#8be9fd:#bd93f9:#ff79c6:#94a3a5:#000000:#ff5555:#50fa7b:#f1fa8c:#8be9fd:#bd93f9:#ff79c6:#ffffff"
+    use_system_font = False
+[layouts]
+  [[default]]
+    [[[window0]]]
+      type = Window
+      parent = ""
+    [[[child1]]]
+      type = Terminal
+      parent = window0
+      profile = Dracula
+[plugins]
