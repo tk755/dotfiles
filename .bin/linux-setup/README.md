@@ -37,7 +37,7 @@ sudo apt-get update
 
 ## 3. Add GitHub SSH Key
 
-Generate a new SSH key with the following commands:
+Generate a new SSH key from your email with the following commands:
 
 ```
 ssh-keygen -t rsa -b 4096 -C '<email>'
@@ -71,27 +71,8 @@ Automatically install packages by running the following script:
 sudo ~/bin/linux-setup/packages/apt-install.sh
 ```
 
-## 5. Set up File System
 
-Automatically create symbolic links and rename directories in the home directory by running the following script:
-
-```
-~/bin/linux-setup/setup-dirs/main.py
-```
-
-Dropbox should have been installed in the previous step. Install the Dropbox daemon, connect your account, and start syncing your files with the following command:
-
-```
-dropbox start -i
-```
-
-It may take some time for Dropbox to begin downloading your files. You can monitor the progress of this process with the following command:
-
-```
-watch -n 1 "df / -h ; echo ; dropbox status"
-```
-
-## 6. Look and Feel
+## 5. Look and Feel
 
 Clone and setup the dotfiles bare-respository from GitHub with the following:
 
@@ -118,14 +99,30 @@ Below are my default LXAppearance settings. They should all have been downloaded
 - Default font - **Fixedsys Excelsior 3.01-L2** size **12**
 - Icon theme - **DamaDamas**
 
-## 7. Reboot
+## 6. Set up File System
 
-Finally reboot the computer. Select `i3` as the desktop environment and make sure that it works.
-
-Remove any trace of the desktop environment you download by running something like the following:
+Automatically create symbolic links and rename directories in the home directory by running the following script:
 
 ```
-sudo apt-get purge xfce*
+~/bin/linux-setup/setup-dirs/main.py
 ```
 
-Welcome to your new machine.
+Dropbox should have been installed in the previous step. Install the Dropbox daemon, connect your account, and start syncing your files with the following command:
+
+```
+dropbox start -i
+```
+
+It may take some time for Dropbox to begin downloading your files but there is no need to wait for it. You can monitor the progress of this process with the following command:
+
+```
+watch -n 1 "df / -h ; echo ; dropbox status"
+```
+
+## 7. Login
+
+Logout and select `i3` at the login screen.
+
+Finally:
+- Sign into Firefox to sync passwords
+- Sign into Visual Studio Settings Sync
