@@ -7,18 +7,6 @@ if [ $USER != 'root' ]; then
     exit
 fi
 
-# Asks to install package specified by $1
-# Returns 0 if 'y'
-function ask_install {
-    echo -n "Would you like to install $1? [y/n]: "
-    read yn
-    if [[ $yn == 'y' || $yn == 'Y' ]]; then
-        return 0
-    else
-        return 1
-    fi
-}
-
 # Returns 1 if package $2 is installed by testing if command $1 exists, 0 otherwise
 function requires_install {
     if [ -x "$(command -v $1)" ]; then
