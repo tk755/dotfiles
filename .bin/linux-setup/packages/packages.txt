@@ -7,9 +7,11 @@ lxappearance
 neofetch
 network-manager
 python3-pip
+qpdfview
 terminator
 thunar
 tree
+vlc
 wget
 xclip
 xinput
