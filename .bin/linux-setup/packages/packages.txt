@@ -1,9 +1,11 @@
+blueman
 brightnessctl
 curl
 git
 htop
 lxappearance
 neofetch
+network-manager
 python3-pip
 terminator
 thunar
