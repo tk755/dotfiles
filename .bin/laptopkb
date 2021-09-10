@@ -25,14 +25,30 @@ def laptopkb_id():
     if match:
         return match.group(2)
 
+def prop_id():
+    proc = subprocess.Popen(['xinput', '--list-props', laptopkb_id()], text=True, stdout=subprocess.PIPE)
+    stdout, stderr = proc.communicate()
+
+    pattern = 'Device Enabled \(([\d]*)\).*'
+    match = re.search(pattern, stdout, re.IGNORECASE)
+    if match:
+        return match.group(1)
+
+def enablekb():
+    subprocess.Popen(['xinput', 'reattach', laptopkb_id(), '3'])
+    subprocess.Popen(['xinput', '--set-prop', laptopkb_id(), prop_id(), '1'])
+    print('laptop keyboard ENABLED')
+
+def disablekb():
+    subprocess.Popen(['xinput', 'float', laptopkb_id()])
+    subprocess.Popen(['xinput', '--set-prop', laptopkb_id(), prop_id(), '0'])
+    print('laptop keyboard DISABLED')
+
 if __name__ == '__main__':
-    laptopkb_id = laptopkb_id()
-    if laptopkb_id is None:
+    if laptopkb_id() is None:
         print('ERROR: could not determine id of laptopkb; check identifiers list.')
     elif detect_olkb():
-        proc = subprocess.Popen(['xinput', 'float', laptopkb_id])
-        print('laptop keyboard DISABLED')
+        disablekb()
     else:
-        proc = subprocess.Popen(['xinput', 'reattach', laptopkb_id, '3'])
-        print('laptop keyboard ENABLED')
+        enablekb()
         
