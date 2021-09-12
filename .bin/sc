@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 
-if [[ $1 == "--clip" ]] ; then
+if [[ $1 == "--help" ]] ; then
+    echo "$(basename $0) - take screenshot"
+    echo
+    echo "USAGE:"
+    echo " $(basename $0) [--clip]"
+    echo
+    echo "OPTIONS:"
+    echo " --clip    Save screenshot to clipboard instead of ~/pics/screenshots"
+elif [[ $1 == "--clip" ]] ; then
     # TODO: don't notify-send if maim is cancelled
     # note that using '&&' as below doesn't work bc the full command always returns 0
     maim -s -u | xclip -selection clipboard -t image/png 
