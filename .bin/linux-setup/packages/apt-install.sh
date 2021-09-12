@@ -30,7 +30,7 @@ function test_install {
 }
 
 DEB_CODENAME=$(lsb_release --codename --short)
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+SCRIPT_DIR=$(dirname $0)
 cd ~
 
 # Install packages via apt
@@ -129,7 +129,7 @@ if requires_install "$cmd" "$pkg" ; then
     test_install "$cmd" "$pkg"
 fi
 
-echo -ne "\e[1m\e[34mUpgrading packages ...\e[0m "
+echo -e "\e[1m\e[34mUpgrading packages ...\e[0m"
 apt-get -qq update && apt-get -qq upgrade -y
 echo -e "\e[1m\e[32mDONE\e[0m"
 
