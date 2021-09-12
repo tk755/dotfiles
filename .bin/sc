@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+if [[ $1 == "--clip" ]] ; then
+    # TODO: don't notify-send if maim is cancelled
+    # note that using '&&' as below doesn't work bc the full command always returns 0
+    maim -s -u | xclip -selection clipboard -t image/png 
+    notify-send "sc" "screenshot saved to clipboard"
+else
+    IMG_PATH="$HOME/pics/screenshots/$(date +%m-%d-%y_%k:%M:%S).png"
+    maim -s -u $IMG_PATH && notify-send "sc" "screenshot saved to $IMG_PATH" -t 10000
+fi
