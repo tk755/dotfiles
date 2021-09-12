@@ -21,6 +21,8 @@ git reset --hard origin/master
 
 ## Scripts
 
-`laptopkb` checks if an OLKB keyboard is connected. If so, the laptop keyboard is automatically disabled, otherwise it is enabled.
+`laptopkb` checks if an OLKB keyboard is connected, and automatically enables or disables the laptop keyboard appropriately.
+
+`sc` launches an screenshot selection tool.
 
 `setdisplay` sets the resolution of the main monitor and connected monitors based on the hostname of the machine.
