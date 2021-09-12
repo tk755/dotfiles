@@ -266,8 +266,8 @@ bindsym $mod+$shift+BackSpace exec $HOME/bin/i3/lock.sh
 
 # screenshot
 # REQUIRES: sudo apt install maim
-bindsym Print exec maim -s -u | xclip -selection clipboard -t image/png             # selection to clipboard
-bindsym $shift+Print exec maim -s -u ~/pics/screenshots/$(date +%m%d%y%k%M%S).png   # selection to ~/pics/screenshots
+bindsym Print exec ~/bin/sc                 # selection to ~/pics/screenshots
+bindsym $shift+Print exec ~/bin/sc --clip   # selection to clipboard
 
 # brightness
 # REQUIRES: sudo apt install brightnessctl
