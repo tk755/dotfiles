@@ -4,6 +4,7 @@ curl
 git
 htop
 imagemagick
+libnotify-bin
 lxappearance
 maim
 neofetch
