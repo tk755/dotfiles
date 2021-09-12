@@ -37,16 +37,16 @@ def prop_id():
 def enablekb():
     subprocess.Popen(['xinput', 'reattach', laptopkb_id(), '3'])
     subprocess.Popen(['xinput', '--set-prop', laptopkb_id(), prop_id(), '1'])
-    print('laptop keyboard ENABLED')
+    subprocess.Popen(['notify-send', 'laptopkb', 'Laptop keyboard enabled'])
 
 def disablekb():
     subprocess.Popen(['xinput', 'float', laptopkb_id()])
     subprocess.Popen(['xinput', '--set-prop', laptopkb_id(), prop_id(), '0'])
-    print('laptop keyboard DISABLED')
+    subprocess.Popen(['notify-send', 'laptopkb', 'Laptop keyboard disabled'])
 
 if __name__ == '__main__':
     if laptopkb_id() is None:
-        print('ERROR: could not determine id of laptopkb; check identifiers list.')
+        subprocess.Popen(['notify-send', 'laptopkb', 'Could not determine laptop keyboard id. \nCheck identifiers list.', '-u', 'critical'])
     elif detect_olkb():
         disablekb()
     else:
