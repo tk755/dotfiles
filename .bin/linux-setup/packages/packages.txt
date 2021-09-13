@@ -1,6 +1,7 @@
 blueman
 brightnessctl
 curl
+feh
 git
 htop
 imagemagick
