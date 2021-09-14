@@ -2,6 +2,8 @@
 
 import subprocess, re
 
+script_name = script_name = 'laptopkb'
+
 # laptop kb identifiers
 IDENTIFIERS = ['Apple Internal Keyboard', 'AT Translated Set']
 
@@ -37,16 +39,16 @@ def prop_id():
 def enablekb():
     subprocess.Popen(['xinput', 'reattach', laptopkb_id(), '3'])
     subprocess.Popen(['xinput', '--set-prop', laptopkb_id(), prop_id(), '1'])
-    subprocess.Popen(['notify-send', 'laptopkb', 'Laptop keyboard enabled'])
+    subprocess.Popen(['notify-send', script_name, 'Laptop keyboard enabled.', '-u', 'low'])
 
 def disablekb():
     subprocess.Popen(['xinput', 'float', laptopkb_id()])
     subprocess.Popen(['xinput', '--set-prop', laptopkb_id(), prop_id(), '0'])
-    subprocess.Popen(['notify-send', 'laptopkb', 'Laptop keyboard disabled'])
+    subprocess.Popen(['notify-send', script_name, 'Laptop keyboard disabled.', '-u', 'low'])
 
 if __name__ == '__main__':
     if laptopkb_id() is None:
-        subprocess.Popen(['notify-send', 'laptopkb', 'Could not determine laptop keyboard id. \nCheck identifiers list.', '-u', 'critical'])
+        subprocess.Popen(['notify-send', script_name, 'Could not determine laptop keyboard id. Check identifiers list.', '-u', 'critical'])
     elif detect_olkb():
         disablekb()
     else:

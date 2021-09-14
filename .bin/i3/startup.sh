@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# launch dunst
+$HOME/.config/dunst/launch.sh
+
 # launch bluetooth adapter
 /usr/bin/blueman-applet
 
