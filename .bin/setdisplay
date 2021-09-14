@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# turn external monitors on or off
+# turn external monitors on if connected, off otherwise
 
 if [[ -n $(xrandr | grep '^DP-1 connected') ]] ; then
     xrandr --output DP-1 --auto
@@ -26,20 +26,30 @@ else
     xrandr --output HDMI-2 --off
 fi
 
-# set configuration of monitors
+# set monitor configuration
 
 case $HOSTNAME in
     kawasaki)
         #xrandr --output eDP-1 --mode 2560x1600
         #xrandr --output eDP-1 --mode 1920x1200
         xrandr --output eDP-1 --mode 1680x1050
-
         xrandr --output HDMI-2 --right-of eDP-1
         ;;
     yamaha)
         xrandr --output eDP-1 --mode 1920x1080
-
         xrandr --output DP-1 --left-of eDP-1
         xrandr --output DP-2 --left-of eDP-1
         ;;
 esac
+
+# set background image
+
+PIC_DIR=$(xdg-user-dir PICTURES)
+
+if [ -e $PIC_DIR/wallpapers/active/$HOSTNAME* ] ; then
+    IMG_PATH=$PIC_DIR/wallpapers/active/$HOSTNAME
+elif [ -e $PIC_DIR/wallpapers/active/default* ] ; then
+    IMG_PATH=$PIC_DIR/wallpapers/active/$default
+fi
+
+feh --bg-fill $IMG_PATH
