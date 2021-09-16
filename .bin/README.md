@@ -25,4 +25,4 @@ git reset --hard origin/master
 
 `sc` launches an screenshot selection tool.
 
-`setdisplay` turns on and configures connected monitors and sets wallpaper image based on the hostname of the machine.
+`setdisplay` configures connected monitors and sets wallpaper image based on the hostname of the machine.
