@@ -8,7 +8,7 @@ This repository is a persistent copy of my `~/bin/` directory, which contains al
 
 Using SSH:
 ```
-git clone git@github.com:TusharK54/bin.git $HOME/bin
+git clone git@github.com:tk744/bin.git $HOME/bin
 ```
 
 ### Reset
@@ -23,6 +23,6 @@ git reset --hard origin/master
 
 `laptopkb` automatically enables or disables the laptop keyboard depending on whether an OLKB keyboard is connected.
 
-`sc` launches an screenshot selection tool.
+- `sc` launches an screenshot selection tool.
 
-`setdisplay` configures connected monitors and sets wallpaper image based on the hostname of the machine.
+- `setdisplay` configures the monitors by setting their resolution and wallpaper based on the hostname of the machine.
