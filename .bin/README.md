@@ -21,7 +21,7 @@ git reset --hard origin/master
 
 ## Scripts
 
-`laptopkb` automatically enables or disables the laptop keyboard depending on whether an OLKB keyboard is connected.
+- `laptopkb` automatically enables or disables the laptop keyboard depending on whether an OLKB keyboard is connected.
 
 - `sc` launches an screenshot selection tool.
 
