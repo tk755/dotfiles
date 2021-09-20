@@ -65,7 +65,7 @@ set $ws9 "9"
 set_from_resource $fg foreground    #D8DEE9
 set_from_resource $bg background    #2E3440
 set_from_resource $fbg color5       #2E3440
-set_from_resource $ind color4       #2E3440
+set_from_resource $ind color2       #2E3440
 
 
 # ██╗    ██╗ ██████╗ ██████╗ ██╗  ██╗███████╗██████╗  █████╗  ██████╗███████╗███████╗
@@ -306,4 +306,4 @@ gaps inner $gap
 bindsym $mod+$shift+Return gaps inner all toggle $gap
 
 # necessary for i3-gaps to work properly
-for_window [class="^.*"] border pixel 3
+for_window [class="^.*"] border pixel 4
