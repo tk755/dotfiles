@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-# disable laptop keyboard
+# enable/disable laptop keyboard
 $HOME/bin/laptopkb
 
-# monitor configuration and background image
+# monitor configuration and wallpapers
 $HOME/bin/setdisplay
 
 # launch polybar
