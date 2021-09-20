@@ -8,7 +8,7 @@ Add your username to the sudo group with the following commands:
 
 ```
 su -
-usermod -aG sudo <username>
+usermod -aG sudo tk
 exit
 ```
 
@@ -40,7 +40,7 @@ sudo apt-get update
 Generate a new SSH key from your email with the following commands:
 
 ```
-ssh-keygen -t rsa -b 4096 -C '<email>'
+ssh-keygen -t rsa -b 4096 -C tkbot744@gmail.com
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_rsa
 ```
