@@ -19,7 +19,7 @@ python3 main.py
 This script retrieves the path of a XDG directory from the `$HOME/.config/user-dirs.dirs` specification file. It can be imported as a Python module or used as a script:
 
 ```sh
-tk@kawasaki:~$ xdg XDG_DOWNLOAD_DIR XDG_DOCUMENTS_DIR
+tk@kawasaki:~$ ./xdg.py XDG_DOWNLOAD_DIR XDG_DOCUMENTS_DIR
 /home/tk/dwn
 /home/tk/docs
 ```
