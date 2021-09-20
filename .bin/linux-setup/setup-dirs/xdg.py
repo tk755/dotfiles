@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import argparse
 import os
 import sys
 
@@ -31,6 +32,18 @@ def get_dir(xdg_name):
                 return path
 
 if __name__ == '__main__':
-    xdg_name = sys.argv[1]
-    xdg_path = get_dir(xdg_name)
-    print(xdg_path)
+    # add parser arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument('name', nargs='+', help='One of the following XDG user directory names: ' + ', '.join(DIRS))
+    args = parser.parse_args()
+        
+    # argument error checking and conversion to xdg path
+    invalid_args = [arg for arg in args.name if get_dir(arg) is None]
+    if len(invalid_args) > 0: # argument error
+        print('The following arguments are invalid XDG directory names: ' + ', '.join(invalid_args))
+        print('Use -h to see all valid directory names.')
+        sys.exit(1)
+    else: # return paths
+        paths = [ get_dir(arg) for arg in args.name if get_dir(arg) != None ]
+        print('\n'.join(paths))
+        sys.exit(0)
