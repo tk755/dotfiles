@@ -60,7 +60,7 @@ Clone this repository from GitHub into `~/bin` with the following commands:
 
 ```
 sudo apt-get install git -y
-git clone git@github.com:TusharK54/bin.git $HOME/bin
+git clone git@github.com:tk744/bin.git $HOME/bin
 ```
 
 ### Debian
@@ -77,7 +77,7 @@ sudo ~/bin/linux-setup/packages/apt-install.sh
 Clone and setup the dotfiles bare-respository from GitHub with the following:
 
 ```
-git clone --bare git@github.com:TusharK54/dotfiles.git $HOME/.dotfiles
+git clone --bare git@github.com:tk744/dotfiles.git $HOME/.dotfiles
 
 alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
