@@ -35,21 +35,21 @@ def set_monitors():
     """Set resolution of active monitors, turn off unactive monitors, and set monitor configuration based on hostname."""
     for monitor in MONITORS:    # set resolution of active monitors
         if monitor in ACTIVE_MONITORS:
-            subprocess.Popen(['xrandr', '--output', monitor, '--auto'])
+            subprocess.call(['xrandr', '--output', monitor, '--auto'])
         else:                   # turn off unactive monitors
-            subprocess.Popen(['xrandr', '--output', monitor, '--off'])
+            subprocess.call(['xrandr', '--output', monitor, '--off'])
 
     # set monitor configuration based on hostname
     if HOSTNAME == 'kawasaki':
-        subprocess.Popen(['xrandr', '--output', 'eDP-1', '--mode', '1680x1050'])
+        subprocess.call(['xrandr', '--output', 'eDP-1', '--mode', '1680x1050'])
         if 'HDMI-2' in ACTIVE_MONITORS:
-            subprocess.Popen(['xrandr', '--output', 'HDMI-2', '--right-of', 'eDP-1'])
+            subprocess.call(['xrandr', '--output', 'HDMI-2', '--right-of', 'eDP-1'])
     elif HOSTNAME == 'yamaha':
-        subprocess.Popen(['xrandr', '--output', 'eDP-1', '--mode', '1920x1080'])
+        subprocess.call(['xrandr', '--output', 'eDP-1', '--mode', '1920x1080'])
         if 'DP-1' in ACTIVE_MONITORS:
-            subprocess.Popen(['xrandr', '--output', 'DP-1', '--left-of', 'eDP-1'])
+            subprocess.call(['xrandr', '--output', 'DP-1', '--left-of', 'eDP-1'])
         if 'DP-2' in ACTIVE_MONITORS:
-            subprocess.Popen(['xrandr', '--output', 'DP-2', '--left-of', 'eDP-1'])
+            subprocess.call(['xrandr', '--output', 'DP-2', '--left-of', 'eDP-1'])
 
 def _wallpaper_path(name):
     """Return path to wallpaper if it exists, otherwise return default wallpaper path."""
@@ -70,8 +70,7 @@ def set_wallpapers():
         feh_command.append('--bg-fill')
         feh_command.append(path)
 
-    print(feh_command)
-    subprocess.Popen(feh_command)
+    subprocess.call(feh_command)
 
 if __name__ == '__main__':
     set_monitors()
