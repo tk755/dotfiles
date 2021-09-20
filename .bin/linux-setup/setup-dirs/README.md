@@ -4,24 +4,18 @@ This program is used to create and rename the directories and symbolic links in 
 
 ## `setup-dirs/main.py`
 
-This script is the entrypoint of the program. You can run it by either of the following commands:
+This script is the entrypoint of the program. It can be run as a script:
 
 ```bash
 ./main.py
-```
-
-```bash
-python3 main.py
 ```
 
 ## `setup-dirs/xdg.py`
 
 This script retrieves the path of a XDG directory from the `$HOME/.config/user-dirs.dirs` specification file. It can be imported as a Python module or used as a script:
 
-```sh
-tk@kawasaki:~$ ./xdg.py XDG_DOWNLOAD_DIR XDG_DOCUMENTS_DIR
-/home/tk/dwn
-/home/tk/docs
+```bash
+./xdg.py XDG_DOWNLOAD_DIR XDG_DOCUMENTS_DIR
 ```
 
 ## `setup-dirs/config`
