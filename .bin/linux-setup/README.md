@@ -63,12 +63,10 @@ sudo apt-get install git -y
 git clone git@github.com:tk744/bin.git $HOME/bin
 ```
 
-### Debian
-
 Automatically install packages by running the following script:
 
 ```
-sudo ~/bin/linux-setup/packages/apt-install.sh
+sudo ~/bin/linux-setup/packages/install
 ```
 
 ## 5. Set up File System
