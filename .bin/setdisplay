@@ -16,13 +16,12 @@ import os, re, socket, subprocess, sys
 HOSTNAME = socket.gethostname()
 
 # get monitor info from `xrandr`
-proc = subprocess.Popen(['xrandr', '--listactivemonitors'], text=True, stdout=subprocess.PIPE)
+proc = subprocess.Popen(['xrandr'], text=True, stdout=subprocess.PIPE)
 stdout, stderr = proc.communicate()
 
 MONITORS = ['eDP-1', 'DP-1', 'DP-2', 'HDMI-1', 'HDMI-2']
-pattern = '.* (' + '|'.join(MONITORS) + ').*'
-ACTIVE_MONITORS = [re.search(pattern, line).group(1) for line in stdout.split('\n') if re.search(pattern, line)]
-NUM_MONITORS = int(re.search('Monitors: (\d*)', stdout).group(1))
+pattern = '^(' + '|'.join(MONITORS) + ') connected .*'
+CONNECTED_MONITORS = [re.search(pattern, line).group(1) for line in stdout.split('\n') if re.search(pattern, line)]
 
 # get wallpaper directory
 proc = subprocess.Popen(['xdg-user-dir', 'PICTURES'], text=True, stdout=subprocess.PIPE)
@@ -34,7 +33,7 @@ DEFAULT_WALLPAPER = os.path.join(WALLPAPER_DIR, 'default')
 def set_monitors():
     """Set resolution of active monitors, turn off unactive monitors, and set monitor configuration based on hostname."""
     for monitor in MONITORS:    # set resolution of active monitors
-        if monitor in ACTIVE_MONITORS:
+        if monitor in CONNECTED_MONITORS:
             subprocess.call(['xrandr', '--output', monitor, '--auto'])
         else:                   # turn off unactive monitors
             subprocess.call(['xrandr', '--output', monitor, '--off'])
@@ -42,13 +41,13 @@ def set_monitors():
     # set monitor configuration based on hostname
     if HOSTNAME == 'kawasaki':
         subprocess.call(['xrandr', '--output', 'eDP-1', '--mode', '1680x1050'])
-        if 'HDMI-2' in ACTIVE_MONITORS:
+        if 'HDMI-2' in CONNECTED_MONITORS:
             subprocess.call(['xrandr', '--output', 'HDMI-2', '--right-of', 'eDP-1'])
     elif HOSTNAME == 'yamaha':
         subprocess.call(['xrandr', '--output', 'eDP-1', '--mode', '1920x1080'])
-        if 'DP-1' in ACTIVE_MONITORS:
+        if 'DP-1' in CONNECTED_MONITORS:
             subprocess.call(['xrandr', '--output', 'DP-1', '--left-of', 'eDP-1'])
-        if 'DP-2' in ACTIVE_MONITORS:
+        if 'DP-2' in CONNECTED_MONITORS:
             subprocess.call(['xrandr', '--output', 'DP-2', '--left-of', 'eDP-1'])
 
 def _wallpaper_path(name):
@@ -61,7 +60,7 @@ def _wallpaper_path(name):
 def set_wallpapers():
     """Set wallpapers on each active monitor using feh."""
     # get paths to wallpapers
-    wallpaper_names = [HOSTNAME] + list(map(str, range(1, NUM_MONITORS)))
+    wallpaper_names = [HOSTNAME] + list(map(str, range(1, len(CONNECTED_MONITORS))))
     wallpaper_paths = [_wallpaper_path(name) for name in wallpaper_names]
 
     # set wallpapers using `feh`
@@ -78,4 +77,4 @@ if __name__ == '__main__':
 
     # send notification
     SCRIPT_NAME = os.path.basename(sys.argv[0])
-    subprocess.Popen(['notify-send', SCRIPT_NAME, 'Configured the following monitors: ' + ', '.join(ACTIVE_MONITORS), '-u', 'low'])
+    subprocess.Popen(['notify-send', SCRIPT_NAME, 'Configured the following monitors: ' + ', '.join(CONNECTED_MONITORS), '-u', 'low'])
