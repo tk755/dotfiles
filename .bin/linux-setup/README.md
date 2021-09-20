@@ -4,7 +4,7 @@ This is my step-by-step guide on how I set up a fresh installation of Linux. Thi
 
 ## 1. Enable Sudo
 
-Add your username to the sudo group with the following commands:
+Add your username to the sudo group.
 
 ```
 su -
@@ -29,7 +29,7 @@ deb http://deb.debian.org/debian/ bullseye-backports main non-free contrib
 deb-src http://deb.debian.org/debian/ bullseye-backports main non-free contrib
 ```
 
-Finally update the apt cache with the following command:
+Then update the apt cache.
 
 ```
 sudo apt-get update
@@ -37,7 +37,7 @@ sudo apt-get update
 
 ## 3. Add GitHub SSH Key
 
-Generate a new SSH key from your email with the following commands:
+Generate a new SSH key from your email.
 
 ```
 ssh-keygen -t rsa -b 4096 -C tkbot744@gmail.com
@@ -45,7 +45,7 @@ eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_rsa
 ```
 
-Copy the SSH public key to your clipboard with the following command:
+Copy the SSH public key to your clipboard.
 
 ```
 sudo apt-get install xclip -y
@@ -56,7 +56,7 @@ Create a new SSH key in [GitHub](https://github.com/settings/keys) and paste the
 
 ## 4. Install Packages
 
-Clone this repository from GitHub into `~/bin` with the following commands:
+Clone this repository from GitHub into `~/bin`.
 
 ```
 sudo apt-get install git -y
@@ -71,10 +71,29 @@ Automatically install packages by running the following script:
 sudo ~/bin/linux-setup/packages/apt-install.sh
 ```
 
+## 5. Set up File System
 
-## 5. Look and Feel
+Automatically create symbolic links and rename directories in the home directory by running the following script:
 
-Clone and setup the dotfiles bare-respository from GitHub with the following:
+```
+~/bin/linux-setup/setup-dirs/main.py
+```
+
+The Dropbox CLI should have been installed in the previous step. Now install the Dropbox daemon, connect your account, and start syncing your files with the single following command:
+
+```
+dropbox start -i
+```
+
+It may take some time for Dropbox to begin downloading your files but there is no need to wait for it. However you can monitor the progress of this process with the following command:
+
+```
+watch -n 1 "df / -h ; echo ; dropbox status"
+```
+
+## 6. Look and Feel
+
+Clone and setup the dotfiles bare-respository from GitHub.
 
 ```
 git clone --bare git@github.com:tk744/dotfiles.git $HOME/.dotfiles
@@ -88,7 +107,7 @@ rm ~/.bashrc
 dotfiles checkout
 ```
 
-Open LXAppearance with the following command:
+Launch LXAppearance.
 
 ```
 lxappearance
@@ -99,30 +118,10 @@ Below are my default LXAppearance settings. They should all have been downloaded
 - Default font - **Fixedsys Excelsior 3.01-L2** size **12**
 - Icon theme - **DamaDamas**
 
-## 6. Set up File System
-
-Automatically create symbolic links and rename directories in the home directory by running the following script:
-
-```
-~/bin/linux-setup/setup-dirs/main.py
-```
-
-Dropbox should have been installed in the previous step. Install the Dropbox daemon, connect your account, and start syncing your files with the following command:
-
-```
-dropbox start -i
-```
-
-It may take some time for Dropbox to begin downloading your files but there is no need to wait for it. You can monitor the progress of this process with the following command:
-
-```
-watch -n 1 "df / -h ; echo ; dropbox status"
-```
-
 ## 7. Login
 
 Logout and select `i3` at the login screen.
 
-Finally:
-- Sign into Firefox to sync passwords
-- Sign into Visual Studio Settings Sync
+Complete the following tasks to finish setting up your new machine:
+- Sign into Firefox to sync passwords.
+- Sign into Visual Studio Settings Sync.
