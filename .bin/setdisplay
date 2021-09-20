@@ -1,55 +1,82 @@
-#!/usr/bin/env bash
+#!/usr/bin/env python3
 
-# turn external monitors on if connected, off otherwise
+"""
+This script configures my monitors by performing the following tasks:
 
-if [[ -n $(xrandr | grep '^DP-1 connected') ]] ; then
-    xrandr --output DP-1 --auto
-else
-    xrandr --output DP-1 --off
-fi
+- Disabling inactive monitors.
+- Setting resolution of active monitors to max.
+- Setting resolution of laptop screen based on hostname.
+- Setting placement of monitors based on hostname.
+- Setting wallpapers based on hostname.
+"""
 
-if [[ -n $(xrandr | grep '^DP-2 connected') ]] ; then
-    xrandr --output DP-2 --auto
-else
-    xrandr --output DP-2 --off
-fi
+import os, re, socket, subprocess, sys
 
-if [[ -n $(xrandr | grep '^HDMI-1 connected') ]] ; then
-    xrandr --output HDMI-1 --auto
-else
-    xrandr --output HDMI-1 --off
-fi
+# get hostname
+HOSTNAME = socket.gethostname()
 
-if [[ -n $(xrandr | grep '^HDMI-2 connected') ]] ; then
-    xrandr --output HDMI-2 --auto
-else
-    xrandr --output HDMI-2 --off
-fi
+# get monitor info from `xrandr`
+proc = subprocess.Popen(['xrandr', '--listactivemonitors'], text=True, stdout=subprocess.PIPE)
+stdout, stderr = proc.communicate()
 
-# set monitor configuration
+MONITORS = ['eDP-1', 'DP-1', 'DP-2', 'HDMI-1', 'HDMI-2']
+pattern = '.* (' + '|'.join(MONITORS) + ').*'
+ACTIVE_MONITORS = [re.search(pattern, line).group(1) for line in stdout.split('\n') if re.search(pattern, line)]
+NUM_MONITORS = int(re.search('Monitors: (\d*)', stdout).group(1))
 
-case $HOSTNAME in
-    kawasaki)
-        #xrandr --output eDP-1 --mode 2560x1600
-        #xrandr --output eDP-1 --mode 1920x1200
-        xrandr --output eDP-1 --mode 1680x1050
-        xrandr --output HDMI-2 --right-of eDP-1
-        ;;
-    yamaha)
-        xrandr --output eDP-1 --mode 1920x1080
-        xrandr --output DP-1 --left-of eDP-1
-        xrandr --output DP-2 --left-of eDP-1
-        ;;
-esac
+# get wallpaper directory
+proc = subprocess.Popen(['xdg-user-dir', 'PICTURES'], text=True, stdout=subprocess.PIPE)
+stdout, stderr = proc.communicate()
 
-# set background image
+WALLPAPER_DIR = os.path.join(stdout.strip(), 'wallpapers/active/')
+DEFAULT_WALLPAPER = os.path.join(WALLPAPER_DIR, 'default')
 
-PIC_DIR=$(xdg-user-dir PICTURES)
+def set_monitors():
+    """Set resolution of active monitors, turn off unactive monitors, and set monitor configuration based on hostname."""
+    for monitor in MONITORS:    # set resolution of active monitors
+        if monitor in ACTIVE_MONITORS:
+            subprocess.Popen(['xrandr', '--output', monitor, '--auto'])
+        else:                   # turn off unactive monitors
+            subprocess.Popen(['xrandr', '--output', monitor, '--off'])
 
-if [ -e $PIC_DIR/wallpapers/active/$HOSTNAME* ] ; then
-    IMG_PATH=$PIC_DIR/wallpapers/active/$HOSTNAME
-elif [ -e $PIC_DIR/wallpapers/active/default* ] ; then
-    IMG_PATH=$PIC_DIR/wallpapers/active/$default
-fi
+    # set monitor configuration based on hostname
+    if HOSTNAME == 'kawasaki':
+        subprocess.Popen(['xrandr', '--output', 'eDP-1', '--mode', '1680x1050'])
+        if 'HDMI-2' in ACTIVE_MONITORS:
+            subprocess.Popen(['xrandr', '--output', 'HDMI-2', '--right-of', 'eDP-1'])
+    elif HOSTNAME == 'yamaha':
+        subprocess.Popen(['xrandr', '--output', 'eDP-1', '--mode', '1920x1080'])
+        if 'DP-1' in ACTIVE_MONITORS:
+            subprocess.Popen(['xrandr', '--output', 'DP-1', '--left-of', 'eDP-1'])
+        if 'DP-2' in ACTIVE_MONITORS:
+            subprocess.Popen(['xrandr', '--output', 'DP-2', '--left-of', 'eDP-1'])
 
-feh --bg-fill $IMG_PATH
+def _wallpaper_path(name):
+    """Return path to wallpaper if it exists, otherwise return default wallpaper path."""
+    if os.path.isfile(os.path.join(WALLPAPER_DIR, name)):
+        return os.path.join(WALLPAPER_DIR, name)
+    else:
+        return DEFAULT_WALLPAPER
+
+def set_wallpapers():
+    """Set wallpapers on each active monitor using feh."""
+    # get paths to wallpapers
+    wallpaper_names = [HOSTNAME] + list(map(str, range(1, NUM_MONITORS)))
+    wallpaper_paths = [_wallpaper_path(name) for name in wallpaper_names]
+
+    # set wallpapers using `feh`
+    feh_command = ['feh']
+    for path in wallpaper_paths:
+        feh_command.append('--bg-fill')
+        feh_command.append(path)
+
+    print(feh_command)
+    subprocess.Popen(feh_command)
+
+if __name__ == '__main__':
+    set_monitors()
+    set_wallpapers()
+
+    # send notification
+    SCRIPT_NAME = os.path.basename(sys.argv[0])
+    subprocess.Popen(['notify-send', SCRIPT_NAME, 'Configured the following monitors: ' + ', '.join(ACTIVE_MONITORS), '-u', 'low'])
