@@ -216,16 +216,16 @@ bindsym $mod+$shift+$olkb04 nop
 bindsym $mod+$olkb05 exec spotify
 bindsym $mod+$shift+$olkb05 nop
 
-bindsym $mod+$olkb14 exec firefox
-bindsym $mod+$shift+$olkb14 firefox -private-window 
+bindsym $mod+$olkb14 exec firefox --new-window
+bindsym $mod+$shift+$olkb14 exec firefox --new-window --private-window 
 
-bindsym $mod+$olkb15 exec i3-sensible-terminal
+bindsym $mod+$olkb15 exec thunar
 bindsym $mod+$shift+$olkb15 nop
 
 bindsym $mod+$olkb24 exec code
 bindsym $mod+$shift+$olkb24 exec code ~/cornell
 
-bindsym $mod+$olkb25 exec thunar
+bindsym $mod+$olkb25 exec i3-sensible-terminal
 bindsym $mod+$shift+$olkb25 nop
 
 
