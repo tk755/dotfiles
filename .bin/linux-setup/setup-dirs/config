@@ -1,4 +1,4 @@
-~/code
+~/code = ~/Dropbox/code
 ~/cornell = ~/Dropbox/cornell
 
 XDG_DOWNLOAD_DIR: ~/dwn
