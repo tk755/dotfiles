@@ -3,11 +3,11 @@
 """
 This script configures my monitors by performing the following tasks:
 
-- Disabling inactive monitors.
-- Setting resolution of active monitors to max.
-- Setting resolution of laptop screen based on hostname.
-- Setting placement of monitors based on hostname.
-- Setting wallpapers based on hostname.
+1. Disables inactive monitors.
+2. Sets resolution of laptop screen based on hostname.
+3. Sets resolution of active monitors to max.
+4. Sets placement of monitors.
+5. Sets wallpapers based on hostname.
 """
 
 import os, re, socket, subprocess, sys
@@ -15,40 +15,34 @@ import os, re, socket, subprocess, sys
 # get hostname
 HOSTNAME = socket.gethostname()
 
-# get monitor info from `xrandr`
-proc = subprocess.Popen(['xrandr'], text=True, stdout=subprocess.PIPE)
-stdout, stderr = proc.communicate()
+# get list of connected and disconnected monitors from `xrandr`
+stdout, _ = subprocess.Popen(['xrandr'], text=True, stdout=subprocess.PIPE).communicate()
+CONNECTED_MONITORS = [re.search('^(.*) connected .*', line).group(1) for line in stdout.split('\n') if re.search('^(.*) connected .*', line)]
+DISCONNECTED_MONITORS = [re.search('^(.*) disconnected .*', line).group(1) for line in stdout.split('\n') if re.search('^(.*) disconnected .*', line)]
 
-MONITORS = ['eDP-1', 'DP-1', 'DP-2', 'HDMI-1', 'HDMI-2']
-pattern = '^(' + '|'.join(MONITORS) + ') connected .*'
-CONNECTED_MONITORS = [re.search(pattern, line).group(1) for line in stdout.split('\n') if re.search(pattern, line)]
+def set_monitors():
+    # disable monitors
+    for monitor in DISCONNECTED_MONITORS:
+        subprocess.call(['xrandr', '--output', monitor, '--off'])
+
+    # set resolution and position of all active monitors
+    for idx, monitor in enumerate(CONNECTED_MONITORS):
+        # set resolution of display
+        if idx == 0 and HOSTNAME == 'kawasaki':
+            subprocess.call(['xrandr', '--output', monitor, '--mode', '1680x1050'])
+        elif idx == 0 and HOSTNAME == 'yamaha':
+            subprocess.call(['xrandr', '--output', monitor, '--mode', '1920x1080'])
+        else:
+            subprocess.call(['xrandr', '--output', monitor, '--auto'])
+        # position monitors from left to right
+        if idx > 0:
+            subprocess.call(['xrandr', '--output', monitor, '--right-of', CONNECTED_MONITORS[idx-1]])
 
 # get wallpaper directory
-proc = subprocess.Popen(['xdg-user-dir', 'PICTURES'], text=True, stdout=subprocess.PIPE)
-stdout, stderr = proc.communicate()
+stdout, _ = subprocess.Popen(['xdg-user-dir', 'PICTURES'], text=True, stdout=subprocess.PIPE).communicate()
 
 WALLPAPER_DIR = os.path.join(stdout.strip(), 'wallpapers/active/')
 DEFAULT_WALLPAPER = os.path.join(WALLPAPER_DIR, 'default')
-
-def set_monitors():
-    """Set resolution of active monitors, turn off unactive monitors, and set monitor configuration based on hostname."""
-    for monitor in MONITORS:    # set resolution of active monitors
-        if monitor in CONNECTED_MONITORS:
-            subprocess.call(['xrandr', '--output', monitor, '--auto'])
-        else:                   # turn off unactive monitors
-            subprocess.call(['xrandr', '--output', monitor, '--off'])
-
-    # set monitor configuration based on hostname
-    if HOSTNAME == 'kawasaki':
-        subprocess.call(['xrandr', '--output', 'eDP-1', '--mode', '1680x1050'])
-        if 'HDMI-2' in CONNECTED_MONITORS:
-            subprocess.call(['xrandr', '--output', 'HDMI-2', '--right-of', 'eDP-1'])
-    elif HOSTNAME == 'yamaha':
-        subprocess.call(['xrandr', '--output', 'eDP-1', '--mode', '1920x1080'])
-        if 'DP-1' in CONNECTED_MONITORS:
-            subprocess.call(['xrandr', '--output', 'DP-1', '--left-of', 'eDP-1'])
-        if 'DP-2' in CONNECTED_MONITORS:
-            subprocess.call(['xrandr', '--output', 'DP-2', '--left-of', 'eDP-1'])
 
 def _wallpaper_path(name):
     """Return path to wallpaper if it exists, otherwise return default wallpaper path."""
@@ -73,7 +67,7 @@ def set_wallpapers():
 
 if __name__ == '__main__':
     set_monitors()
-    set_wallpapers()
+    # set_wallpapers()
 
     # send notification
     SCRIPT_NAME = os.path.basename(sys.argv[0])
