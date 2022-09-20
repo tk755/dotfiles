@@ -22,7 +22,7 @@ DISCONNECTED_MONITORS = [re.search('^(.*) disconnected .*', line).group(1) for l
 
 def set_monitors():
     # disable monitors
-    for monitor in DISCONNECTED_MONITORS:
+    for monitor in CONNECTED_MONITORS + DISCONNECTED_MONITORS:
         subprocess.call(['xrandr', '--output', monitor, '--off'])
 
     # set resolution and position of all active monitors
