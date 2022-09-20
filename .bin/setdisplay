@@ -67,7 +67,7 @@ def set_wallpapers():
 
 if __name__ == '__main__':
     set_monitors()
-    # set_wallpapers()
+    set_wallpapers()
 
     # send notification
     SCRIPT_NAME = os.path.basename(sys.argv[0])
