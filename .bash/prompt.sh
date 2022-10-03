@@ -76,12 +76,14 @@ function git_segment {
     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
 }
 
-# returns python venv environment
+# returns virtual environment
 function env_segment {
     local env
 
     if [[ -n $VIRTUAL_ENV ]]; then
         env=$(basename $VIRTUAL_ENV)
+    elif [[ -n $CONDA_DEFAULT_ENV ]]; then
+        env=$(basename $CONDA_DEFAULT_ENV)
     fi
 
     echo ${env}
