@@ -115,21 +115,20 @@ function set_prompt {
 
     # assemble left and right parts of the header and the prompt
     local left right prompt
-    # left+="${ANSI_BLUE}${history}"                  # history number
-    left+="${ANSI_BLUE}\A"                  # timestamp (hh:mm 24h)
+    left+="${ANSI_BLUE}\A"                          # timestamp (hh:mm 24h)
     left+="${ANSI_WHITE}${ANSI_BOLD} as "
-    left+="${ANSI_BOLD}${ANSI_RED}\u"   # user
+    left+="${ANSI_BOLD}${ANSI_RED}\u"               # user
     left+="${ANSI_BOLD}${ANSI_WHITE} at "
-    left+="${ANSI_LIGHT_GREEN}\h"           # hostname
+    left+="${ANSI_LIGHT_GREEN}\h"                   # hostname
     left+="${ANSI_WHITE} in "
-    left+="${ANSI_YELLOW}\w"                    # working directory
+    left+="${ANSI_YELLOW}\w"                        # working directory
     if [[ -n ${git} ]]; then
         left+="${ANSI_WHITE} on "
-        left+="${ANSI_LIGHT_CYAN}${git}"                   # git branch
+        left+="${ANSI_LIGHT_CYAN}${git}"            # git branch
     fi
     if [[ -n ${env} ]]; then
         left+="${ANSI_WHITE} as "
-        left+="${ANSI_MAGENTA}${env}"                # chroot/venv
+        left+="${ANSI_MAGENTA}${env}"               # chroot/venv
     fi
     left+="${ANSI_RESET}"
 
@@ -142,7 +141,10 @@ function set_prompt {
 
     # assemble header with filler space between left and right parts and prompt
     # https://superuser.com/a/517110
-    local right_offset=51 # this is to compensate for escape sequences
+    local right_offset=51 # compensate for escape sequences
+    if [[ $right == *"µ"* ]]; then
+        right_offset=$(( ${right_offset} + 1 ))
+    fi
     PS1=$(printf "%*s\r%s\n${prompt}" "$(( $(tput cols) + right_offset ))" "${right}" "${left}")
 
     # reset the timer
