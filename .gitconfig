@@ -1,5 +1,7 @@
 [user]
+	name = tk
 	email = tushar.54k@gmail.com
-	name = Tushar Khan
+[alias]
+	l = log --pretty='%C(yellow)%h %C(cyan)%cd %C(green)%aN%C(auto)%d %Creset%s' --graph --date=relative --date-order
 [pull]
-	rebase = false
+	rebase = true
