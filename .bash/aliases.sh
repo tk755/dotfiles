@@ -1,6 +1,3 @@
-#!/usr/bin/env bash
-# Defines bash aliases
-
 # commands
 alias title='clear; source ~/.bashrc'
 alias pdfconvert='libreoffice --headless --convert-to pdf' # file
