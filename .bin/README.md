@@ -1,28 +1,5 @@
-# `~/bin/`
+# JULY 2025 UPDATE
 
-This repository is a persistent copy of my `~/bin/` directory, which contains all of my personal setup, configuration, and utility scripts.
+This repo is now obsolete after moving all scripts to [dotfiles ~/.bin](https://github.com/tk744/dotfiles/tree/master/.bin).
 
-## Using this Repository
-
-### Clone
-
-Using SSH:
-```
-git clone git@github.com:tk744/bin.git $HOME/bin
-```
-
-### Reset
-
-Revert all files that are being tracked to what is stored in the origin (i.e. GitHub). This is a locally destructive action.
-```
-git fetch origin
-git reset --hard origin/master
-```
-
-## Scripts
-
-- `laptopkb` automatically enables or disables the laptop keyboard depending on whether an OLKB keyboard is connected.
-
-- `sc` launches an screenshot selection tool.
-
-- `setdisplay` configures the monitors by setting their resolution and wallpaper based on the hostname of the machine.
+The only remaining useful scripts here are my linux setup scripts in `linux-setup`. These needs to be migrated before after which **this repo will be deleted**.
