@@ -34,9 +34,9 @@ def set_monitors():
             subprocess.call(['xrandr', '--output', monitor, '--mode', '1920x1080'])
         else:
             subprocess.call(['xrandr', '--output', monitor, '--auto'])
-        # position monitors from left to right
+        # position monitors from right to left
         if idx > 0:
-            subprocess.call(['xrandr', '--output', monitor, '--right-of', CONNECTED_MONITORS[idx-1]])
+            subprocess.call(['xrandr', '--output', monitor, '--left-of', CONNECTED_MONITORS[idx-1]])
 
 # get wallpaper directory
 stdout, _ = subprocess.Popen(['xdg-user-dir', 'PICTURES'], text=True, stdout=subprocess.PIPE).communicate()
