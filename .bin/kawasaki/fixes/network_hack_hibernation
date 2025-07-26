@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # source: https://wiki.debian.org/InstallingDebianOn/Apple/MacBookPro/Early-2015-13-inch
 
-# /usr/lib/systemd/system-sleep/network-hibernation
+# /usr/lib/systemd/system-sleep/network_hack_hibernation
 #
 # Restores network controller functionality after wakeup from  hibernation
 #
