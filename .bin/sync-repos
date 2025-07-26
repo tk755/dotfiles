@@ -1,0 +1,123 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# config
+GITHUB_USER="tk755"
+REPO_DIR="$HOME/repos"
+
+# repo patterns to exclude (via substring matches)
+REPO_EXCLUDE=(
+    "dotfiles"
+    "CS-3110"
+)
+
+# default flags
+INCLUDE_ARCHIVED=false
+SHOW_SKIPPED=false
+
+# functions
+is_excluded() {
+    local repo="$1"
+    for pattern in "${REPO_EXCLUDE[@]}"; do
+        case "$repo" in
+            *"$pattern"*) return 0 ;;
+        esac
+    done
+    return 1
+}
+
+print_status() {
+    # usage: print_status "repo" "message"
+    printf "%-32s %s" "$1" "$2"
+}
+
+print_status_ln() {
+    # usage: print_status_ln "repo" "message"
+    print_status "$1" "$2"
+    printf "\n"
+}
+
+pull_repo() {
+    local repo="$1"
+    cd "$repo"
+
+    git fetch --quiet
+    LOCAL=$(git rev-parse @)
+    REMOTE=$(git rev-parse @{u} 2>/dev/null || echo "")
+    BASE=$(git merge-base @ @{u} 2>/dev/null || echo "")
+
+    if [ -z "$REMOTE" ]; then
+        print_status_ln "$repo" "No remote tracking branch"
+    elif [ "$LOCAL" = "$REMOTE" ]; then
+        print_status_ln "$repo" "Already up-to-date"
+    elif [ "$LOCAL" = "$BASE" ]; then
+        print_status "$repo" "Pulling changes ... "
+        if git pull --ff-only --quiet; then
+            echo "SUCCESS"
+        else
+            echo "FAILED"
+        fi
+    else
+        print_status_ln "$repo" "Diverged from upstream"
+    fi
+
+    cd "$REPO_DIR"
+}
+
+clone_repo() {
+    local repo="$1"
+    print_status "$repo" "Cloning ... "
+    if true || gh repo clone "$GITHUB_USER/$repo" "$repo" > /dev/null 2>&1; then
+        echo "SUCCESS"
+    else
+        echo "FAILED"
+    fi
+}
+
+skip_message() {
+    local reason="$1"
+    local repo="$2"
+    if [ "$SHOW_SKIPPED" = true ]; then
+        print_status_ln "$repo" "Skipped ($reason)"
+    fi
+}
+
+# parse args
+for arg in "$@"; do
+    case "$arg" in
+        --include-archived) INCLUDE_ARCHIVED=true ;;
+        --show-skipped) SHOW_SKIPPED=true ;;
+        *) echo "Unknown argument: $arg" && exit 1 ;;
+    esac
+done
+
+echo -e "\e[1mSyncing all public and private repositories for $GITHUB_USER to $REPO_DIR\e[0m"
+
+# check auth
+if ! gh auth status > /dev/null 2>&1; then
+    echo "You must run 'gh auth login' first."
+    exit 1
+fi
+
+mkdir -p "$REPO_DIR"
+cd "$REPO_DIR"
+
+# fetch repo names and archive status as tsv
+repo_data=$(gh repo list "$GITHUB_USER" --limit 1000 --json name,isArchived \
+  --jq '.[] | [.name, (.isArchived | tostring | ascii_downcase)] | @tsv')
+
+# loop
+echo "$repo_data" | while IFS=$'\t' read -r repo is_archived; do
+    if [ -d "$repo/.git" ]; then
+        pull_repo "$repo"
+    elif [ "$is_archived" = "true" ] && [ "$INCLUDE_ARCHIVED" = false ]; then
+        skip_message "archived" "$repo"
+    elif is_excluded "$repo"; then
+        skip_message "excluded" "$repo"
+    else
+        clone_repo "$repo"
+    fi
+done
+
+echo -e "\e[1m\e[32mRepository sync complete\e[0m"
