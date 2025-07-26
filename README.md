@@ -7,7 +7,7 @@ This repository tracks my Linux scripts and config files, managed as a [bare rep
 Use the `~/.bin/bootstrap` script to clone and check out this repo in a new or existing environment:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/tk744/dotfiles/main/.bin/bootstrap)
+bash <(curl -fsSL https://raw.githubusercontent.com/tk755/dotfiles/main/.bin/bootstrap)
 ```
 
 ### Optional flags:
@@ -15,9 +15,9 @@ bash <(curl -fsSL https://raw.githubusercontent.com/tk744/dotfiles/main/.bin/boo
 - `--force`: Overwrites conflicting files (like the default `.bashrc`).
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/tk744/dotfiles/main/.bin/bootstrap) --headless
-bash <(curl -fsSL https://raw.githubusercontent.com/tk744/dotfiles/main/.bin/bootstrap) --force
-bash <(curl -fsSL https://raw.githubusercontent.com/tk744/dotfiles/main/.bin/bootstrap) --headless --force
+bash <(curl -fsSL https://raw.githubusercontent.com/tk755/dotfiles/main/.bin/bootstrap) --headless
+bash <(curl -fsSL https://raw.githubusercontent.com/tk755/dotfiles/main/.bin/bootstrap) --force
+bash <(curl -fsSL https://raw.githubusercontent.com/tk755/dotfiles/main/.bin/bootstrap) --headless --force
 ```
 
 # 🔧 Using the Repository
