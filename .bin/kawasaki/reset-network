@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# This program reconnects the the network module to the kernel.
+# Useful for reconnecting to wifi.
+
+# Verify that script is being executed by root
+if [ $USER != 'root' ]; then
+    echo -e You must be "\e[1m\e[31mroot\e[0m" to run this script
+    exit
+fi
+
+modprobe -r brcmfmac
+modprobe brcmfmac
+
+nmcli device status

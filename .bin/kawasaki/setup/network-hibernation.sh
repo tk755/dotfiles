@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# source: https://wiki.debian.org/InstallingDebianOn/Apple/MacBookPro/Early-2015-13-inch
+
+# /usr/lib/systemd/system-sleep/network-hibernation
+#
+# Restores network controller functionality after wakeup from  hibernation
+#
+# Tested on MacBookPro12,1
+# BCM43602 WiFi network controller
+
+if [ "$2" = "hibernate" ]; then
+    case "$1" in
+        pre)
+            if lsmod | grep -q brcmfmac; then
+                modprobe -r brcmfmac
+            fi
+            ;;
+        post)
+            modprobe brcmfmac
+            ;;
+    esac
+fi
