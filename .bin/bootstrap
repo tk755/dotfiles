@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+# bootstrap - dotfiles installer using a bare git repo
+# For usage instructions, run `bootstrap --help`
+
+set -euo pipefail
+
+REPO_URL="git@github.com:tk744/dotfiles.git"
+DOTFILES_DIR="$HOME/.dotfiles"
+
+# paths to exclude in headless install
+HEADLESS_EXCLUDES=(
+    ".config/i3"
+    ".fonts"
+    ".icons"
+    ".themes"
+    ".Xresources"
+)
+
+# default flags
+HEADLESS=false
+FORCE=false
+
+print_help() {
+    cat <<EOF
+Usage: bootstrap [OPTIONS]
+
+Options:
+    --headless     Install only headless-compatible files (exclude GUI-related dotfiles)
+    --force        Force checkout (overwrite conflicting files)
+    --help         Show this help message
+EOF
+}
+
+# dotfiles git wrapper function
+dotfiles() {
+    git --git-dir="$DOTFILES_DIR" --work-tree="$HOME" "$@"
+}
+
+# parse arguments
+for arg in "$@"; do
+    case "$arg" in
+        --headless) HEADLESS=true ;;
+        --force) FORCE=true ;;
+        --help) print_help ; exit 0 ;;
+        *) echo "Unknown argument: $arg" && exit 1 ;;
+    esac
+done
+
+# clone if necessary
+if [ ! -d "$DOTFILES_DIR" ]; then
+    echo -e "\e[1mCloning bare repo $REPO_URL to $DOTFILES_DIR\e[0m"
+    git clone --bare "$REPO_URL" "$DOTFILES_DIR"
+else
+    echo -e "\e[1mUsing existing bare repo at $DOTFILES_DIR\e[0m"
+fi
+
+# configure repo
+dotfiles config --local status.showUntrackedFiles no
+dotfiles push --set-upstream origin main &> /dev/null
+dotfiles config core.sparseCheckout true
+
+# sparse checkout configuration
+SPARSE_FILE="$DOTFILES_DIR/info/sparse-checkout"
+mkdir -p "$(dirname "$SPARSE_FILE")"
+echo "/*" > "$SPARSE_FILE"
+if [ "$HEADLESS" = true ]; then
+    echo -e "\e[1mConfiguring sparse checkout for headless install\e[0m"
+    echo "/*" > "$SPARSE_FILE"
+    for path in "${HEADLESS_EXCLUDES[@]}"; do
+        echo "!/$path" >> "$SPARSE_FILE"
+    done
+fi
+
+# checkout
+echo -e "\e[1mChecking out files to $HOME\e[0m"
+if [ "$FORCE" = true ]; then
+    dotfiles checkout -f
+else
+    if ! dotfiles checkout; then
+        echo "Remove conflicting files or rerun with --force to overwrite them."
+        exit 1
+    fi
+fi
+
+# status message
+echo -e "\e[1mInstallation complete\e[0m"
+dotfiles status | grep "sparse checkout"

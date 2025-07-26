@@ -1,57 +1,55 @@
-# Managing Dotfiles
-I use the [bare git repository](https://www.atlassian.com/git/tutorials/dotfiles) method to manage my dotfiles.
+# Linux Dotfiles
 
-## Creating a Bare Repository
+This repository tracks my Linux scripts and config files, collectively referred to as *dotfiles*.
 
-1. Create a bare git repository called `$HOME/.dotfiles` to track the dotfiles you want to save.
-```bash
-git init --bare $HOME/.dotfiles
-```
+## Managing this Repository
 
-2. Define an alias called `dotfiles` to interact with this repository and add it to `$HOME/.bash_aliases` so it is available in any terminal session.
-```bash
-alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-echo "alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'" >> $HOME/.bash_aliases
-```
+This repository is managed as a [bare repository](https://www.atlassian.com/git/tutorials/dotfiles) using [sparse checkout](https://git-scm.com/docs/git-sparse-checkout).
 
-3. Configure the bare repository to not show untracked files.
-```bash
-dotfiles config --local status.showUntrackedFiles no
-```
+### Installation
 
-4. [Track your dotfiles!](#tracking-dotfiles)
+- The `.bin/bootstrap` script is used to set up this repository in a new or existing environment:
 
-## Cloning this Repository
+    ```bash
+    bash <(curl -fsSL https://raw.githubusercontent.com/tk744/dotfiles/main/.bin/bootstrap)
+    ```
 
-1. Clone this repository into a bare repository called `$HOME/.dotfiles`.
-```bash
-git clone --bare git@github.com:TusharK54/Dotfiles.git $HOME/.dotfiles
-```
+- For headless environments (like servers or WSL), use the `--headless` option to exclude GUI-related dotfiles:
 
-2. Define an alias called `dotfiles` to interact with this repository. This alias is already defined in the `.bash_aliases` file of the cloned repository, so there is no need to copy it over.
-```bash
-alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-```
+    ```bash
+    bash <(curl -fsSL https://raw.githubusercontent.com/tk744/dotfiles/main/.bin/bootstrap) --headless
+    ```
 
-3. Configure the bare repository to not show untracked files and to set the upstream repository.
-```bash
-dotfiles config --local status.showUntrackedFiles no
-dotfiles push --set-upstream origin master
-```
+- To forcefully overwrite conflicting files (like the default `.bashrc`), use the `--force` option:
 
-4. Checkout the dotfiles from the bare repository to your `$HOME` directory. This will fail if you have dotfiles in your `$HOME` directory which will get overwritten by the dotfiles in the bare repository. You will need to delete or move those dotfiles and try again.
-```bash
-dotfiles checkout
-```
+    ```bash
+    bash <(curl -fsSL https://raw.githubusercontent.com/tk744/dotfiles/main/.bin/bootstrap) --force
+    ``` 
 
-5. [Track your dotfiles!](#tracking-dotfiles)
+- The `--headless` and `--force` options can also be combined if needed:
 
-## <a name="tracking-dotfiles">Tracking Dotfiles</a>
+    ```bash
+    bash <(curl -fsSL https://raw.githubusercontent.com/tk744/dotfiles/main/.bin/bootstrap) --headless --force
+    ```
 
-If you followed the steps above, you will have created a bare repository in the `$HOME/.dotfiles` directory which track your selected dotfiles. You can update this repository using the `dotfiles` alias, which is just a glorified `git` command.
+### Pushing and Pulling Changes
+
+Use the `dotfiles` alias as a glorified `git` command to manage the repository in the usual way.
+
 ```bash
 dotfiles status
 dotfiles add $HOME/.bashrc
-dotfiles commit -m 'Add .bashrc'
+dotfiles commit -m 'updated .bashrc'
 ```
-By default, the `dotfiles` alias does not show files that are untracked. This is to prevent your entire home directory from being added to the repository. You must explicitly add new files you want to track with `dotfiles add`, even if those files are in a directory that is already being tracked.
+
+**NOTE:** You will need to reload your shell for the alias to take effect after installation.
+
+## Orgainization
+
+### Scripts
+
+User-level scripts are stored in `~/.bin/`, organized as follows:
+- `~/.bin/` — scripts shared across all machines
+- `~/.bin/<hostname>/` — scripts specific to a particular machine
+
+Both directories are added to `$PATH` allowing their scripts to be executed from anywhere. The `~/.bin/<hostname>/` directory takes precedence over `~/.bin/`, allowing machine-specific scripts to override shared ones of the same name.
