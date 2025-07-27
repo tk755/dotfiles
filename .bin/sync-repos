@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# sync-repos - sync all local repos non-destructively and optionally clone all missing repos from GitHub
-# For usage instructions, run `sync-repos --help`
 
 set -euo pipefail
 
@@ -8,8 +6,8 @@ set -euo pipefail
 GITHUB_USER="tk755"
 REPO_DIR="$HOME/repos"
 
-# repo patterns to exclude (via substring matches)
-REPO_EXCLUDE=(
+# patterns to exclude during cloning (via substring matches)
+CLONE_EXCLUDES=(
     "dotfiles"
 )
 
@@ -23,16 +21,28 @@ print_help() {
 Usage: sync-repos [OPTIONS]
 
 Options:
-    --clone             Clone any missing repositories from GitHub
-    --include-skipped   Clone archived and excluded repositories (used with --clone)
+    --clone             Clone missing repositories from GitHub
     --show-skipped      Show which repositories were skipped (used with --clone)
+    --include-skipped   Clone archived and excluded repositories (used with --clone)
     --help              Show this help message
+
+Exclude patterns: 
+    ${CLONE_EXCLUDES[*]}
+
+Description:
+    Fetches and pulls all git repositories in $REPO_DIR.
+    
+    Use --clone to clone all missing repositories from GitHub user $GITHUB_USER. 
+    Archived repositories or those matching any exclude pattern are skipped by default. 
+    Use --show-skipped to display skipped repositories, or --include-skipped to clone them anyway.
+    
+    This script no destructive changes to repositories, either locally or remotely.
 EOF
 }
 
 is_excluded() {
     local repo="$1"
-    for pattern in "${REPO_EXCLUDE[@]}"; do
+    for pattern in "${CLONE_EXCLUDES[@]}"; do
         case "$repo" in
             *"$pattern"*) return 0 ;;
         esac
@@ -136,8 +146,8 @@ skip_message() {
 for arg in "$@"; do
     case "$arg" in
         --clone)            CLONE=true ;;
-        --include-skipped)  INCLUDE_SKIPPED=true ;;
         --show-skipped)     SHOW_SKIPPED=true ;;
+        --include-skipped)  INCLUDE_SKIPPED=true ;;
         --help)             print_help ; exit 0 ;;
         *) echo "Unknown argument: $arg" && exit 1 ;;
     esac
