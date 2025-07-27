@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# sync-repos - script to sync all public and private GitHub repositories
+# sync-repos - sync all local repos non-destructively and optionally clone all missing repos from GitHub
 # For usage instructions, run `sync-repos --help`
 
 set -euo pipefail
@@ -11,10 +11,10 @@ REPO_DIR="$HOME/repos"
 # repo patterns to exclude (via substring matches)
 REPO_EXCLUDE=(
     "dotfiles"
-    "CS-3110"
 )
 
 # default flags
+CLONE=false
 INCLUDE_SKIPPED=false
 SHOW_SKIPPED=false
 
@@ -23,8 +23,9 @@ print_help() {
 Usage: sync-repos [OPTIONS]
 
 Options:
-    --include-skipped   Include archived and excluded repositories
-    --show-skipped      Show status messages for skipped repositories
+    --clone             Clone any missing repositories from GitHub
+    --include-skipped   Clone archived and excluded repositories (used with --clone)
+    --show-skipped      Show which repositories were skipped (used with --clone)
     --help              Show this help message
 EOF
 }
@@ -48,10 +49,10 @@ print_status() {
     # color emoji based on type
     local color
     case "$emoji" in
-        "+" )  color="\e[35m" ;;  # purple
-        "↓" )  color="\e[36m" ;;  # cyan
         "✓" )  color="\e[32m" ;;  # green
         "×" )  color="\e[31m" ;;  # red
+        "↓" )  color="\e[36m" ;;  # cyan
+        "+" )  color="\e[35m" ;;  # purple
         "–" )  color="\e[33m" ;;  # yellow
         * )    color="\e[0m"  ;;  # default
     esac
@@ -71,8 +72,16 @@ pull_repo() {
         return
     fi
 
+    # ensure we have an upstream branch
     if ! git rev-parse --abbrev-ref "@{u}" > /dev/null 2>&1; then
         print_status "$repo" "No upstream" "×"
+        cd "$REPO_DIR"
+        return
+    fi
+
+    # fetch updates from remote
+    if ! git fetch --quiet 2>/dev/null; then
+        print_status "$repo" "Remote not found" "×"
         cd "$REPO_DIR"
         return
     fi
@@ -101,8 +110,13 @@ pull_repo() {
 
 clone_repo() {
     local repo="$1"
+    local skip_reason="$2"
     if true || gh repo clone "$GITHUB_USER/$repo" "$repo" > /dev/null 2>&1; then
-        print_status "$repo" "Cloned" "+"
+        if [ -n "$skip_reason" ]; then
+            print_status "$repo" "Cloned ($skip_reason)" "+"
+        else
+            print_status "$repo" "Cloned" "+"
+        fi
     else
         print_status "$repo" "Clone failed" "×"
         return
@@ -110,52 +124,97 @@ clone_repo() {
 }
 
 skip_message() {
-    local reason="$1"
-    local repo="$2"
+    local repo="$1"
+    local skip_reason="$2"
     if [ "$SHOW_SKIPPED" = true ]; then
-        print_status "$repo" "Skipped ($reason)" "–"
+        print_status "$repo" "Skipped ($skip_reason)" "–"
     fi
 }
 
 # parse args
 for arg in "$@"; do
     case "$arg" in
-        --show-skipped)    SHOW_SKIPPED=true ;;
-        --include-skipped) INCLUDE_SKIPPED=true ;;
-        --help)            print_help ; exit 0 ;;
+        --clone)            CLONE=true ;;
+        --include-skipped)  INCLUDE_SKIPPED=true ;;
+        --show-skipped)     SHOW_SKIPPED=true ;;
+        --help)             print_help ; exit 0 ;;
         *) echo "Unknown argument: $arg" && exit 1 ;;
     esac
 done
 
 # check auth
-if ! gh auth status > /dev/null 2>&1; then
-    echo "You must run 'gh auth login' first."
-    exit 1
+if [ "$CLONE" = true ]; then
+    if ! gh auth status > /dev/null 2>&1; then
+        echo "You must run 'gh auth login' first."
+        exit 1
+    fi
 fi
 
 mkdir -p "$REPO_DIR"
 cd "$REPO_DIR"
 
-echo -e "\e[1mSyncing all public and private repositories for $GITHUB_USER to $REPO_DIR\e[0m"
-
-# fetch repo names and archive status as tsv
-repo_data=$(gh repo list "$GITHUB_USER" --limit 1000 --json name,isArchived \
-  --jq '.[] | [.name, (.isArchived | tostring | ascii_downcase)] | @tsv')
-
-# calculate column width for repo names
-REPO_COL_WIDTH=$(( $(echo "$repo_data" | awk '{print length($1)}' | sort -nr | head -n1) + 2 ))
-
-# loop through repo names and archive status
-echo "$repo_data" | while IFS=$'\t' read -r repo is_archived; do
-    if [ -d "$repo/.git" ]; then
-        pull_repo "$repo"
-    elif [ "$INCLUDE_SKIPPED" = false ] && [ "$is_archived" = "true" ]; then
-        skip_message "archived" "$repo"
-    elif [ "$INCLUDE_SKIPPED" = false ] && is_excluded "$repo"; then
-        skip_message "excluded" "$repo"
-    else
-        clone_repo "$repo"
-    fi
+# gather local repos in the format: repo_name\t[skip_reason]\n
+local_repo_data=""
+for dir in "$REPO_DIR"/*; do
+    [ -d "$dir/.git" ] || continue
+    local_repo_data+=$(basename "$dir")$'\t'$'\n'
 done
+
+# gather GitHub repos in the format: repo_name\t[skip_reason]\n
+github_repo_data=""
+if [ "$CLONE" = true ]; then
+    # fetch all public and private repositories for the user from GitHub
+    github_raw=$(gh repo list "$GITHUB_USER" --limit 1000 --json name,isArchived \
+        --jq '.[] | [.name, (.isArchived | tostring | ascii_downcase)] | @tsv')
+
+    # convert into the correct format
+    while IFS=$'\t' read -r repo is_archived; do
+        skip_reason=""
+        if is_excluded "$repo"; then
+            skip_reason="excluded"
+        elif [ "$is_archived" = "true" ]; then
+            skip_reason="archived"
+        fi
+        github_repo_data+="${repo}"$'\t'"${skip_reason}"$'\n'
+    done <<< "$github_raw"
+fi
+
+# merge local and GitHub repos in the format: repo_name\t[skip_reason]\n
+all_repo_data="$local_repo_data"
+while IFS=$'\t' read -r repo reason; do
+    if ! grep -q "^$repo"$'\t' <<< "$local_repo_data"; then
+        all_repo_data+="${repo}"$'\t'"${reason}"$'\n'
+    fi
+done <<< "$github_repo_data"
+
+# calculate column width
+REPO_COL_WIDTH=$(
+    printf '%s\n' "$all_repo_data" |
+    awk -F'\t' '{print length($1)}' |
+    sort -nr |
+    head -n1
+)
+REPO_COL_WIDTH=$((REPO_COL_WIDTH + 2))
+
+# print header
+if [ $CLONE = true ]; then
+    echo -e "\e[1mSyncing local repositories in $REPO_DIR and GitHub repositories for $GITHUB_USER\e[0m"
+
+else
+    echo -e "\e[1mSyncing local repositories in $REPO_DIR\e[0m"
+fi
+
+# loop through all repositories and sync
+while IFS=$'\t' read -r repo skip_reason; do
+    if [ -z "$repo" ]; then
+        continue  # skip empty lines
+    elif [ -d "$repo/.git" ]; then
+        pull_repo "$repo"
+    elif [ "$INCLUDE_SKIPPED" = false ] && [ -n "$skip_reason" ]; then
+        skip_message "$repo" "$skip_reason"
+    else
+        clone_repo "$repo" "$skip_reason"
+    fi
+done <<< "$all_repo_data"
 
 echo -e "\e[1m\e[32mRepository sync complete\e[0m"
