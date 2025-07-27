@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# sync-repos - script to sync all public and private GitHub repositories
+# For usage instructions, run `sync-repos --help`
 
 set -euo pipefail
 
@@ -15,6 +17,17 @@ REPO_EXCLUDE=(
 # default flags
 INCLUDE_SKIPPED=false
 SHOW_SKIPPED=false
+
+print_help() {
+    cat <<EOF
+Usage: sync-repos [OPTIONS]
+
+Options:
+    --include-skipped   Include archived and excluded repositories
+    --show-skipped      Show status messages for skipped repositories
+    --help              Show this help message
+EOF
+}
 
 is_excluded() {
     local repo="$1"
@@ -86,7 +99,6 @@ pull_repo() {
     cd "$REPO_DIR"
 }
 
-
 clone_repo() {
     local repo="$1"
     if true || gh repo clone "$GITHUB_USER/$repo" "$repo" > /dev/null 2>&1; then
@@ -108,8 +120,9 @@ skip_message() {
 # parse args
 for arg in "$@"; do
     case "$arg" in
-        --include-skipped) INCLUDE_SKIPPED=true ;;
         --show-skipped)    SHOW_SKIPPED=true ;;
+        --include-skipped) INCLUDE_SKIPPED=true ;;
+        --help)            print_help ; exit 0 ;;
         *) echo "Unknown argument: $arg" && exit 1 ;;
     esac
 done

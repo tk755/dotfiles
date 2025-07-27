@@ -40,8 +40,8 @@ dotfiles() {
 for arg in "$@"; do
     case "$arg" in
         --headless) HEADLESS=true ;;
-        --force) FORCE=true ;;
-        --help) print_help ; exit 0 ;;
+        --force)    FORCE=true ;;
+        --help)     print_help ; exit 0 ;;
         *) echo "Unknown argument: $arg" && exit 1 ;;
     esac
 done
