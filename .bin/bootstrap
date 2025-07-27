@@ -31,57 +31,112 @@ Options:
 EOF
 }
 
+parse_args() {
+    for arg in "$@"; do
+        case "$arg" in
+            --headless) HEADLESS=true                   ;;
+            --force)    FORCE=true                      ;;
+            --help)     print_help && exit 0            ;;
+            *) echo "Invalid option: $arg" && exit 1    ;;
+        esac
+    done
+}
+
+print_bold() {
+    printf "\e[1m%s\e[0m\n" "$1"
+}
+
+print_dim() {
+    printf "\e[2m%s\e[0m\n" "$1"
+}
+
 # dotfiles git wrapper function
 dotfiles() {
     git --git-dir="$DOTFILES_DIR" --work-tree="$HOME" "$@"
 }
 
-# parse arguments
-for arg in "$@"; do
-    case "$arg" in
-        --headless) HEADLESS=true ;;
-        --force)    FORCE=true ;;
-        --help)     print_help ; exit 0 ;;
-        *) echo "Unknown argument: $arg" && exit 1 ;;
-    esac
-done
-
-# clone if necessary
-if [ ! -d "$DOTFILES_DIR" ]; then
-    echo -e "\e[1mCloning bare repo $REPO_URL to $DOTFILES_DIR\e[0m"
-    git clone --bare "$REPO_URL" "$DOTFILES_DIR"
-else
-    echo -e "\e[1mUsing existing bare repo at $DOTFILES_DIR\e[0m"
-fi
-
-# configure repo
-dotfiles config --local status.showUntrackedFiles no
-dotfiles push --set-upstream origin main &> /dev/null
-dotfiles config core.sparseCheckout true
-
-# sparse checkout configuration
-SPARSE_FILE="$DOTFILES_DIR/info/sparse-checkout"
-mkdir -p "$(dirname "$SPARSE_FILE")"
-echo "/*" > "$SPARSE_FILE"
-if [ "$HEADLESS" = true ]; then
-    echo -e "\e[1mConfiguring sparse checkout for headless install\e[0m"
-    echo "/*" > "$SPARSE_FILE"
-    for path in "${HEADLESS_EXCLUDES[@]}"; do
-        echo "!/$path" >> "$SPARSE_FILE"
-    done
-fi
-
-# checkout
-echo -e "\e[1mChecking out files to $HOME\e[0m"
-if [ "$FORCE" = true ]; then
-    dotfiles checkout -f
-else
-    if ! dotfiles checkout; then
-        echo "Remove conflicting files or rerun with --force to overwrite them."
-        exit 1
+clone_repo() {
+    if [ ! -d "$DOTFILES_DIR" ]; then
+        print_bold "Cloning bare repo $REPO_URL to $DOTFILES_DIR"
+        git clone --bare "$REPO_URL" "$DOTFILES_DIR"
+    else
+        print_dim "Using existing bare repo at $DOTFILES_DIR"
     fi
-fi
+}
 
-# status message
-echo -e "\e[1mInstallation complete\e[0m"
-dotfiles status | grep "sparse checkout"
+configure_repo() {
+    dotfiles config --local status.showUntrackedFiles no
+    dotfiles config core.sparseCheckout true
+
+    # only set upstream if it's not already set
+    if ! dotfiles rev-parse --abbrev-ref --symbolic-full-name @{u} &> /dev/null; then
+        dotfiles branch --set-upstream-to=origin/main main &> /dev/null || true
+    fi
+}
+
+setup_sparse_checkout() {
+    echo
+    local sparse_file="$DOTFILES_DIR/info/sparse-checkout"
+    mkdir -p "$(dirname "$sparse_file")"
+
+    if [ "$HEADLESS" = true ]; then
+        print_bold "Configuring sparse checkout (headless)"
+        echo "/*" > "$sparse_file"
+        for path in "${HEADLESS_EXCLUDES[@]}"; do
+            echo "!/$path" >> "$sparse_file"
+        done
+    elif [ ! -f "$sparse_file" ]; then
+        print_bold "Configuring sparse checkout (all files)"
+        echo "/*" > "$sparse_file"
+    else
+        print_dim "Using existing sparse checkout config"
+    fi
+}
+
+print_checkout_changes() {
+    local message="$1"
+    local color="$2"
+    local reset_color="\e[0m"
+
+    local changed_files=$(dotfiles status --porcelain | grep -E '^[ MDAU?!]{2} ' || true)
+    if [ -n "$changed_files" ]; then
+        echo -e "$message"
+        echo "$changed_files" | while read -r line; do
+            code="${line:0:2}"
+            path="${line:2}"
+            printf "  ${color}%s${reset_color} %s\n" "$code" "$path"
+        done
+    else
+        print_dim "No file conflicts found"
+    fi
+}
+
+checkout_files() {
+    echo
+    print_bold "Checking out files to $HOME"
+    if [ "$FORCE" = true ]; then
+        print_checkout_changes "Files overwritten due to --force:" "\e[31m"
+        dotfiles checkout --force --quiet
+    else
+        dotfiles checkout --quiet
+        print_checkout_changes "Files skipped due to local changes (overwrite with --force):" "\e[33m"
+    fi
+}
+
+print_final_status() {
+    echo
+    print_bold "Installation complete"
+    dotfiles status | grep "sparse checkout" | sed 's/^You are in a sparse checkout with /Sparse checkout: /; s/\.$//'
+}
+
+init_repo() {
+    clone_repo
+    configure_repo
+    setup_sparse_checkout
+    checkout_files
+}
+
+parse_args "$@"
+# print_bold "Running bootstrap"
+init_repo
+print_final_status
