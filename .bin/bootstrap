@@ -25,8 +25,8 @@ print_help() {
 Usage: bootstrap [OPTIONS]
 
 Options:
-    --headless     Install only headless-compatible files (exclude GUI-related dotfiles)
-    --force        Force checkout (overwrite conflicting files)
+    --headless     Exclude GUI-related dotfiles
+    --force        Overwrite conflicting files (locally destructive)
     --help         Show this help message
 EOF
 }
