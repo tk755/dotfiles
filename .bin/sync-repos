@@ -16,7 +16,6 @@ REPO_EXCLUDE=(
 INCLUDE_ARCHIVED=false
 SHOW_SKIPPED=false
 
-# functions
 is_excluded() {
     local repo="$1"
     for pattern in "${REPO_EXCLUDE[@]}"; do
@@ -28,50 +27,73 @@ is_excluded() {
 }
 
 print_status() {
-    # usage: print_status "repo" "message"
-    printf "%-32s %s" "$1" "$2"
-}
+    # usage: print_status "repo" "message" "emoji"
+    local repo="$1"
+    local message="$2"
+    local emoji="$3"
 
-print_status_ln() {
-    # usage: print_status_ln "repo" "message"
-    print_status "$1" "$2"
-    printf "\n"
+    # color emoji based on type
+    local color
+    case "$emoji" in
+        "+" )  color="\e[35m" ;;  # purple
+        "↓" )  color="\e[36m" ;;  # cyan
+        "✓" )  color="\e[32m" ;;  # green
+        "×" )  color="\e[31m" ;;  # red
+        "–" )  color="\e[33m" ;;  # yellow
+        * )    color="\e[0m"  ;;  # default
+    esac
+
+    printf "%-${REPO_COL_WIDTH}s %b%s%b %s\n" "$repo" "$color" "$emoji" "\e[0m" "$message"
 }
 
 pull_repo() {
     local repo="$1"
     cd "$repo"
 
-    git fetch --quiet
-    LOCAL=$(git rev-parse @)
-    REMOTE=$(git rev-parse @{u} 2>/dev/null || echo "")
-    BASE=$(git merge-base @ @{u} 2>/dev/null || echo "")
+    # ensure we are on a branch with an upstream
+    local branch
+    if ! branch=$(git symbolic-ref --quiet --short HEAD 2>/dev/null); then
+        print_status "$repo" "No branch" "×"
+        cd "$REPO_DIR"
+        return
+    fi
 
-    if [ -z "$REMOTE" ]; then
-        print_status_ln "$repo" "No remote tracking branch"
+    if ! git rev-parse --abbrev-ref "@{u}" > /dev/null 2>&1; then
+        print_status "$repo" "No upstream" "×"
+        cd "$REPO_DIR"
+        return
+    fi
+
+    local LOCAL REMOTE BASE
+    LOCAL=$(git rev-parse @)
+    REMOTE=$(git rev-parse "@{u}")
+    BASE=$(git merge-base @ "@{u}" 2>/dev/null || true)
+
+    if [ -z "$BASE" ]; then
+        print_status "$repo" "Unrelated history" "×"
     elif [ "$LOCAL" = "$REMOTE" ]; then
-        print_status_ln "$repo" "Already up-to-date"
+        print_status "$repo" "Up-to-date" "✓"
     elif [ "$LOCAL" = "$BASE" ]; then
-        print_status "$repo" "Pulling changes ... "
         if git pull --ff-only --quiet; then
-            echo "SUCCESS"
+            print_status "$repo" "Pulled" "↓"
         else
-            echo "FAILED"
+            print_status "$repo" "Local changes" "×"
         fi
     else
-        print_status_ln "$repo" "Diverged from upstream"
+        print_status "$repo" "Diverged" "×"
     fi
 
     cd "$REPO_DIR"
 }
 
+
 clone_repo() {
     local repo="$1"
-    print_status "$repo" "Cloning ... "
     if true || gh repo clone "$GITHUB_USER/$repo" "$repo" > /dev/null 2>&1; then
-        echo "SUCCESS"
+        print_status "$repo" "Cloned" "+"
     else
-        echo "FAILED"
+        print_status "$repo" "Clone failed" "×"
+        return
     fi
 }
 
@@ -79,7 +101,7 @@ skip_message() {
     local reason="$1"
     local repo="$2"
     if [ "$SHOW_SKIPPED" = true ]; then
-        print_status_ln "$repo" "Skipped ($reason)"
+        print_status "$repo" "Skipped ($reason)" "–"
     fi
 }
 
@@ -92,8 +114,6 @@ for arg in "$@"; do
     esac
 done
 
-echo -e "\e[1mSyncing all public and private repositories for $GITHUB_USER to $REPO_DIR\e[0m"
-
 # check auth
 if ! gh auth status > /dev/null 2>&1; then
     echo "You must run 'gh auth login' first."
@@ -103,9 +123,15 @@ fi
 mkdir -p "$REPO_DIR"
 cd "$REPO_DIR"
 
+echo -e "\e[1mSyncing all public and private repositories for $GITHUB_USER to $REPO_DIR\e[0m"
+
 # fetch repo names and archive status as tsv
 repo_data=$(gh repo list "$GITHUB_USER" --limit 1000 --json name,isArchived \
   --jq '.[] | [.name, (.isArchived | tostring | ascii_downcase)] | @tsv')
+
+# calculate column width for repo names
+REPO_COL_WIDTH=$(( $(echo "$repo_data" | awk '{print length($1)}' | sort -nr | head -n1) + 2 ))
+
 
 # loop
 echo "$repo_data" | while IFS=$'\t' read -r repo is_archived; do
