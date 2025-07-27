@@ -1,37 +1,46 @@
-# 📂 Linux Dotfiles
+# Linux Dotfiles
 
 This repository tracks my Linux scripts and config files, managed as a [bare repository](https://www.atlassian.com/git/tutorials/dotfiles) using [sparse checkout](https://git-scm.com/docs/git-sparse-checkout).
 
-# 🚀 Installation
+## Installation
 
-Use the `~/.bin/bootstrap` script to clone and check out this repo in a new or existing environment:
+The `.bin/bootstrap` script automates the entire setup process. 
+
+It can take the following options:
+- `--headless` —  exclude GUI-related dotfiles (for servers or WSL)
+- `--force` — force overwrite local files (destructive)
+- `--help` — show more details
+
+### New Machine
+
+Set up a new machine by running the raw script directly from GitHub:
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/tk755/dotfiles/main/.bin/bootstrap)
 ```
 
-### Optional flags:
-- `--headless`: Excludes GUI-related dotfiles for headless environments (like servers or WSL).
-- `--force`: Overwrites conflicting files (like the default `.bashrc`).
+### Existing Machine
+
+After initial setup, use the `bootstrap` command to install the latest dotfiles:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/tk755/dotfiles/main/.bin/bootstrap) --headless
-bash <(curl -fsSL https://raw.githubusercontent.com/tk755/dotfiles/main/.bin/bootstrap) --force
-bash <(curl -fsSL https://raw.githubusercontent.com/tk755/dotfiles/main/.bin/bootstrap) --headless --force
+bootstrap           # skip conflicting files
+bootstrap --force   # overwrite conflicting files
 ```
 
-# 🔧 Using the Repository
+## Making Changes
 
-After installation, use the `dotfiles` alias as a glorified `git` command to manage tracked files:
+To make changes to the repository, you can use the `dotfiles` alias as a `git` command:
 
 ```bash
-dotfiles status
 dotfiles add $HOME/.bashrc
 dotfiles commit -m 'update bashrc'
 dotfiles push
 ```
 
-# 🗂️ File Organization
+## File Organization
+
+(This is a WIP)
 
 ### Scripts
 
