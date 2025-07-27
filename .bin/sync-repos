@@ -3,11 +3,10 @@
 set -euo pipefail
 
 # config
-GITHUB_USER="tk755"
 REPO_DIR="$HOME/repos"
 
 # patterns to exclude during cloning (via substring matches)
-CLONE_EXCLUDES=(
+GITHUB_EXCLUDES=(
     "dotfiles"
 )
 
@@ -27,22 +26,22 @@ Options:
     --help              Show this help message
 
 Exclude patterns: 
-    ${CLONE_EXCLUDES[*]}
+    ${GITHUB_EXCLUDES[*]}
 
 Description:
     Fetches and pulls all git repositories in $REPO_DIR.
     
-    Use --clone to clone all missing repositories from GitHub user $GITHUB_USER. 
+    Use --clone to clone all missing repositories from GitHub. 
     Archived repositories or those matching any exclude pattern are skipped by default. 
     Use --show-skipped to display skipped repositories, or --include-skipped to clone them anyway.
     
-    This script no destructive changes to repositories, either locally or remotely.
+    This script makes no destructive changes to repositories, either locally or remotely.
 EOF
 }
 
 is_excluded() {
     local repo="$1"
-    for pattern in "${CLONE_EXCLUDES[@]}"; do
+    for pattern in "${GITHUB_EXCLUDES[@]}"; do
         case "$repo" in
             *"$pattern"*) return 0 ;;
         esac
@@ -153,10 +152,16 @@ for arg in "$@"; do
     esac
 done
 
-# check auth
+# check auth and resolve GitHub user
 if [ "$CLONE" = true ]; then
     if ! gh auth status > /dev/null 2>&1; then
         echo "You must run 'gh auth login' first."
+        exit 1
+    fi
+
+    GITHUB_USER=$(gh api user --jq .login 2>/dev/null)
+    if [ -z "$GITHUB_USER" ]; then
+        echo "Failed to determine GitHub user."
         exit 1
     fi
 fi
@@ -209,10 +214,9 @@ REPO_COL_WIDTH=$((REPO_COL_WIDTH + 2))
 
 # print header
 if [ $CLONE = true ]; then
-    echo -e "\e[1mSyncing local and GitHub repositories for $GITHUB_USER\e[0m"
-
+    echo -e "\e[1mSyncing local and GitHub repositories\e[0m"
 else
-    echo -e "\e[1mSyncing local repositories in $REPO_DIR\e[0m"
+    echo -e "\e[1mSyncing local repositories\e[0m"
 fi
 
 # loop through all repositories and sync
