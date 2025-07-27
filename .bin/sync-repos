@@ -13,7 +13,7 @@ REPO_EXCLUDE=(
 )
 
 # default flags
-INCLUDE_ARCHIVED=false
+INCLUDE_SKIPPED=false
 SHOW_SKIPPED=false
 
 is_excluded() {
@@ -108,8 +108,8 @@ skip_message() {
 # parse args
 for arg in "$@"; do
     case "$arg" in
-        --include-archived) INCLUDE_ARCHIVED=true ;;
-        --show-skipped) SHOW_SKIPPED=true ;;
+        --include-skipped) INCLUDE_SKIPPED=true ;;
+        --show-skipped)    SHOW_SKIPPED=true ;;
         *) echo "Unknown argument: $arg" && exit 1 ;;
     esac
 done
@@ -132,14 +132,13 @@ repo_data=$(gh repo list "$GITHUB_USER" --limit 1000 --json name,isArchived \
 # calculate column width for repo names
 REPO_COL_WIDTH=$(( $(echo "$repo_data" | awk '{print length($1)}' | sort -nr | head -n1) + 2 ))
 
-
-# loop
+# loop through repo names and archive status
 echo "$repo_data" | while IFS=$'\t' read -r repo is_archived; do
     if [ -d "$repo/.git" ]; then
         pull_repo "$repo"
-    elif [ "$is_archived" = "true" ] && [ "$INCLUDE_ARCHIVED" = false ]; then
+    elif [ "$INCLUDE_SKIPPED" = false ] && [ "$is_archived" = "true" ]; then
         skip_message "archived" "$repo"
-    elif is_excluded "$repo"; then
+    elif [ "$INCLUDE_SKIPPED" = false ] && is_excluded "$repo"; then
         skip_message "excluded" "$repo"
     else
         clone_repo "$repo"
