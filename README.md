@@ -12,7 +12,7 @@ To protect local changes, it detects conflicting non-image files, backs them up 
 
 Additional options:
 - `--headless` —  exclude GUI-related dotfiles (for servers or WSL)
-- `--force` — force overwrite local files (destructive)
+- `--force` — overwrite local conflicts (destructive)
 - `--help` — show more details
 
 ### New Machine
