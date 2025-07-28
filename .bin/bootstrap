@@ -32,18 +32,16 @@ Exclude patterns (--headless):
     ${HEADLESS_EXCLUDES[*]}
 
 Description:
-    Clones bare repository into $DOTFILES_DIR from:
-        $REPO_URL_HTTPS
+    Installs dotfiles from https://github.com/tk755/dotfiles.git
+    using a bare git clone with sparse checkout.
 
-    Uses sparse checkout to include only a subset of files:
-      - By default, all files are included.
-      - Use --headless to exclude GUI-related files.
-
-    File conflict behavior:
-      - During a clone, non-image files that would be overwritten are preserved and restored after checkout.
-        Use --force to disable this behavior (destructive).
-      - On subsequent runs, conflicting files are skipped by default.
-        Use --force to overwrite them (destructive).
+    On each run, the latest version of the repository is cloned.
+    By default, any conflicting non-image local files are preserved:
+      - They are backed up before checkout and restored afterward.
+      - Use --force to skip backup and overwrite all conflicts.
+    
+    All files in the repository are included by default.
+      - Use --headless to exclude GUI-related files via sparse checkout.
 EOF
 }
 

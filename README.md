@@ -1,19 +1,23 @@
 # Linux Dotfiles
 
-This repository tracks my Linux scripts and config files, managed as a [bare repository](https://www.atlassian.com/git/tutorials/dotfiles) using [sparse checkout](https://git-scm.com/docs/git-sparse-checkout).
+This repository tracks my Linux scripts and config files, collectively referred to as *dotfiles*.
 
 ## Installation
 
-The `.bin/bootstrap` script automates the entire setup process. 
+The `.bin/bootstrap` script automates the entire dotfiles setup. It’s designed to run safely on both new and existing machines, ensuring your environment is always consistent and up to date.
 
-It can take the following options:
+On every run, it deletes any previous installation and clones the latest version of the repository as a [bare repository](https://www.atlassian.com/git/tutorials/dotfiles) with [sparse checkout](https://git-scm.com/docs/git-sparse-checkout). This guarantees a clean, reproducible setup without leftover or stale files.
+
+To protect local changes, it detects conflicting non-image files, backs them up before checkout, and restores them afterward. This makes the script safe to run repeatedly — no changes are lost unless explicitly overwritten.
+
+Additional options:
 - `--headless` —  exclude GUI-related dotfiles (for servers or WSL)
 - `--force` — force overwrite local files (destructive)
 - `--help` — show more details
 
 ### New Machine
 
-Set up a new machine by running the raw script directly from GitHub:
+Run the bootstrap script directly from GitHub:
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/tk755/dotfiles/main/.bin/bootstrap)
@@ -21,7 +25,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/tk755/dotfiles/main/.bin/boo
 
 ### Existing Machine
 
-After initial setup, use the `bootstrap` command to install the latest dotfiles:
+Use the `bootstrap` command to apply the latest dotfiles:
 
 ```bash
 bootstrap           # skip conflicting files
@@ -30,7 +34,7 @@ bootstrap --force   # overwrite conflicting files
 
 ## Making Changes
 
-To make changes to the repository, you can use the `dotfiles` alias as a `git` command:
+To make changes to the repository, use the `dotfiles` alias as a `git` command:
 
 ```bash
 dotfiles add $HOME/.bashrc
