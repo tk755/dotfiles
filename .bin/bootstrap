@@ -89,16 +89,16 @@ configure_sparse_checkout() {
 
     # update sparse checkout file 
     if [ "$HEADLESS" = true ]; then
-        echo " ➤ Configuring sparse checkout (headless)"
+        echo " ⮞ Configuring sparse checkout (headless)"
         echo "/*" > "$sparse_file"
         for path in "${HEADLESS_EXCLUDES[@]}"; do
             echo "!/$path" >> "$sparse_file"
         done
     elif [ "$ALL" = true ] || [ ! -f "$sparse_file" ]; then
-        echo " ➤ Configuring sparse checkout (all files)"
+        echo " ⮞ Configuring sparse checkout (all files)"
         echo "/*" > "$sparse_file"
     else
-        print_dim " ✔ Sparse checkout already configured"
+        print_dim " ✓ Sparse checkout already configured"
     fi
 }
 
@@ -107,10 +107,10 @@ setup_repo() {
     
     # clone repo if it doesn't exist
     if [ ! -d "$DOTFILES_DIR" ]; then
-        echo " ➤ Cloning repo from $REPO_URL"
+        echo " ⮞ Cloning repo from $REPO_URL"
         git clone --bare "$REPO_URL" "$DOTFILES_DIR" &> /dev/null
     else
-        print_dim " ✔ Bare repo already exists"
+        print_dim " ✓ Bare repo already exists"
     fi
 
     # set upstream if not already set
@@ -140,7 +140,7 @@ print_checkout_changes() {
             printf " ${color}%s${reset_color}%s\n" "$code" "$path"
         done
     else
-        print_dim " ✔ No file conflicts found"
+        print_dim " ✓ No file conflicts found"
     fi
 }
 
