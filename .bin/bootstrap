@@ -82,42 +82,48 @@ dotfiles() {
     git --git-dir="$DOTFILES_DIR" --work-tree="$HOME" "$@"
 }
 
-clone_repo() {
-    if [ ! -d "$DOTFILES_DIR" ]; then
-        print_bold "Cloning bare repo $REPO_URL to $DOTFILES_DIR"
-        git clone --bare "$REPO_URL" "$DOTFILES_DIR"
-    else
-        print_dim "Using existing bare repo at $DOTFILES_DIR"
-    fi
-}
-
-configure_repo() {
-    dotfiles config --local status.showUntrackedFiles no
-    dotfiles config core.sparseCheckout true
-
-    # only set upstream if it's not already set
-    if ! dotfiles rev-parse --abbrev-ref --symbolic-full-name @{u} &> /dev/null; then
-        dotfiles branch --set-upstream-to=origin/main main &> /dev/null || true
-    fi
-}
-
-setup_sparse_checkout() {
-    echo
+configure_sparse_checkout() {
+    # create sparse checkout file if it doesn't exist
     local sparse_file="$DOTFILES_DIR/info/sparse-checkout"
     mkdir -p "$(dirname "$sparse_file")"
 
+    # update sparse checkout file 
     if [ "$HEADLESS" = true ]; then
-        print_bold "Configuring sparse checkout (headless)"
+        echo " ➤ Configuring sparse checkout (headless)"
         echo "/*" > "$sparse_file"
         for path in "${HEADLESS_EXCLUDES[@]}"; do
             echo "!/$path" >> "$sparse_file"
         done
     elif [ "$ALL" = true ] || [ ! -f "$sparse_file" ]; then
-        print_bold "Configuring sparse checkout (all files)"
+        echo " ➤ Configuring sparse checkout (all files)"
         echo "/*" > "$sparse_file"
     else
-        print_dim "Using existing sparse checkout config"
+        print_dim " ✔ Sparse checkout already configured"
     fi
+}
+
+setup_repo() {
+    print_bold "Setting up repo in $DOTFILES_DIR"
+    
+    # clone repo if it doesn't exist
+    if [ ! -d "$DOTFILES_DIR" ]; then
+        echo " ➤ Cloning repo from $REPO_URL"
+        git clone --bare "$REPO_URL" "$DOTFILES_DIR" &> /dev/null
+    else
+        print_dim " ✔ Bare repo already exists"
+    fi
+
+    # set upstream if not already set
+    if ! dotfiles rev-parse --abbrev-ref --symbolic-full-name @{u} &> /dev/null; then
+        dotfiles branch --set-upstream-to=origin/main main &> /dev/null || true
+    fi
+
+    # configure git settings
+    dotfiles config --local status.showUntrackedFiles no
+    dotfiles config core.sparseCheckout true
+
+    # set up sparse checkout
+    configure_sparse_checkout
 }
 
 print_checkout_changes() {
@@ -131,38 +137,35 @@ print_checkout_changes() {
         echo "$changed_files" | while read -r line; do
             code="${line:0:2}"
             path="${line:2}"
-            printf "  ${color}%s${reset_color} %s\n" "$code" "$path"
+            printf " ${color}%s${reset_color}%s\n" "$code" "$path"
         done
     else
-        print_dim "No file conflicts found"
+        print_dim " ✔ No file conflicts found"
     fi
 }
 
 checkout_files() {
-    echo
     print_bold "Checking out files to $HOME"
     if [ "$FORCE" = true ]; then
         print_checkout_changes "Files overwritten due to --force:" "\e[31m"
-        dotfiles checkout --force --quiet
+        dotfiles checkout --force --quiet 2> /dev/null
     else
-        dotfiles checkout --quiet
+        dotfiles checkout --quiet 2> /dev/null
         print_checkout_changes "Files skipped due to local changes (overwrite with --force):" "\e[33m"
     fi
 }
 
-print_final_status() {
+main() {
+    parse_args "$@"
+
+    setup_repo
     echo
+
+    checkout_files
+    echo
+
     print_bold "Bootstrap complete"
     dotfiles status | grep "sparse checkout" | sed 's/^You are in a sparse checkout with /Sparse checkout: /; s/\.$//'
 }
 
-init_repo() {
-    clone_repo
-    configure_repo
-    setup_sparse_checkout
-    checkout_files
-}
-
-parse_args "$@"
-init_repo
-print_final_status
+main "$@"
