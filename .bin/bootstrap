@@ -82,7 +82,7 @@ dotfiles() {
     git --git-dir="$DOTFILES_DIR" --work-tree="$HOME" "$@"
 }
 
-clone_repo() {
+init_repo() {
     if [ ! -d "$DOTFILES_DIR" ]; then
         # clone bare repo
         echo " ⮞ Cloning repo from $REPO_URL"
@@ -122,9 +122,9 @@ setup_sparse_checkout() {
     fi
 }
 
-init_repo() {
+setup_repo() {
     print_bold "Setting up repo in $DOTFILES_DIR"
-    clone_repo
+    init_repo
     setup_sparse_checkout
 }
 
@@ -160,7 +160,7 @@ checkout_files() {
 main() {
     parse_args "$@"
 
-    init_repo
+    setup_repo
     echo
 
     checkout_files
