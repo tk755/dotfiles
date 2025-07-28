@@ -4,6 +4,7 @@ set -euo pipefail
 
 REPO_URL_HTTPS="https://github.com/tk755/dotfiles.git"
 DOTFILES_DIR="$HOME/.dotfiles"
+BACKUP_DIR="$HOME/.bootstrap-backup"
 
 # paths to exclude in headless install
 HEADLESS_EXCLUDES=(
@@ -68,83 +69,11 @@ dotfiles() {
     git --git-dir="$DOTFILES_DIR" --work-tree="$HOME" "$@"
 }
 
-clone_repo() {
-    # clone via HTTPS to avoid SSH setup issues
-    echo " ⮞ Cloning repo from $REPO_URL_HTTPS"
-    git clone --bare "$REPO_URL_HTTPS" "$DOTFILES_DIR" &> /dev/null
-
-    # change url to SSH for future pushes
-    REPO_URL_SSH="git@github.com:${REPO_URL_HTTPS#https://github.com/}"
-    git --git-dir="$DOTFILES_DIR" remote set-url origin "$REPO_URL_SSH"
-
-    # manually configure tracking
-    dotfiles config branch.main.remote origin
-    dotfiles config branch.main.merge refs/heads/main
-
-    # disable untracked files in status
-    dotfiles config --local status.showUntrackedFiles no
-
-    # enable
-    dotfiles config core.sparseCheckout true
-}
-
-setup_sparse_checkout() {
-    # create sparse checkout file if it doesn't exist
-    local sparse_file="$DOTFILES_DIR/info/sparse-checkout"
-    mkdir -p "$(dirname "$sparse_file")"
-
-    # update sparse checkout file
-    if [ "$HEADLESS" = true ]; then
-        echo " ⮞ Configuring sparse checkout (headless)"
-        echo "/*" > "$sparse_file"
-        for path in "${HEADLESS_EXCLUDES[@]}"; do
-            echo "!/$path" >> "$sparse_file"
-        done
-    else
-        echo " ⮞ Configuring sparse checkout (all files)"
-        echo "/*" > "$sparse_file"
-    fi
-}
-
-init_repo() {
-    print_bold "Setting up repo in $DOTFILES_DIR"
-
-    # delete previous repo if it exists
-    if [ -d "$DOTFILES_DIR" ]; then
-        rm -rf "$DOTFILES_DIR"
+backup_local_changes() {
+    if [ -d "$BACKUP_DIR" ]; then
+        rm -rf "$BACKUP_DIR"
     fi
 
-    clone_repo
-    setup_sparse_checkout
-}
-
-print_checkout_changes() {
-    local changed_files="$1"
-    local message="$2"
-    local color="$3"
-    local reset_color="\e[0m"
-
-    if [ -n "$changed_files" ]; then
-        echo -e "$message"
-        echo "$changed_files" | while read -r line; do
-            [ -n "$line" ] || continue
-            code="${line:0:2}"
-            path="${line:2}"
-            printf " ${color}%s${reset_color}%s\n" "$code" "$path"
-        done
-    else
-        print_dim " ✓ No file conflicts found"
-    fi
-}
-
-checkout_files() {
-    print_bold "Checking out files to $HOME"
-
-    # internal backup directory
-    local BACKUP_DIR="$DOTFILES_DIR/.bootstrap-backup"
-
-    # list of changed files
-    local changed_files=""
     # iterate through all file paths tracked in HEAD
     while IFS= read -r file; do
         local full_path="$HOME/$file"
@@ -154,54 +83,118 @@ checkout_files() {
             continue
         fi
 
-        # skip if file is an image (by extension)
+        # skip if image extension
         case "${file##*.}" in
             png|jpg|jpeg|gif|bmp|svg|ico|tiff|webp) continue ;;
         esac
 
-        # check if local file differs with HEAD version
+        # save local files that differ with HEAD version
         if ! diff -q "$full_path" <(dotfiles show HEAD:"$file") > /dev/null 2>&1; then
-            changed_files+=$'M '"$file"$'\n'
-
-            # preserve local file if not forcing overwrite
-            if [ "$FORCE" = false ]; then
-                local backup_path="$BACKUP_DIR/$file"
-                mkdir -p "$(dirname "$backup_path")"
-                cp "$full_path" "$backup_path"
-            fi
+            local backup_path="$BACKUP_DIR/$file"
+            mkdir -p "$(dirname "$backup_path")"
+            cp "$full_path" "$backup_path"
         fi
     done < <(dotfiles ls-tree -r --name-only HEAD)
+}
+
+restore_local_changes() {
+    if [ "$FORCE" = true ] || [ ! -d "$BACKUP_DIR" ]; then
+        return
+    fi
+
+    find "$BACKUP_DIR" -type f | while IFS= read -r backup_file; do
+        rel_path="${backup_file#$BACKUP_DIR/}"
+        dest_path="$HOME/$rel_path"
+        mkdir -p "$(dirname "$dest_path")"
+        cp "$backup_file" "$dest_path"
+    done
+}
+
+print_local_changes() {
+    # get changed_files from backup directory
+    local changed_files=""
+    if [ -d "$BACKUP_DIR" ]; then
+        while IFS= read -r file; do
+            rel_path="${file#$BACKUP_DIR/}"
+            changed_files+=$'M '"$rel_path"$'\n'
+        done < <(find "$BACKUP_DIR" -type f | sort)
+    fi
+
+    if [ -z "$changed_files" ]; then
+        print_dim " ✓ No local changes found"
+        return
+    fi
 
     # print changed files
-    if [ "$FORCE" = true ]; then
-        print_checkout_changes "$changed_files" "Files overwritten due to --force during clone:" "\e[31m"
+    local reset_color="\e[0m"
+    if [ $FORCE = true ]; then
+        echo "Files overwritten due to --force during clone:"
+        local color="\e[31m"
     else
-        print_checkout_changes "$changed_files" "Files preserved during clone (overwrite with --force):" "\e[33m"
+        echo "Files preserved during clone (overwrite with --force):"
+        local color="\e[33m"
     fi
 
-    # checkout (will overwrite local files)
-    dotfiles checkout --quiet 2> /dev/null
+    echo "$changed_files" | while read -r line; do
+        [ -n "$line" ] || continue
+        code="${line:0:2}"
+        path="${line:2}"
+        printf " ${color}%s${reset_color}%s\n" "$code" "$path"
+    done
+}
 
-    # restore files if not forcing overwrite
-    if [ "$FORCE" = false ] && [ -d "$BACKUP_DIR" ]; then
-        find "$BACKUP_DIR" -type f | while IFS= read -r backup_file; do
-            rel_path="${backup_file#$BACKUP_DIR/}"
-            dest_path="$HOME/$rel_path"
-            mkdir -p "$(dirname "$dest_path")"
-            cp "$backup_file" "$dest_path"
+clone_repo() {
+    # clone via HTTPS to avoid SSH setup issues
+    git clone --bare "$REPO_URL_HTTPS" "$DOTFILES_DIR" &> /dev/null
+
+    # change url to SSH for future pushes
+    REPO_URL_SSH="git@github.com:${REPO_URL_HTTPS#https://github.com/}"
+    git --git-dir="$DOTFILES_DIR" remote set-url origin "$REPO_URL_SSH"
+
+    # configure git settings
+    dotfiles config branch.main.remote origin
+    dotfiles config branch.main.merge refs/heads/main
+    dotfiles config --local status.showUntrackedFiles no
+    dotfiles config core.sparseCheckout true
+}
+
+sparse_checkout() {
+    # create sparse checkout file
+    local sparse_file="$DOTFILES_DIR/info/sparse-checkout"
+    mkdir -p "$(dirname "$sparse_file")"
+
+    # update sparse checkout file
+    if [ "$HEADLESS" = true ]; then
+        echo "/*" > "$sparse_file"
+        for path in "${HEADLESS_EXCLUDES[@]}"; do
+            echo "!/$path" >> "$sparse_file"
         done
-        # delete backup directory
-        rm -rf "$BACKUP_DIR"
+    else
+        echo "/*" > "$sparse_file"
     fi
+
+    # checkout (overwrites local files)
+    dotfiles checkout --quiet 2> /dev/null
 }
 
 main() {
     parse_args "$@"
 
-    init_repo
+    print_bold "Cloning repo from $REPO_URL_HTTPS"
+    if [ -d "$DOTFILES_DIR" ]; then
+        backup_local_changes
+        rm -rf "$DOTFILES_DIR"
+        clone_repo
+    else
+        clone_repo
+        backup_local_changes
+    fi
     echo
 
-    checkout_files
+    print_bold "Checking out files to $HOME"
+    sparse_checkout
+    restore_local_changes
+    print_local_changes
     echo
 
     print_bold "Bootstrap complete"
