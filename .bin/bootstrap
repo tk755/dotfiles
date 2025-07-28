@@ -82,7 +82,27 @@ dotfiles() {
     git --git-dir="$DOTFILES_DIR" --work-tree="$HOME" "$@"
 }
 
-configure_sparse_checkout() {
+clone_repo() {
+    if [ ! -d "$DOTFILES_DIR" ]; then
+        # clone bare repo
+        echo " ⮞ Cloning repo from $REPO_URL"
+        git clone --bare "$REPO_URL" "$DOTFILES_DIR" &> /dev/null
+
+        # manually configure tracking
+        dotfiles config branch.main.remote origin
+        dotfiles config branch.main.merge refs/heads/main
+
+        # disable untracked files in status
+        dotfiles config --local status.showUntrackedFiles no
+
+        # enable + setup sparse checkout
+        dotfiles config core.sparseCheckout true
+    else
+        print_dim " ✓ Bare repo already exists"
+    fi
+}
+
+setup_sparse_checkout() {
     # create sparse checkout file if it doesn't exist
     local sparse_file="$DOTFILES_DIR/info/sparse-checkout"
     mkdir -p "$(dirname "$sparse_file")"
@@ -102,28 +122,10 @@ configure_sparse_checkout() {
     fi
 }
 
-setup_repo() {
+init_repo() {
     print_bold "Setting up repo in $DOTFILES_DIR"
-    
-    # clone repo if it doesn't exist
-    if [ ! -d "$DOTFILES_DIR" ]; then
-        echo " ⮞ Cloning repo from $REPO_URL"
-        git clone --bare "$REPO_URL" "$DOTFILES_DIR" &> /dev/null
-    else
-        print_dim " ✓ Bare repo already exists"
-    fi
-
-    # set upstream if not already set
-    if ! dotfiles rev-parse --abbrev-ref --symbolic-full-name @{u} &> /dev/null; then
-        dotfiles branch --set-upstream-to=origin/main main &> /dev/null || true
-    fi
-
-    # configure git settings
-    dotfiles config --local status.showUntrackedFiles no
-    dotfiles config core.sparseCheckout true
-
-    # set up sparse checkout
-    configure_sparse_checkout
+    clone_repo
+    setup_sparse_checkout
 }
 
 print_checkout_changes() {
@@ -158,7 +160,7 @@ checkout_files() {
 main() {
     parse_args "$@"
 
-    setup_repo
+    init_repo
     echo
 
     checkout_files
