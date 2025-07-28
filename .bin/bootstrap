@@ -18,14 +18,12 @@ HEADLESS_EXCLUDES=(
 HEADLESS=false
 ALL=false
 FORCE=false
-CLONED=false
 
 print_help() {
     cat <<EOF
 Usage: bootstrap [OPTIONS]
 
 Options:
-    --all           Include all dotfiles (default on first install)
     --headless      Exclude GUI-related dotfiles (for servers or WSL)
     --force         Force overwrite local files (destructive)
     --help          Show this help message
@@ -34,22 +32,16 @@ Exclude patterns (--headless):
     ${HEADLESS_EXCLUDES[*]}
 
 Description:
-    Installs dotfiles using a bare git repository at:
-        $DOTFILES_DIR
-
-    If the repository does not exist, it will be cloned from:
-        $REPO_URL_SSH
+    Clones bare repository into $DOTFILES_DIR from:
+        $REPO_URL_HTTPS
 
     Uses sparse checkout to include only a subset of files:
+      - By default, all files are included.
       - Use --headless to exclude GUI-related files.
-      - Use --all to include everything.
-      - If neither is specified, the previous sparse config is reused.
-        If none exists, defaults to --all.
-      - These options are mutually exclusive.
 
     File conflict behavior:
-      - On a new clone, conflicting non-image files are preserved and restored.
-        Use --force to overwrite them without preserving (destructive).
+      - During a clone, non-image files that would be overwritten are preserved and restored after checkout.
+        Use --force to disable this behavior (destructive).
       - On subsequent runs, conflicting files are skipped by default.
         Use --force to overwrite them (destructive).
 EOF
@@ -89,9 +81,8 @@ clone_repo() {
     # clone via HTTPS to avoid SSH setup issues
     echo " ⮞ Cloning repo from $REPO_URL_HTTPS"
     git clone --bare "$REPO_URL_HTTPS" "$DOTFILES_DIR" &> /dev/null
-    CLONED=true
 
-    # switch to SSH for future pushes
+    # change url to SSH for future pushes
     REPO_URL_SSH="git@github.com:${REPO_URL_HTTPS#https://github.com/}"
     git --git-dir="$DOTFILES_DIR" remote set-url origin "$REPO_URL_SSH"
 
@@ -104,15 +95,6 @@ clone_repo() {
 
     # enable
     dotfiles config core.sparseCheckout true
-    CLONED=true
-}
-
-init_repo() {
-    if [ ! -d "$DOTFILES_DIR" ]; then
-        clone_repo
-    else
-        print_dim " ✓ Bare repo already exists"
-    fi
 }
 
 setup_sparse_checkout() {
@@ -120,7 +102,7 @@ setup_sparse_checkout() {
     local sparse_file="$DOTFILES_DIR/info/sparse-checkout"
     mkdir -p "$(dirname "$sparse_file")"
 
-    # update sparse checkout file 
+    # update sparse checkout file
     if [ "$HEADLESS" = true ]; then
         echo " ⮞ Configuring sparse checkout (headless)"
         echo "/*" > "$sparse_file"
@@ -135,17 +117,16 @@ setup_sparse_checkout() {
     fi
 }
 
-setup_repo() {
+init_repo() {
     print_bold "Setting up repo in $DOTFILES_DIR"
-    init_repo
-    setup_sparse_checkout
-}
 
-is_image_file() {
-    case "${1##*.}" in
-        png|jpg|jpeg|gif|bmp|svg|ico|tiff|webp) return 0 ;;
-        *) return 1 ;;
-    esac
+    # delete previous repo if it exists
+    if [ -d "$DOTFILES_DIR" ]; then
+        rm -rf "$DOTFILES_DIR"
+    fi
+
+    clone_repo
+    setup_sparse_checkout
 }
 
 print_checkout_changes() {
@@ -170,69 +151,65 @@ print_checkout_changes() {
 checkout_files() {
     print_bold "Checking out files to $HOME"
 
-    if [ "$CLONED" = true ]; then
-        # internal backup directory
-        local BACKUP_DIR="$DOTFILES_DIR/.bootstrap-backup"
+    # internal backup directory
+    local BACKUP_DIR="$DOTFILES_DIR/.bootstrap-backup"
 
-        # iterate through all file paths tracked in HEAD
-        local changed_files=""
-        while IFS= read -r file; do
-            local full_path="$HOME/$file"
+    # list of changed files
+    local changed_files=""
+    # iterate through all file paths tracked in HEAD
+    while IFS= read -r file; do
+        local full_path="$HOME/$file"
 
-            # skip if not a regular file or is an image
-            if [ ! -f "$full_path" ] || is_image_file "$file"; then
-                continue
-            fi
-
-            # compare local file with HEAD version
-            if ! diff -q "$full_path" <(dotfiles show HEAD:"$file") > /dev/null 2>&1; then
-                changed_files+=$'M '"$file"$'\n'
-
-                # preserve local file
-                if [ "$FORCE" = false ]; then
-                    local backup_path="$BACKUP_DIR/$file"
-                    mkdir -p "$(dirname "$backup_path")"
-                    cp "$full_path" "$backup_path"
-                fi
-            fi
-        done < <(dotfiles ls-tree -r --name-only HEAD)
-
-        if [ "$FORCE" = true ]; then
-            print_checkout_changes "$changed_files" "Files overwritten due to --force during clone:" "\e[31m"
-        else
-            print_checkout_changes "$changed_files" "Files preserved during clone (overwrite with --force):" "\e[33m"
+        # skip if not a regular file
+        if [ ! -f "$full_path" ]; then
+            continue
         fi
 
-        # checkout (will overwrite local files)
-        dotfiles checkout --quiet 2> /dev/null
+        # skip if file is an image (by extension)
+        case "${file##*.}" in
+            png|jpg|jpeg|gif|bmp|svg|ico|tiff|webp) continue ;;
+        esac
 
-        # restore files
-        if [ "$FORCE" = false ] && [ -d "$BACKUP_DIR" ]; then
-            find "$BACKUP_DIR" -type f | while IFS= read -r backup_file; do
-                rel_path="${backup_file#$BACKUP_DIR/}"
-                dest_path="$HOME/$rel_path"
-                mkdir -p "$(dirname "$dest_path")"
-                cp "$backup_file" "$dest_path"
-            done
-            rm -rf "$BACKUP_DIR"
+        # check if local file differs with HEAD version
+        if ! diff -q "$full_path" <(dotfiles show HEAD:"$file") > /dev/null 2>&1; then
+            changed_files+=$'M '"$file"$'\n'
+
+            # preserve local file if not forcing overwrite
+            if [ "$FORCE" = false ]; then
+                local backup_path="$BACKUP_DIR/$file"
+                mkdir -p "$(dirname "$backup_path")"
+                cp "$full_path" "$backup_path"
+            fi
         fi
+    done < <(dotfiles ls-tree -r --name-only HEAD)
 
-    elif [ "$FORCE" = true ]; then
-        changed_files=$(dotfiles status --porcelain | grep -E '^[ MDAU?!]{2} ' || true)
-        print_checkout_changes "$changed_files" "Files overwritten due to --force:" "\e[31m"
-        dotfiles checkout --force --quiet 2> /dev/null
-
+    # print changed files
+    if [ "$FORCE" = true ]; then
+        print_checkout_changes "$changed_files" "Files overwritten due to --force during clone:" "\e[31m"
     else
-        dotfiles checkout --quiet 2> /dev/null
-        changed_files=$(dotfiles status --porcelain | grep -E '^[ MDAU?!]{2} ' || true)
-        print_checkout_changes "$changed_files" "Files skipped due to local changes (overwrite with --force):" "\e[33m"
+        print_checkout_changes "$changed_files" "Files preserved during clone (overwrite with --force):" "\e[33m"
+    fi
+
+    # checkout (will overwrite local files)
+    dotfiles checkout --quiet 2> /dev/null
+
+    # restore files if not forcing overwrite
+    if [ "$FORCE" = false ] && [ -d "$BACKUP_DIR" ]; then
+        find "$BACKUP_DIR" -type f | while IFS= read -r backup_file; do
+            rel_path="${backup_file#$BACKUP_DIR/}"
+            dest_path="$HOME/$rel_path"
+            mkdir -p "$(dirname "$dest_path")"
+            cp "$backup_file" "$dest_path"
+        done
+        # delete backup directory
+        rm -rf "$BACKUP_DIR"
     fi
 }
 
 main() {
     parse_args "$@"
 
-    setup_repo
+    init_repo
     echo
 
     checkout_files
