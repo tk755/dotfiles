@@ -16,7 +16,6 @@ HEADLESS_EXCLUDES=(
 
 # default flags
 HEADLESS=false
-ALL=false
 FORCE=false
 
 print_help() {
@@ -48,18 +47,12 @@ EOF
 parse_args() {
     for arg in "$@"; do
         case "$arg" in
-            --all)      ALL=true                    ;;
             --headless) HEADLESS=true               ;;
             --force)    FORCE=true                  ;;
             --help)     print_help && exit 0        ;;
             *) echo "Invalid arg: $arg" && exit 1   ;;
         esac
     done
-
-    if [ $ALL = true ] && [ $HEADLESS = true ]; then
-        echo "Error: --headless and --all are mutually exclusive." >&2
-        exit 1
-    fi
 }
 
 print_bold() {
@@ -107,11 +100,9 @@ setup_sparse_checkout() {
         for path in "${HEADLESS_EXCLUDES[@]}"; do
             echo "!/$path" >> "$sparse_file"
         done
-    elif [ "$ALL" = true ] || [ ! -f "$sparse_file" ]; then
+    else
         echo " ⮞ Configuring sparse checkout (all files)"
         echo "/*" > "$sparse_file"
-    else
-        print_dim " ✓ Sparse checkout already configured"
     fi
 }
 
