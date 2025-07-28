@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# bootstrap - dotfiles installer using a bare git repo
-# For usage instructions, run `bootstrap --help`
 
 set -euo pipefail
 
@@ -18,6 +16,7 @@ HEADLESS_EXCLUDES=(
 
 # default flags
 HEADLESS=false
+ALL=false
 FORCE=false
 
 print_help() {
@@ -25,21 +24,49 @@ print_help() {
 Usage: bootstrap [OPTIONS]
 
 Options:
-    --headless     Exclude GUI-related dotfiles
-    --force        Overwrite conflicting files (locally destructive)
-    --help         Show this help message
+    --all           Include all dotfiles (default on first install)
+    --headless      Exclude GUI-related dotfiles (for servers or WSL)
+    --force         Force overwrite local files (destructive)
+    --help          Show this help message
+
+Exclude patterns (--headless):
+    ${HEADLESS_EXCLUDES[*]}
+
+Description:
+    Installs dotfiles using a bare git repository at:
+        $DOTFILES_DIR
+
+    If the repository does not exist, it will be cloned from:
+        $REPO_URL
+
+    Uses sparse checkout to include only a subset of files:
+      - Use --headless to exclude GUI-related files.
+      - Use --all to include everything.
+      - If neither is specified, the previous sparse config is reused.
+        If none exists, defaults to --all.
+      - These options are mutually exclusive.
+
+    File conflict behavior:
+      - Conflicting files are skipped by default, with a warning.
+      - Use --force to overwrite them (this is locally destructive).
 EOF
 }
 
 parse_args() {
     for arg in "$@"; do
         case "$arg" in
-            --headless) HEADLESS=true                   ;;
-            --force)    FORCE=true                      ;;
-            --help)     print_help && exit 0            ;;
-            *) echo "Invalid option: $arg" && exit 1    ;;
+            --all)      ALL=true                    ;;
+            --headless) HEADLESS=true               ;;
+            --force)    FORCE=true                  ;;
+            --help)     print_help && exit 0        ;;
+            *) echo "Invalid arg: $arg" && exit 1   ;;
         esac
     done
+
+    if [ $ALL = true ] && [ $HEADLESS = true ]; then
+        echo "Error: --headless and --all are mutually exclusive." >&2
+        exit 1
+    fi
 }
 
 print_bold() {
@@ -85,7 +112,7 @@ setup_sparse_checkout() {
         for path in "${HEADLESS_EXCLUDES[@]}"; do
             echo "!/$path" >> "$sparse_file"
         done
-    elif [ ! -f "$sparse_file" ]; then
+    elif [ "$ALL" = true ] || [ ! -f "$sparse_file" ]; then
         print_bold "Configuring sparse checkout (all files)"
         echo "/*" > "$sparse_file"
     else
@@ -125,7 +152,7 @@ checkout_files() {
 
 print_final_status() {
     echo
-    print_bold "Installation complete"
+    print_bold "Bootstrap complete"
     dotfiles status | grep "sparse checkout" | sed 's/^You are in a sparse checkout with /Sparse checkout: /; s/\.$//'
 }
 
@@ -137,6 +164,5 @@ init_repo() {
 }
 
 parse_args "$@"
-# print_bold "Running bootstrap"
 init_repo
 print_final_status

@@ -20,22 +20,28 @@ print_help() {
 Usage: sync-repos [OPTIONS]
 
 Options:
-    --clone             Clone missing repos from GitHub
-    --show-skipped      Show which repos were skipped (used with --clone)
+    --clone             Clone missing GitHub repos
+    --show-skipped      Show skipped repos (used with --clone)
     --include-skipped   Clone archived and excluded repos (used with --clone)
     --help              Show this help message
 
-Exclude patterns: 
+Exclude patterns (--clone):
     ${GITHUB_EXCLUDES[*]}
 
 Description:
-    Fetches and pulls all git repos in $REPOS_DIR.
-    
-    Use --clone to clone all missing repos from GitHub (requires gh CLI). 
-    Archived repos or those matching any exclude pattern are skipped by default. 
-    Use --show-skipped to display skipped repos, or --include-skipped to clone them anyway.
-    
-    This script makes no destructive changes to repos, either locally or remotely.
+    Syncs all git repositories in $REPOS_DIR.
+
+    For each local repo:
+      - Runs 'git fetch' and 'git pull' to update the current branch.
+
+    With --clone (requires gh CLI):
+      - Clones any missing public or private repos from GitHub.
+      - Repos that are archived or match an exclude pattern are skipped by default.
+        - Use --show-skipped to display skipped repos.
+        - Use --include-skipped to clone them anyway.
+
+    This script makes no destructive changes to repositories,
+    either locally or remotely.
 EOF
 }
 
@@ -144,11 +150,11 @@ skip_message() {
 # parse args
 for arg in "$@"; do
     case "$arg" in
-        --clone)            CLONE=true ;;
-        --show-skipped)     SHOW_SKIPPED=true ;;
+        --clone)            CLONE=true          ;;
+        --show-skipped)     SHOW_SKIPPED=true   ;;
         --include-skipped)  INCLUDE_SKIPPED=true ;;
         --help)             print_help ; exit 0 ;;
-        *) echo "Unknown argument: $arg" && exit 1 ;;
+        *) echo "Invalid arg: $arg" && exit 1   ;;
     esac
 done
 
