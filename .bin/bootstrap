@@ -19,6 +19,10 @@ HEADLESS_EXCLUDES=(
 HEADLESS=false
 FORCE=false
 
+# global variables
+PROCESS_ICON="\e[36m⮞\e[0m"
+FINISH_ICON="\e[32m✓\e[0m"
+
 print_help() {
     cat <<EOF
 Usage: bootstrap [OPTIONS]
@@ -60,16 +64,14 @@ print_bold() {
     printf "\e[1m%s\e[0m\n" "$1"
 }
 
-print_dim() {
-    printf "\e[2m%s\e[0m\n" "$1"
-}
-
 # dotfiles git wrapper function
 dotfiles() {
     git --git-dir="$DOTFILES_DIR" --work-tree="$HOME" "$@"
 }
 
 backup_local_changes() {
+    echo -e " $PROCESS_ICON Backing up local changes"
+
     if [ -d "$BACKUP_DIR" ]; then
         rm -rf "$BACKUP_DIR"
     fi
@@ -102,6 +104,9 @@ restore_local_changes() {
         return
     fi
 
+    echo -e " $PROCESS_ICON Restoring local changes"
+
+    # restore files from backup directory
     find "$BACKUP_DIR" -type f | while IFS= read -r backup_file; do
         rel_path="${backup_file#$BACKUP_DIR/}"
         dest_path="$HOME/$rel_path"
@@ -111,39 +116,29 @@ restore_local_changes() {
 }
 
 print_local_changes() {
-    # get changed_files from backup directory
-    local changed_files=""
-    if [ -d "$BACKUP_DIR" ]; then
-        while IFS= read -r file; do
-            rel_path="${file#$BACKUP_DIR/}"
-            changed_files+=$'M '"$rel_path"$'\n'
-        done < <(find "$BACKUP_DIR" -type f | sort)
-    fi
-
-    if [ -z "$changed_files" ]; then
-        print_dim " ✓ No local changes found"
+    if [ ! -d "$BACKUP_DIR" ]; then
         return
     fi
 
-    # print changed files
-    local reset_color="\e[0m"
+    echo
     if [ $FORCE = true ]; then
-        echo "Files overwritten due to --force during clone:"
+        echo "Files overwritten during clone:"
         local color="\e[31m"
     else
         echo "Files preserved during clone (overwrite with --force):"
         local color="\e[33m"
     fi
 
-    echo "$changed_files" | while read -r line; do
-        [ -n "$line" ] || continue
-        code="${line:0:2}"
-        path="${line:2}"
-        printf " ${color}%s${reset_color}%s\n" "$code" "$path"
-    done
+    local reset_color="\e[0m"
+    while IFS= read -r file; do
+        path="${file#$BACKUP_DIR/}"
+        printf " ${color}%s${reset_color} %s\n" "M" "$path"
+    done < <(find "$BACKUP_DIR" -type f | sort)
 }
 
 clone_repo() {
+    echo -e " $PROCESS_ICON Cloning repo from $REPO_URL_HTTPS"
+
     # clone via HTTPS to avoid SSH setup issues
     git clone --bare "$REPO_URL_HTTPS" "$DOTFILES_DIR" &> /dev/null
 
@@ -159,6 +154,8 @@ clone_repo() {
 }
 
 sparse_checkout() {
+    echo -e " $PROCESS_ICON Checking out files to $HOME"
+
     # create sparse checkout file
     local sparse_file="$DOTFILES_DIR/info/sparse-checkout"
     mkdir -p "$(dirname "$sparse_file")"
@@ -180,7 +177,7 @@ sparse_checkout() {
 main() {
     parse_args "$@"
 
-    print_bold "Cloning repo from $REPO_URL_HTTPS"
+    print_bold "Setting up repo in $DOTFILES_DIR"
     if [ -d "$DOTFILES_DIR" ]; then
         backup_local_changes
         rm -rf "$DOTFILES_DIR"
@@ -189,16 +186,15 @@ main() {
         clone_repo
         backup_local_changes
     fi
-    echo
 
-    print_bold "Checking out files to $HOME"
     sparse_checkout
     restore_local_changes
     print_local_changes
-    echo
 
+    echo
     print_bold "Bootstrap complete"
-    dotfiles status | grep "sparse checkout" | sed 's/^You are in a sparse checkout with /Sparse checkout: /; s/\.$//'
+    status_msg=$(dotfiles status | grep -oP '(?<=sparse checkout with ).*?(?=\.$)')
+    echo -e " $FINISH_ICON $status_msg"
 }
 
 main "$@"
