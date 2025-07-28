@@ -18,7 +18,7 @@ HEADLESS_EXCLUDES=(
 HEADLESS=false
 ALL=false
 FORCE=false
-FRESH_CLONE=false
+CLONED=false
 
 print_help() {
     cat <<EOF
@@ -48,9 +48,10 @@ Description:
       - These options are mutually exclusive.
 
     File conflict behavior:
-      - If the repository is freshly cloned, all files are overwritten.
-      - Conflicting files are skipped by default, with a warning.
-      - Use --force to overwrite them (this is locally destructive).
+      - On a new clone, conflicting non-image files are preserved and restored.
+        Use --force to overwrite them without preserving (destructive).
+      - On subsequent runs, conflicting files are skipped by default.
+        Use --force to overwrite them (destructive).
 EOF
 }
 
@@ -89,7 +90,7 @@ init_repo() {
         # clone bare repo
         echo " ⮞ Cloning repo from $REPO_URL"
         git clone --bare "$REPO_URL" "$DOTFILES_DIR" &> /dev/null
-        FRESH_CLONE=true
+        CLONED=true
 
         # manually configure tracking
         dotfiles config branch.main.remote origin
@@ -131,6 +132,13 @@ setup_repo() {
     setup_sparse_checkout
 }
 
+is_image_file() {
+    case "${1##*.}" in
+        png|jpg|jpeg|gif|bmp|svg|ico|tiff|webp) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
 print_checkout_changes() {
     local changed_files="$1"
     local message="$2"
@@ -150,40 +158,61 @@ print_checkout_changes() {
     fi
 }
 
-is_image_file() {
-    case "${1##*.}" in
-        png|jpg|jpeg|gif|bmp|svg|ico|tiff|webp) return 0 ;;
-        *) return 1 ;;
-    esac
-}
-
 checkout_files() {
     print_bold "Checking out files to $HOME"
 
-    if [ "$FRESH_CLONE" = true ]; then
-        # iterate over all files tracked in HEAD
+    if [ "$CLONED" = true ]; then
+        # internal backup directory
+        local BACKUP_DIR="$DOTFILES_DIR/.bootstrap-backup"
+
+        # iterate through all file paths tracked in HEAD
         local changed_files=""
         while IFS= read -r file; do
             local full_path="$HOME/$file"
-            
-            # skip if file in HEAD doesn't exist or is an image
-            if [ ! -e "$full_path" ] || is_image_file "$file"; then
+
+            # skip if not a regular file or is an image
+            if [ ! -f "$full_path" ] || is_image_file "$file"; then
                 continue
             fi
 
-            # check if file in HEAD differs from local
+            # compare local file with HEAD version
             if ! diff -q "$full_path" <(dotfiles show HEAD:"$file") > /dev/null 2>&1; then
-                changed_files+=$'M\t'"$file"$'\n'
+                changed_files+=$'M '"$file"$'\n'
+
+                # preserve local file
+                if [ "$FORCE" = false ]; then
+                    local backup_path="$BACKUP_DIR/$file"
+                    mkdir -p "$(dirname "$backup_path")"
+                    cp "$full_path" "$backup_path"
+                fi
             fi
         done < <(dotfiles ls-tree -r --name-only HEAD)
 
-        print_checkout_changes "$changed_files" "Files overwritten due to fresh install (non-image):" "\e[31m"
+        if [ "$FORCE" = true ]; then
+            print_checkout_changes "$changed_files" "Files overwritten due to --force during clone:" "\e[31m"
+        else
+            print_checkout_changes "$changed_files" "Files preserved during clone (overwrite with --force):" "\e[33m"
+        fi
+
+        # checkout (will overwrite local files)
         dotfiles checkout --quiet 2> /dev/null
+
+        # restore files
+        if [ "$FORCE" = false ] && [ -d "$BACKUP_DIR" ]; then
+            find "$BACKUP_DIR" -type f | while IFS= read -r backup_file; do
+                rel_path="${backup_file#$BACKUP_DIR/}"
+                dest_path="$HOME/$rel_path"
+                mkdir -p "$(dirname "$dest_path")"
+                cp "$backup_file" "$dest_path"
+            done
+            rm -rf "$BACKUP_DIR"
+        fi
 
     elif [ "$FORCE" = true ]; then
         changed_files=$(dotfiles status --porcelain | grep -E '^[ MDAU?!]{2} ' || true)
         print_checkout_changes "$changed_files" "Files overwritten due to --force:" "\e[31m"
         dotfiles checkout --force --quiet 2> /dev/null
+
     else
         dotfiles checkout --quiet 2> /dev/null
         changed_files=$(dotfiles status --porcelain | grep -E '^[ MDAU?!]{2} ' || true)
