@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-REPO_URL="git@github.com:tk755/dotfiles.git"
+REPO_URL_HTTPS="https://github.com/tk755/dotfiles.git"
 DOTFILES_DIR="$HOME/.dotfiles"
 
 # paths to exclude in headless install
@@ -38,7 +38,7 @@ Description:
         $DOTFILES_DIR
 
     If the repository does not exist, it will be cloned from:
-        $REPO_URL
+        $REPO_URL_SSH
 
     Uses sparse checkout to include only a subset of files:
       - Use --headless to exclude GUI-related files.
@@ -85,22 +85,31 @@ dotfiles() {
     git --git-dir="$DOTFILES_DIR" --work-tree="$HOME" "$@"
 }
 
+clone_repo() {
+    # clone via HTTPS to avoid SSH setup issues
+    echo " ⮞ Cloning repo from $REPO_URL_HTTPS"
+    git clone --bare "$REPO_URL_HTTPS" "$DOTFILES_DIR" &> /dev/null
+    CLONED=true
+
+    # switch to SSH for future pushes
+    REPO_URL_SSH="git@github.com:${REPO_URL_HTTPS#https://github.com/}"
+    git --git-dir="$DOTFILES_DIR" remote set-url origin "$REPO_URL_SSH"
+
+    # manually configure tracking
+    dotfiles config branch.main.remote origin
+    dotfiles config branch.main.merge refs/heads/main
+
+    # disable untracked files in status
+    dotfiles config --local status.showUntrackedFiles no
+
+    # enable
+    dotfiles config core.sparseCheckout true
+    CLONED=true
+}
+
 init_repo() {
     if [ ! -d "$DOTFILES_DIR" ]; then
-        # clone bare repo
-        echo " ⮞ Cloning repo from $REPO_URL"
-        git clone --bare "$REPO_URL" "$DOTFILES_DIR" &> /dev/null
-        CLONED=true
-
-        # manually configure tracking
-        dotfiles config branch.main.remote origin
-        dotfiles config branch.main.merge refs/heads/main
-
-        # disable untracked files in status
-        dotfiles config --local status.showUntrackedFiles no
-
-        # enable + setup sparse checkout
-        dotfiles config core.sparseCheckout true
+        clone_repo
     else
         print_dim " ✓ Bare repo already exists"
     fi
