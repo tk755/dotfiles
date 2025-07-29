@@ -143,7 +143,7 @@ print_local_changes() {
 clone_repo() {
     echo -e " $PROCESS_ICON Cloning repo from $REPO_URL_HTTPS"
 
-    # clone via HTTPS to avoid SSH setup issues
+    # clone via HTTPS to avoid needing SSH keys
     git clone --bare --branch main "$REPO_URL_HTTPS" "$DOTFILES_DIR" &> /dev/null
 
     # change repo URL to SSH for future pushes
@@ -159,7 +159,7 @@ clone_repo() {
 reset_repo() {
     echo -e " $PROCESS_ICON Pulling latest from $REPO_URL_HTTPS"
     
-    # change repo URL to HTTPS if it was set to SSH
+    # change repo URL to HTTPS to avoid needing SSH keys
     git --git-dir="$DOTFILES_DIR" remote set-url origin "$REPO_URL_HTTPS"
 
     # reset repo to the latest commit
