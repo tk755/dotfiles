@@ -177,6 +177,8 @@ sparse_checkout() {
 main() {
     parse_args "$@"
 
+    cd "$HOME"
+
     print_bold "Setting up repo in $DOTFILES_DIR"
     if [ -d "$DOTFILES_DIR" ]; then
         backup_local_changes
