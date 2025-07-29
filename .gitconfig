@@ -1,7 +1,9 @@
 [user]
-	name = tk
+	name = Tushar Khan
 	email = tushar.54k@gmail.com
-[alias]
-	l = log --pretty='%C(yellow)%h %C(cyan)%cd %C(green)%aN%C(auto)%d %Creset%s' --graph --date=relative --date-order
+[init]
+	defaultBranch = main
 [pull]
 	rebase = true
+[alias]
+	l = log --pretty='%C(yellow)%h%C(auto)%d %C(reset)%s %C(cyan)(%cd)%C(dim white) - %an%C(reset)' --graph --date=relative --date-order
