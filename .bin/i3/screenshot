@@ -23,7 +23,7 @@ save_full_screenshot() {
     mkdir -p "$screenshot_dir"
     if maim -u "$img_path"; then
         copy_to_clipboard "$img_path"
-        notify-send "$(basename "$0")" "saved to $img_path and clipboard." -u low
+        notify-send "$(basename "$0")" "Saved to $img_path and clipboard." -u low
     else
         exit 1
     fi
@@ -33,7 +33,7 @@ save_selection_screenshot() {
     mkdir -p "$screenshot_dir"
     if maim -s -u "$img_path"; then
         copy_to_clipboard "$img_path"
-        notify-send "$(basename "$0")" "saved to $img_path and clipboard." -u low
+        notify-send "$(basename "$0")" "Saved to $img_path and clipboard." -u low
     else
         exit 1
     fi
