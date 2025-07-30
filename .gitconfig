@@ -3,7 +3,22 @@
 	email = tushar.54k@gmail.com
 [init]
 	defaultBranch = main
+[fetch]
+	prune = true
 [pull]
 	rebase = true
+[rebase]
+	autosquash = true
 [alias]
+	# shortcuts
 	l = log --pretty='%C(yellow)%h%C(auto)%d %C(reset)%s %C(cyan)(%cd)%C(dim white) - %an%C(reset)' --graph --date=relative --date-order
+	ll = l -10
+	d = diff -w --word-diff=color --ignore-space-at-eol
+	dc = d --cached
+	s = status -sb
+
+	# custom commands
+	amend = commit --amend --no-edit
+	undo = reset --soft HEAD^
+	unstage = restore --staged
+	untrack = rm --cached
