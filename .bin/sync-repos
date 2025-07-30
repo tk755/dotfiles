@@ -125,7 +125,7 @@ pull_repo() {
 clone_repo() {
     local repo="$1"
     local skip_reason="$2"
-    if true || gh repo clone "$GITHUB_USER/$repo" "$repo" > /dev/null 2>&1; then
+    if gh repo clone "$GITHUB_USER/$repo" "$repo" > /dev/null 2>&1; then
         if [ -n "$skip_reason" ]; then
             print_status "$repo" "Cloned ($skip_reason)" "+"
         else
