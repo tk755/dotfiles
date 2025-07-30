@@ -20,28 +20,27 @@ print_help() {
 Usage: sync-repos [OPTIONS]
 
 Options:
-    --clone             Clone missing GitHub repos
-    --show-skipped      Show skipped repos (used with --clone)
-    --include-skipped   Clone archived and excluded repos (used with --clone)
+    --clone             Clone missing GitHub repositories
+    --show-skipped      Display skipped repositories when cloning
+    --include-skipped   Include skipped repositories when cloning
     --help              Show this help message
 
-Exclude patterns (--clone):
+Exclude patterns (used with --clone):
     ${GITHUB_EXCLUDES[*]}
 
 Description:
-    Syncs all git repositories in $REPOS_DIR.
+    Syncs all git repositories in $REPOS_DIR in parallel.
+      - Makes no destructive changes, either locally or remotely.
 
-    For each local repo:
-      - Runs 'git fetch' and 'git pull' to update the current branch.
+    For each local repository:
+      - Runs 'git fetch' to update remote tracking branches
+      - Runs 'git pull' to update the current checked-out branch
 
-    With --clone (requires gh CLI):
-      - Clones any missing public or private repos from GitHub.
-      - Repos that are archived or match an exclude pattern are skipped by default.
-        - Use --show-skipped to display skipped repos.
+    With --clone (requires the GitHub CLI 'gh'):
+      - Clones any missing public or private repositories from GitHub.
+      - Repositories that are archived or excluded are skipped by default.
+        - Use --show-skipped to display skipped repositories.
         - Use --include-skipped to clone them anyway.
-
-    This script makes no destructive changes to repositories,
-    either locally or remotely.
 EOF
 }
 
@@ -225,17 +224,22 @@ else
     echo -e "\e[1mSyncing repos in $REPOS_DIR\e[0m"
 fi
 
-# loop through all repos and sync
+# sync each repo in parallel using background jobs
 while IFS=$'\t' read -r repo skip_reason; do
-    if [ -z "$repo" ]; then
-        continue  # skip empty lines
-    elif [ -d "$repo/.git" ]; then
-        pull_repo "$repo"
-    elif [ "$INCLUDE_SKIPPED" = false ] && [ -n "$skip_reason" ]; then
-        skip_message "$repo" "$skip_reason"
-    else
-        clone_repo "$repo" "$skip_reason"
-    fi
+    (
+        if [ -z "$repo" ]; then
+            exit 0  # skip empty lines
+        elif [ -d "$repo/.git" ]; then
+            pull_repo "$repo"
+        elif [ "$INCLUDE_SKIPPED" = false ] && [ -n "$skip_reason" ]; then
+            skip_message "$repo" "$skip_reason"
+        else
+            clone_repo "$repo" "$skip_reason"
+        fi
+    ) &
 done <<< "$all_repo_data"
+
+# wait for all background jobs to finish
+wait
 
 echo -e "\e[1mDone\e[0m"
