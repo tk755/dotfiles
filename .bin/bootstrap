@@ -71,10 +71,6 @@ dotfiles() {
     git --git-dir="$DOTFILES_DIR" --work-tree="$HOME" "$@"
 }
 
-repo_url_ssh() {
-    echo "git@github.com:${REPO_URL_HTTPS#https://github.com/}"
-}
-
 backup_local_changes() {
     echo -e " $PROCESS_ICON Backing up local changes"
 
@@ -126,6 +122,7 @@ print_local_changes() {
         return
     fi
 
+    echo
     if [ $FORCE = true ]; then
         echo "Local changes overwritten:"
         local color="\e[31m"
@@ -147,8 +144,9 @@ clone_repo() {
     # clone via HTTPS to avoid needing SSH keys
     git clone --bare --branch main "$REPO_URL_HTTPS" "$DOTFILES_DIR" &> /dev/null
 
-    # change repo URL to SSH for future pushes
-    git --git-dir="$DOTFILES_DIR" remote set-url origin "$(repo_url_ssh)"
+    # change url to SSH for future pushes
+    REPO_URL_SSH="git@github.com:${REPO_URL_HTTPS#https://github.com/}"
+    git --git-dir="$DOTFILES_DIR" remote set-url origin "$REPO_URL_SSH"
 
     # configure git settings
     dotfiles config branch.main.remote origin
@@ -175,21 +173,6 @@ delete_repo() {
 
     # delete repo
     rm -rf "$DOTFILES_DIR"
-}
-
-# this doesn't work on bare repos, but has been retained for future use
-reset_repo() {
-    echo -e " $PROCESS_ICON Pulling changes from $REPO_URL_HTTPS"
-    
-    # change repo URL to HTTPS to avoid needing SSH keys
-    git --git-dir="$DOTFILES_DIR" remote set-url origin "$REPO_URL_HTTPS"
-
-    # reset repo to the latest commit
-    dotfiles fetch origin main &> /dev/null
-    dotfiles reset --hard &> /dev/null
-
-    # revert repo URL to SSH for future pushes
-    git --git-dir="$DOTFILES_DIR" remote set-url origin "$(repo_url_ssh)"
 }
 
 sparse_checkout() {
@@ -229,7 +212,6 @@ main() {
     sparse_checkout
     restore_local_changes
 
-    echo
     print_local_changes
     echo
     print_bold "Bootstrap complete"
