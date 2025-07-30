@@ -38,14 +38,16 @@ Exclude patterns (--headless):
 
 Description:
     Installs the latest version of $REPO_URL_HTTPS.
-      - Clones bare repo with sparse checkout into $DOTFILES_DIR.
-      - Deletes the previous repo installation if it exists.
+      - Clones the bare repository to $DOTFILES_DIR.
+      - Removes the previous repo and its tracked files.
 
-    By default, any conflicting (non-image) local files are preserved.
-      - Use --force to overwrite local conflicts (destructive).
-    
-    All files in the repository are included by default.
-      - Use --headless to exclude GUI-related files via sparse checkout.
+    Uses sparse checkout to limit files checked out into $HOME.
+      - By default, all files are included.
+      - Use --headless to exclude GUI-related files.
+
+    Conflicting files are backed up to $BACKUP_DIR.
+      - By default, these files are restored automatically.
+      - Use --force to skip the restore step.
 EOF
 }
 
@@ -74,7 +76,7 @@ repo_url_ssh() {
 }
 
 backup_local_changes() {
-    echo -e " $PROCESS_ICON Backing up local changes to $BACKUP_DIR"
+    echo -e " $PROCESS_ICON Backing up local changes"
 
     if [ -d "$BACKUP_DIR" ]; then
         rm -rf "$BACKUP_DIR"
@@ -124,7 +126,6 @@ print_local_changes() {
         return
     fi
 
-    echo
     if [ $FORCE = true ]; then
         echo "Local changes overwritten:"
         local color="\e[31m"
@@ -141,7 +142,7 @@ print_local_changes() {
 }
 
 clone_repo() {
-    echo -e " $PROCESS_ICON Cloning repo from $REPO_URL_HTTPS"
+    echo -e " $PROCESS_ICON Cloning from \e[94m$REPO_URL_HTTPS\e[0m"
 
     # clone via HTTPS to avoid needing SSH keys
     git clone --bare --branch main "$REPO_URL_HTTPS" "$DOTFILES_DIR" &> /dev/null
@@ -156,8 +157,29 @@ clone_repo() {
     dotfiles config core.sparseCheckout true
 }
 
+delete_repo() {
+    echo -e " $PROCESS_ICON Removing previous repo and tracked files"
+
+    # delete all previously tracked files
+    dotfiles ls-tree -r --name-only HEAD |
+        sed "s|^|$HOME/|" |
+        xargs -r -d '\n' rm -f
+
+    # delete all tracked directories that are now empty
+    dotfiles ls-tree -r --name-only HEAD |
+        awk -F/ 'NF>1 { $NF=""; print $0 }' OFS="/" |
+        sed 's:/$::' |
+        sort -u |
+        sed "s|^|$HOME/|" |
+        xargs -r -d '\n' rmdir 2>/dev/null || true
+
+    # delete repo
+    rm -rf "$DOTFILES_DIR"
+}
+
+# this doesn't work on bare repos, but has been retained for future use
 reset_repo() {
-    echo -e " $PROCESS_ICON Pulling latest from $REPO_URL_HTTPS"
+    echo -e " $PROCESS_ICON Pulling changes from $REPO_URL_HTTPS"
     
     # change repo URL to HTTPS to avoid needing SSH keys
     git --git-dir="$DOTFILES_DIR" remote set-url origin "$REPO_URL_HTTPS"
@@ -171,7 +193,7 @@ reset_repo() {
 }
 
 sparse_checkout() {
-    echo -e " $PROCESS_ICON Checking out files to $HOME"
+    echo -e " $PROCESS_ICON Checking out files"
 
     # create sparse checkout file
     local sparse_file="$DOTFILES_DIR/info/sparse-checkout"
@@ -194,23 +216,24 @@ sparse_checkout() {
 main() {
     parse_args "$@"
 
-    print_bold "Installing repo in $DOTFILES_DIR"
+    print_bold "Installing to $DOTFILES_DIR"
     if [ ! -d "$DOTFILES_DIR" ]; then
         clone_repo
         backup_local_changes
-        sparse_checkout
     else
         backup_local_changes
-        reset_repo
+        delete_repo
+        clone_repo
     fi
     
+    sparse_checkout
     restore_local_changes
-    print_local_changes
 
     echo
+    print_local_changes
+    echo
     print_bold "Bootstrap complete"
-    status_msg=$(dotfiles status | grep -oP '(?<=sparse checkout with ).*?(?=\.$)')
-    echo -e " $FINISH_ICON $status_msg"
+    echo -e " $FINISH_ICON $(dotfiles status | grep -oP '(?<=sparse checkout with ).*?(?=\.$)')"
 }
 
 cd "$HOME"
