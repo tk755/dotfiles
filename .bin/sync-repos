@@ -33,8 +33,8 @@ Description:
       - Makes no destructive changes, either locally or remotely.
 
     For each local repository:
-      - Runs 'git fetch' to update remote tracking branches
-      - Runs 'git pull' to update the current checked-out branch
+      - Runs 'git fetch --prune --tags' to update remotes and tags
+      - Runs 'git pull --ff-only' to update the current branch
 
     With --clone (requires the GitHub CLI 'gh'):
       - Clones any missing public or private repositories from GitHub.
@@ -93,8 +93,8 @@ pull_repo() {
         return
     fi
 
-    # fetch updates from remote
-    if ! git fetch --quiet 2>/dev/null; then
+    # fetch remote updates (with prune and tags)
+    if ! git fetch --prune --tags --quiet 2>/dev/null; then
         print_status "$repo" "Remote not found" "×"
         cd "$REPOS_DIR"
         return
