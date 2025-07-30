@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# Defines bash prompt
 
 # returns system date in nanoseconds
 function timestamp {
@@ -71,9 +70,44 @@ function history_segment {
     echo '$(printf "%03d" "\!")'
 }
 
-# returns git branch
 function git_segment {
-    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
+	local status=''
+	local branch=''
+	local added=0 deleted=0 stashed=0
+
+	# check if in git repository
+	git rev-parse --is-inside-work-tree &>/dev/null || return
+
+	# get branch/tag/sha
+	branch="$(git symbolic-ref --quiet --short HEAD 2> /dev/null || \
+            git describe --all --exact-match HEAD 2> /dev/null || \
+            git rev-parse --short HEAD 2> /dev/null || \
+            echo '(unknown)')";
+
+	# count uncommitted added and deleted tracked files
+	if [ "$(git rev-parse --is-bare-repository 2>/dev/null)" = "false" ]; then
+		while read -r status _; do
+			case "$status" in
+				A|M) ((added++)) ;;
+				D)   ((deleted++)) ;;
+			esac
+		done < <(git diff HEAD --name-status)
+	fi
+
+	# count stashes
+	if git rev-parse --verify refs/stash &>/dev/null; then
+		stashed=$(git stash list | wc -l)
+	fi
+
+	# build status string
+	[ "$added" -gt 0 ] && status+="+$added "
+	[ "$deleted" -gt 0 ] && status+="-${deleted} "
+	[ "$stashed" -gt 0 ] && status+="@${stashed}"
+
+    # remove trailing space
+	[ -n "$status" ] && status="${status% }" # optionally surround with brackets
+
+	echo -e "${1}${branch}${2} ${status}"
 }
 
 # returns virtual environment
