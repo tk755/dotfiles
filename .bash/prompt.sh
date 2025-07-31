@@ -94,20 +94,29 @@ function git_segment {
 		done < <(git diff HEAD --name-status)
 	fi
 
+    if [ "$added" -gt 0 ] && [ "$deleted" -gt 0 ]; then
+		status=" *$((added + deleted))"
+	elif [ "$added" -gt 0 ]; then
+		status=" +$added"
+	elif [ "$deleted" -gt 0 ]; then
+		status=" -$deleted"
+	fi
+
 	# count stashes
 	if git rev-parse --verify refs/stash &>/dev/null; then
 		stashed=$(git stash list | wc -l)
 	fi
 
-	# build status string
-	[ "$added" -gt 0 ] && status+="+$added "
-	[ "$deleted" -gt 0 ] && status+="-${deleted} "
-	[ "$stashed" -gt 0 ] && status+="@${stashed}"
+	if [ "$stashed" -gt 0 ]; then
+        status+=" @${stashed}"
+    fi
 
     # remove trailing space
-	[ -n "$status" ] && status="${status% }" # optionally surround with brackets
+    if [ -n "$status" ]; then
+        status="${status% }"
+    fi
 
-	echo -e "${1}${branch}${2} ${status}"
+	echo -e "${1}${branch}${2}${status}"
 }
 
 # returns virtual environment
@@ -149,20 +158,18 @@ function set_prompt {
 
     # assemble left and right parts of the header and the prompt
     local left right prompt
-    left+="${ANSI_BLUE}\A"                          # timestamp (hh:mm 24h)
-    left+="${ANSI_WHITE}${ANSI_BOLD} as "
     left+="${ANSI_BOLD}${ANSI_RED}\u"               # user
     left+="${ANSI_BOLD}${ANSI_WHITE} at "
     left+="${ANSI_LIGHT_GREEN}\h"                   # hostname
     left+="${ANSI_WHITE} in "
-    left+="${ANSI_YELLOW}\w"                        # working directory
+    left+="${ANSI_LIGHT_BLUE}\w"                    # working directory
     if [[ -n ${git} ]]; then
         left+="${ANSI_WHITE} on "
-        left+="${ANSI_LIGHT_CYAN}${git}"            # git branch
+        left+="${ANSI_YELLOW}${git}"                # git branch
     fi
     if [[ -n ${env} ]]; then
         left+="${ANSI_WHITE} as "
-        left+="${ANSI_MAGENTA}${env}"               # chroot/venv
+        left+="${ANSI_LIGHT_CYAN}${env}"            # chroot/venv
     fi
     left+="${ANSI_RESET}"
 
@@ -187,7 +194,6 @@ function set_prompt {
 
 # PROMPT_COMMAND is executed just before Bash prints the primary prompt
 PROMPT_COMMAND=set_prompt
-
 
 # ANSI formatting control sequences
 ANSI_RESET="\[\e[0m\]"
