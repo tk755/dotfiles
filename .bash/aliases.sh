@@ -20,3 +20,6 @@ alias rmdir="rmdir -v"
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 alias tree='tree --dirsfirst -C'
+
+# shortcuts
+alias c='claude -p'
