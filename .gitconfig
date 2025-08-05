@@ -14,7 +14,8 @@
 	l = log --pretty='%C(yellow)%h%C(auto)%d %C(reset)%s %C(cyan)(%cd)%C(dim white) - %an%C(reset)' --graph --date=relative --date-order
 	ll = l -10
 	d = diff -w --word-diff=color --ignore-space-at-eol
-	dc = d --cached
+	ds = d --cached
+	dc = d HEAD --
 	s = status -sb
 
 	# custom commands
