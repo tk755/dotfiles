@@ -20,7 +20,7 @@ Additional options:
 Run the bootstrap script directly from GitHub:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/tk755/dotfiles/main/.bin/bootstrap)
+curl -fsSL https://raw.githubusercontent.com/tk755/dotfiles/main/.bin/bootstrap | bash
 ```
 
 ### Existing Machine
